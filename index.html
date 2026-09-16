@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mitra1000s - Prototype Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .badge-app {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE;
+            padding: 3px 9px; border-radius: 20px; font-size: 10px; font-weight: 700;
+        }
+        .badge-admin {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: #FFF7ED; color: #C2410C; border: 1px solid #FED7AA;
+            padding: 3px 9px; border-radius: 20px; font-size: 10px; font-weight: 700;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #00BCD4 0%, #1565C0 100%);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: rgba(156, 163, 175, 0.3);
+            border-radius: 20px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(156, 163, 175, 0.5);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header Section -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="max-w-6xl mx-auto px-4 py-8 md:py-12 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">Mitra1000s <span
+                            class="text-[#f36c01]">Hub</span></h1>
+                    <p class="text-sm text-blue-100 opacity-90">Pool Utama Prototype Performa & Migrasi Fitur (agus.hanggaa.xyz)</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full text-xs font-semibold text-blue-100">
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                Live Prototype Hub
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-6xl mx-auto px-4 py-10 w-full">
+
+        <!-- Filter & Search Controls -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+            <div>
+                <h2 class="text-xl font-bold text-slate-800">Daftar Prototype Fitur</h2>
+                <p class="text-sm text-slate-500">Gunakan kolom pencarian untuk menemukan simulasi prototype yang relevan.</p>
+            </div>
+            <div class="relative w-full md:w-80">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" id="search-input" oninput="filterProjects()" placeholder="Cari judul project..."
+                    class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00BCD4] focus:border-transparent shadow-sm transition">
+            </div>
+        </div>
+
+        <!-- Project Grid -->
+        <div id="project-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
+            <!-- Dynamic cards -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state"
+            class="hidden text-center py-16 bg-white border border-dashed border-slate-200 rounded-2xl">
+            <div class="text-slate-300 text-5xl mb-4">
+                <i class="fa-solid fa-folder-open"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-700">Project tidak ditemukan</h3>
+            <p class="text-sm text-slate-400 mt-1">Coba masukkan kata kunci pencarian yang berbeda.</p>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 mt-auto">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-2 text-xs">
+            <p>&copy; 2026 Mitra1000s.</p>
+            <div class="flex flex-col items-center md:items-end gap-1">
+                <p class="flex items-center gap-1"><i class="fa-solid fa-code"></i> Developed for Internal Testing & Validation</p>
+                <span style="color: #64748b;" class="text-[9px]">agus.hanggaa.xyz</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const projects = [
+            {
+                title: "Visibilitas Ongkir Supplier (Fase 1)",
+                category: "Logistik & Ops",
+                version: "v1.0",
+                shortDescription: "Form Penjadwalan GRC Logistik, Split Koli Dinamis, Kalkulasi Volumetrik, dan Dokumen Isi Koli (DIK).",
+                description: "Prototyping Fase 1 penanganan visibilitas ongkir logistik supplier: Batch Add Koli, form koli dinamis, volumetrik math, validasi unassigned stock, mandatori disclaimer, dan modal preview Dokumen Isi Koli (DIK) 1 file multi-page A4 PDF.",
+                brdLink: "#",
+                features: [
+                    "Form Koli Dinamis & Volumetrik Math",
+                    "Validasi Unassigned Stock (Unassigned = 0)",
+                    "Modal Preview Dokumen Isi Koli (DIK) A4 PDF",
+                    "Simulasi Webhook CPD (IsCompleted = TRUE)"
+                ],
+                path: "UI_Prototype_Visibility_Ongkir_Supplier_Fase1.html",
+                viewType: ["app"],
+                lastUpdate: "2026-09-16",
+                formattedDate: "16 September 2026"
+            },
+            {
+                title: "Rekonsiliasi Logistik Finance (Fase 2 E2E)",
+                category: "Logistik & Finance",
+                version: "v2.0",
+                shortDescription: "Portal Rekonsiliasi Admin Finance, Auto-Math Sisa Tagihan, Auto-Lock Lunas, dan Audit Trail History.",
+                description: "Prototyping Fase 2 End-to-End process: Pencatatan mutasi transfer bank, kalkulasi otomatis sisa tagihan, indikator status pelunasan, auto-lock tombol edit saat Lunas, dan modal Audit Trail history edit dengan alasan perubahan.",
+                brdLink: "#",
+                features: [
+                    "Portal Rekonsiliasi Finance (User-Level Access)",
+                    "Auto-Math Sisa Tagihan & Dynamic Status Badges",
+                    "Auto-Lock Edit Pembayaran (Locked saat Lunas)",
+                    "Audit Trail History Log dengan Alasan Edit"
+                ],
+                path: "UI_Prototype_Visibility_Ongkir_Supplier_Fase2.html",
+                viewType: ["admin"],
+                lastUpdate: "2026-09-16",
+                formattedDate: "16 September 2026"
+            },
+            {
+                title: "Security Improvement: OTP & Login Protection",
+                category: "Keamanan & Anti-Spam",
+                version: "v1.0",
+                shortDescription: "Simulasi perlindungan brute-force pada OTP dan Login dengan mekanisme cooldown dan tiered backoff suspend.",
+                description: "Peningkatan keamanan sistem login dan OTP untuk mencegah serangan brute-force dan eksploitasi API OTP.",
+                brdLink: "#",
+                features: [
+                    "OTP Spam Protection (Limit & Cooldown)",
+                    "Login Tiered Backoff Suspend",
+                    "Status UI Dinamis (Countdown & Alert)"
+                ],
+                path: "Prototype_OTP_Phase_2.html",
+                viewType: ["app"],
+                lastUpdate: "2026-07-08",
+                formattedDate: "8 Juli 2026"
+            },
+            {
+                title: "Manajemen Blokir & Whitelist",
+                category: "Keamanan & Anti-Spam",
+                version: "v1.0",
+                shortDescription: "UI Admin untuk mengelola akun yang sedang di-suspend 24 jam (OTP/Login) dan mengatur daftar whitelist.",
+                description: "Menu administrator untuk tim operasional (CS/IT) dalam memantau dan membuka blokir akun yang terkena suspend OTP & Login brute-force.",
+                brdLink: "#",
+                features: [
+                    "Tabel Active Suspensions dengan 1-click Unlock",
+                    "Whitelist Management dengan Tag/Chip Input (Bulk Add)",
+                    "Visual Culprit Badge (PHONE/DEVICE)"
+                ],
+                path: "UI_Prototype_Manajemen_Blokir_Whitelist.html",
+                viewType: ["admin"],
+                lastUpdate: "2026-08-11",
+                formattedDate: "11 Agustus 2026"
+            },
+            {
+                title: "Migrasi OTP (Nusa to Mekari Qontak)",
+                category: "Migrasi & Keamanan",
+                version: "v2.0",
+                shortDescription: "Simulasi migrasi pengiriman OTP dari Nusa ke Mekari Qontak dengan limitasi harian WhatsApp (5x limit).",
+                description: "Migrasi vendor pengiriman OTP dari Nusa ke Mekari Qontak untuk efisiensi biaya.",
+                brdLink: "#",
+                features: [
+                    "Touch Points: Daftar, Lupa Sandi, Sales Insentif",
+                    "Limit WhatsApp 5x/hari",
+                    "Fallback OTP via Email"
+                ],
+                path: "migrasi_otp.html",
+                viewType: ["app"],
+                lastUpdate: "2026-05-20",
+                formattedDate: "20 Mei 2026"
+            },
+            {
+                title: "Star Sales",
+                category: "Performa Sales",
+                version: "v1.0",
+                shortDescription: "Halaman performa, perolehan level bintang (Star Leveling), target toko aktif, dan leaderboard sales.",
+                description: "Meningkatkan performa penjualan melalui gamifikasi and leveling Star Sales.",
+                brdLink: "#",
+                features: [
+                    "Halaman Utama & Detail Target (Sales App)",
+                    "Setup Program & Penalty (Admin Web)",
+                    "Winner & Reward Management"
+                ],
+                path: "star_sales.html",
+                paths: [
+                    { name: "Prototype Sales CR", url: "star_sales.html" },
+                    { name: "Prototype Admin Web", url: "star_sales_admin.html" }
+                ],
+                viewType: ["app", "admin"],
+                lastUpdate: "2026-05-28",
+                formattedDate: "28 Mei 2026"
+            },
+            {
+                title: "Multi-Akses (On Behalf)",
+                category: "User Access",
+                version: "v1.0",
+                shortDescription: "Halaman navigasi pemilihan toko pusat dan toko cabang, pemetaan relasi akses toko merchant.",
+                description: "Memungkinkan sales melakukan transaksi atas nama merchant (on-behalf) dan beralih multi-toko.",
+                brdLink: "#",
+                features: [
+                    "Screen Pemilihan Toko Pusat/Cabang",
+                    "Pop-up Konfirmasi Akses & Notification Panel",
+                    "Kelola Relasi & Audit Log (Web Admin)"
+                ],
+                path: "multi_akses_on_behalf.html",
+                viewType: ["app"],
+                lastUpdate: "2026-03-15",
+                formattedDate: "15 Maret 2026"
+            }
+        ];
+
+        function renderProjects(list) {
+            const grid = document.getElementById('project-grid');
+            const emptyState = document.getElementById('empty-state');
+            grid.innerHTML = '';
+
+            if (list.length === 0) {
+                grid.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            grid.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+
+            list.forEach(project => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition duration-300 flex flex-col h-[480px]";
+
+                const featuresHtml = project.features.map(f => `
+                    <div class="flex items-center gap-2 text-xs text-slate-500">
+                        <i class="fa-solid fa-check text-emerald-500 w-4"></i>
+                        ${f}
+                    </div>
+                `).join('');
+
+                card.innerHTML = `
+                    <div class="p-6 flex-1 flex flex-col overflow-y-auto custom-scrollbar">
+                        <div class="flex items-center justify-between mb-4 flex-shrink-0">
+                             <span class="px-3 py-1 bg-cyan-50 text-cyan-700 text-xs font-bold rounded-full border border-cyan-200">
+                                 ${project.category}
+                             </span>
+                             <div style="display:flex; align-items:center; gap:6px">
+                                 ${(project.viewType || []).map(t => t === 'admin'
+                                     ? `<span class="badge-admin px-2 py-0.5 bg-purple-50 text-purple-700 text-[10px] font-bold rounded border border-purple-100 flex items-center gap-1"><i class="fas fa-desktop" style="font-size:9px"></i> Admin</span>`
+                                     : `<span class="badge-app px-2 py-0.5 bg-orange-50 text-orange-700 text-[10px] font-bold rounded border border-orange-100 flex items-center gap-1"><i class="fas fa-mobile-alt" style="font-size:9px"></i> App</span>`
+                                 ).join('')}
+                                 <span class="text-xs text-slate-400 font-medium">${project.version}</span>
+                             </div>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-800 mb-2 flex-shrink-0">${project.title}</h3>
+                        
+                        <div class="mb-4 flex-shrink-0">
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Executive Summary</div>
+                            <p class="text-sm text-slate-600 leading-relaxed">${project.description}</p>
+                        </div>
+
+                        <button onclick="toggleCard(this)" class="w-full flex items-center justify-between text-xs text-[#00BCD4] font-bold py-2.5 bg-slate-50 hover:bg-cyan-50 border border-slate-100 rounded-xl px-4 transition mb-4 flex-shrink-0">
+                            <span>Lihat Detail Project</span>
+                            <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200"></i>
+                        </button>
+
+                        <div class="collapsible-section hidden transition-all duration-300 flex-1 flex flex-col mb-4">
+                            <div>
+                                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Highlight Fitur & Ubahan</div>
+                                <div class="space-y-2">
+                                    ${featuresHtml}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 mt-auto flex-shrink-0">
+                            <span><i class="fa-solid fa-clock-rotate-left mr-1"></i>Last Update:</span>
+                            <span class="font-semibold text-slate-600">${project.formattedDate}</span>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 border-t border-slate-100 p-4 flex-shrink-0 flex flex-col gap-2">
+                        ${project.paths ? project.paths.map(p => `
+                            <a href="${p.url}" 
+                               class="w-full flex items-center justify-center gap-2 bg-[#00BCD4] hover:bg-cyan-600 text-white font-semibold py-2 px-4 rounded-xl text-xs transition">
+                                ${p.name} <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </a>
+                        `).join('') : `
+                            <a href="${project.path}" 
+                               class="w-full flex items-center justify-center gap-2 bg-[#00BCD4] hover:bg-cyan-600 text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition">
+                                Buka Prototype <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </a>
+                        `}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function toggleCard(btn) {
+            const parent = btn.closest('.flex-1');
+            const section = parent.querySelector('.collapsible-section');
+            const icon = btn.querySelector('.fa-chevron-down');
+            const label = btn.querySelector('span');
+
+            if (section.classList.contains('hidden')) {
+                section.classList.remove('hidden');
+                icon.style.transform = 'rotate(180deg)';
+                label.innerText = 'Sembunyikan Detail';
+            } else {
+                section.classList.add('hidden');
+                icon.style.transform = 'rotate(0deg)';
+                label.innerText = 'Lihat Detail Project';
+            }
+        }
+
+        function filterProjects() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            const filtered = projects.filter(p => p.title.toLowerCase().includes(query));
+            renderProjects(filtered);
+        }
+
+        renderProjects(projects);
+    </script>
+</body>
+</html>
