@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <meta name="last-updated" content="2026-07-08">
+    <title>Security Improvement — Login & OTP Protection Prototype</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --navy: #0D2461;
+            --blue: #1565C0;
+            --blue2: #1E88E5;
+            --gold: #FFB300;
+            --ok: #4CAF50;
+            --warn: #FF9800;
+            --danger: #F44336;
+            --bg: #F0F4F8;
+            --white: #fff;
+            --gray1: #F5F5F5;
+            --gray2: #E0E0E0;
+            --gray3: #9E9E9E;
+            --gray4: #424242;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a1a4e, #1565C0, #0a1a4e);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            gap: 50px;
+        }
+
+        /* PHONE FRAME */
+        .phone {
+            width: 390px;
+            height: 820px;
+            background: var(--bg);
+            border-radius: 40px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 0 10px #111, 0 40px 80px rgba(0, 0, 0, .6);
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .statusbar {
+            background: var(--navy);
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 22px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .screens {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            background: var(--bg);
+            display: none;
+            flex-direction: column;
+            padding: 24px;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* EXTERNAL CONTROLS */
+        .controls {
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(255, 255, 255, .05);
+            padding: 25px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, .1);
+            backdrop-filter: blur(10px);
+        }
+
+        .controls h3 {
+            color: #fff;
+            font-size: 15px;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            opacity: .8;
+        }
+
+        .sw-btn {
+            background: rgba(255, 255, 255, .1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, .1);
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 12px;
+            cursor: pointer;
+            text-align: left;
+            transition: all .3s;
+        }
+
+        .sw-btn:hover {
+            background: rgba(255, 255, 255, .2);
+        }
+
+        .sw-btn.active {
+            background: var(--blue);
+            border-color: var(--blue2);
+            box-shadow: 0 4px 12px rgba(21, 101, 192, .4);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PHONE FRAME -->
+    <div class="phone">
+        <div class="statusbar"><span>09:41</span><span>⚡ 100%</span></div>
+        <div class="screens">
+            
+            <!-- Screen 1: Dashboard Simulator -->
+            <div id="screen-main" class="screen active justify-center">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-[#eff6ff] rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 text-[#0B1F8F] shadow-sm">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+                    <h2 class="text-xl font-black text-gray-800">Security Simulator</h2>
+                    <p class="text-xs text-gray-500 mt-1">Pilih modul keamanan yang ingin diuji</p>
+                </div>
+
+                <div class="space-y-4">
+                    <button onclick="openLoginSim()" class="w-full bg-white border border-gray-200 p-4 rounded-xl text-left shadow-sm hover:border-blue-300 transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-lg"><i class="fas fa-user-lock"></i></div>
+                            <div>
+                                <h3 class="font-bold text-gray-800">Login Brute-Force</h3>
+                                <p class="text-[10px] text-gray-500">Tiered backoff suspend 5m - 24h</p>
+                            </div>
+                            <i class="fas fa-chevron-right ml-auto text-gray-300"></i>
+                        </div>
+                    </button>
+                    
+                    <button onclick="openOtpSim()" class="w-full bg-white border border-gray-200 p-4 rounded-xl text-left shadow-sm hover:border-blue-300 transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-orange-50 text-orange-500 rounded-full flex items-center justify-center text-lg"><i class="fas fa-comment-sms"></i></div>
+                            <div>
+                                <h3 class="font-bold text-gray-800">OTP Anti-Spam</h3>
+                                <p class="text-[10px] text-gray-500">Limit resend 5x & 60s cooldown</p>
+                            </div>
+                            <i class="fas fa-chevron-right ml-auto text-gray-300"></i>
+                        </div>
+                    </button>
+                </div>
+                
+                <div class="mt-auto border-t pt-4">
+                    <p class="text-xs text-gray-500 mb-2 font-bold"><i class="fas fa-server"></i> Backend Tracker Info</p>
+                    <div class="bg-gray-50 p-3 rounded-xl border text-[10px] text-gray-600 space-y-1">
+                        <div class="flex justify-between"><span>Gagal Login:</span><span id="trk-login-fail" class="font-mono font-bold">0x</span></div>
+                        <div class="flex justify-between"><span>Suspend Login:</span><span id="trk-login-tier" class="font-mono text-red-500 font-bold">Tidak Aktif</span></div>
+                        <div class="flex justify-between mt-2 pt-2 border-t"><span>Salah Input OTP:</span><span id="trk-otp-fail" class="font-mono font-bold">0x</span></div>
+                        <div class="flex justify-between"><span>Sisa Resend OTP:</span><span id="trk-otp-resend" class="font-mono text-blue-500 font-bold">5x</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 2: Login Brute-Force -->
+            <div id="screen-login" class="screen">
+                <button onclick="showScreen('screen-main')" class="text-left text-gray-500 mb-6 hover:text-gray-800"><i class="fas fa-arrow-left"></i> Kembali</button>
+                
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-black text-[#0B1F8F] mb-1">Masuk Mitra1000s</h2>
+                    <p class="text-xs text-gray-500">Silakan masuk menggunakan No. HP</p>
+                </div>
+
+                <div id="login-alert" class="hidden mb-4 p-3 rounded-lg text-xs font-semibold flex items-start gap-2 shadow-sm border">
+                    <i class="fas fa-exclamation-circle mt-0.5 flex-shrink-0"></i>
+                    <span id="login-alert-text"></span>
+                </div>
+
+                <div class="space-y-4 mb-8">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Nomor Handphone</label>
+                        <input type="text" value="081234567890" disabled class="w-full bg-gray-100 border border-gray-300 rounded-lg px-3 py-3 text-sm text-gray-700 font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Password</label>
+                        <input type="password" id="login-pwd" placeholder="Masukkan password" class="w-full bg-white border border-gray-300 rounded-lg px-3 py-3 text-sm text-gray-700 focus:border-[#0B1F8F] focus:outline-none">
+                    </div>
+                </div>
+
+                <button id="btn-login" onclick="doLogin()" class="w-full bg-[#0B1F8F] text-white font-bold py-3.5 rounded-xl hover:bg-blue-900 transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed">
+                    Masuk
+                </button>
+                
+                <p class="text-center text-xs text-gray-400 mt-4"><i class="fas fa-info-circle"></i> Simulasi: Password benar adalah "rahasia"</p>
+            </div>
+
+            <!-- Screen 3: OTP Spam Protection -->
+            <div id="screen-otp" class="screen">
+                <button onclick="showScreen('screen-main')" class="text-left text-gray-500 mb-6 hover:text-gray-800"><i class="fas fa-arrow-left"></i> Kembali</button>
+                
+                <div class="text-center mb-6">
+                    <h2 class="text-xl font-black text-[#0B1F8F] mb-1">Verifikasi OTP</h2>
+                    <p class="text-xs text-gray-500">Kode dikirim via WA ke 081234567890</p>
+                </div>
+
+                <div id="otp-alert" class="hidden mb-4 p-3 rounded-lg text-xs font-semibold flex items-start gap-2 shadow-sm border">
+                    <i id="otp-alert-icon" class="fas fa-exclamation-triangle mt-0.5 flex-shrink-0"></i>
+                    <span id="otp-alert-text"></span>
+                </div>
+
+                <div class="flex gap-2 justify-center mb-8" id="otp-inputs">
+                    <input type="text" maxlength="1" class="w-12 h-14 text-center border-2 border-gray-300 bg-white rounded-xl font-bold text-xl focus:border-[#0B1F8F] focus:outline-none transition-colors" onkeyup="moveOtp(this, 'o2')">
+                    <input type="text" maxlength="1" id="o2" class="w-12 h-14 text-center border-2 border-gray-300 bg-white rounded-xl font-bold text-xl focus:border-[#0B1F8F] focus:outline-none transition-colors" onkeyup="moveOtp(this, 'o3', this.previousElementSibling)">
+                    <input type="text" maxlength="1" id="o3" class="w-12 h-14 text-center border-2 border-gray-300 bg-white rounded-xl font-bold text-xl focus:border-[#0B1F8F] focus:outline-none transition-colors" onkeyup="moveOtp(this, 'o4', this.previousElementSibling)">
+                    <input type="text" maxlength="1" id="o4" class="w-12 h-14 text-center border-2 border-gray-300 bg-white rounded-xl font-bold text-xl focus:border-[#0B1F8F] focus:outline-none transition-colors" onkeyup="moveOtp(this, null, this.previousElementSibling)">
+                </div>
+
+                <button id="btn-verify" onclick="doVerifyOtp()" class="w-full bg-[#0B1F8F] text-white font-bold py-3.5 rounded-xl hover:bg-blue-900 transition shadow-md mb-6">
+                    Verifikasi OTP
+                </button>
+
+                <div class="text-center">
+                    <p class="text-xs text-gray-500 mb-1">Belum terima Kodenya?</p>
+                    <button id="btn-resend" onclick="doResendOtp()" class="text-sm font-bold text-[#0B1F8F] disabled:text-gray-400 disabled:cursor-not-allowed">
+                        Kirim Ulang <span id="otp-timer"></span>
+                    </button>
+                </div>
+                
+                <p class="text-center text-[10px] text-gray-400 mt-6"><i class="fas fa-info-circle"></i> Simulasi: Kode OTP benar adalah "1234"</p>
+            </div>
+
+            <!-- Screen 4: Success -->
+            <div id="screen-success" class="screen justify-center items-center text-center">
+                <div class="w-20 h-20 bg-green-100 rounded-full flex justify-center items-center mb-6 shadow-sm">
+                    <i class="fas fa-check text-4xl text-green-600"></i>
+                </div>
+                <h2 class="text-2xl font-bold mb-2 text-gray-800" id="success-title">Berhasil</h2>
+                <p class="text-sm text-gray-600 mb-8" id="success-desc">Tindakan otentikasi tervalidasi.</p>
+                <button onclick="showScreen('screen-main')" class="w-full border-2 border-gray-300 bg-white text-gray-700 font-bold py-3.5 rounded-lg hover:bg-gray-50 transition">Kembali ke Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXTERNAL CONTROLS -->
+    <div class="controls">
+        <h3>Login Simulator (Tiered Backoff)</h3>
+        <button class="sw-btn" onclick="triggerLoginFail(2)">
+            ⚠️ Set 2x Gagal (Sisa 1x lagi)
+        </button>
+        <button class="sw-btn" onclick="triggerLoginFail(3)">
+            ⏳ Trigger Suspend (5 Menit)
+        </button>
+        <button class="sw-btn" onclick="triggerLoginFail(6)">
+            🚨 Trigger Suspend Max (24 Jam)
+        </button>
+
+        <div style="height:10px"></div>
+        <h3>OTP Simulator (Anti-Spam)</h3>
+        <button class="sw-btn" onclick="triggerOtpWrong(2)">
+            ⚠️ Set 2x Salah PIN OTP
+        </button>
+        <button class="sw-btn" onclick="triggerOtpResendLimit()">
+            🚨 Habiskan Kuota Resend (24 Jam)
+        </button>
+
+        <div style="height:10px"></div>
+        <button class="sw-btn" style="background:rgba(255,255,255,.15)" onclick="resetAll()">
+            🔄 Reset Semua Status
+        </button>
+        <button class="sw-btn" style="background:rgba(21, 101, 192, 0.4); border-color: var(--blue2)" onclick="goToDashboardProto()">
+            💻 Ke Dashboard Hub (Utama)
+        </button>
+    </div>
+
+    <script>
+        // --- State Variables ---
+        // Login State
+        let loginFailCount = 0;
+        let loginSuspendUntil = null;
+        let loginSuspendInterval = null;
+
+        // OTP State
+        let otpWrongCount = 0;
+        let otpResendCount = 0;
+        const MAX_OTP_RESEND = 5;
+        let otpSuspendUntil = null;
+        let otpCooldownInterval = null;
+        let isOtpInvalidated = false;
+
+        // --- Navigation ---
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            updateTrackerUi();
+        }
+
+        function openLoginSim() {
+            document.getElementById('login-pwd').value = '';
+            checkLoginSuspendState();
+            showScreen('screen-login');
+        }
+
+        function openOtpSim() {
+            clearOtpInputs();
+            document.getElementById('otp-alert').classList.add('hidden');
+            if (otpResendCount === 0 && !otpSuspendUntil) {
+                // First open, trigger first request
+                doResendOtp();
+            } else {
+                checkOtpSuspendState();
+            }
+            showScreen('screen-otp');
+        }
+
+        function showSuccess(title, desc) {
+            document.getElementById('success-title').innerText = title;
+            document.getElementById('success-desc').innerText = desc;
+            showScreen('screen-success');
+        }
+
+        function goToDashboardProto() {
+            window.location.href = '../index.html';
+        }
+
+        // --- Tracker UI Update ---
+        function updateTrackerUi() {
+            document.getElementById('trk-login-fail').innerText = `${loginFailCount}x`;
+            let tierText = "Tidak Aktif";
+            if(loginFailCount >= 6) tierText = "24 Jam";
+            else if(loginFailCount == 5) tierText = "1 Jam";
+            else if(loginFailCount == 4) tierText = "15 Menit";
+            else if(loginFailCount == 3) tierText = "5 Menit";
+            document.getElementById('trk-login-tier').innerText = tierText;
+
+            document.getElementById('trk-otp-fail').innerText = `${otpWrongCount}x`;
+            document.getElementById('trk-otp-resend').innerText = `${MAX_OTP_RESEND - otpResendCount}x`;
+            if(otpResendCount >= MAX_OTP_RESEND) {
+                document.getElementById('trk-otp-resend').classList.replace('text-blue-500', 'text-red-500');
+            } else {
+                document.getElementById('trk-otp-resend').classList.replace('text-red-500', 'text-blue-500');
+            }
+        }
+
+        // --- Login Brute-Force Logic ---
+        function checkLoginSuspendState() {
+            const btn = document.getElementById('btn-login');
+            const alertBox = document.getElementById('login-alert');
+            const alertText = document.getElementById('login-alert-text');
+            
+            clearInterval(loginSuspendInterval);
+            btn.disabled = false;
+            alertBox.classList.add('hidden');
+
+            if (loginFailCount >= 3) {
+                btn.disabled = true;
+                alertBox.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'border-red-200');
+                alertBox.classList.remove('bg-amber-50', 'text-amber-700', 'border-amber-200');
+                
+                let timeStr = "";
+                let subStr = "";
+
+                if (loginFailCount === 3) { timeStr = "05:00"; subStr = "1x percobaan lagi sebelum ditangguhkan 15 Menit"; alertBox.classList.add('bg-amber-50', 'text-amber-700', 'border-amber-200'); }
+                else if (loginFailCount === 4) { timeStr = "15:00"; subStr = "1x percobaan lagi sebelum ditangguhkan 1 Jam"; alertBox.classList.add('bg-amber-50', 'text-amber-700', 'border-amber-200'); }
+                else if (loginFailCount === 5) { timeStr = "59:59"; subStr = "1x percobaan lagi sebelum ditangguhkan 24 Jam"; alertBox.classList.add('bg-red-50', 'text-red-700', 'border-red-200'); }
+                else { timeStr = "23:59:59"; subStr = "Akun ditangguhkan."; alertBox.classList.add('bg-red-50', 'text-red-700', 'border-red-200'); }
+
+                alertText.innerHTML = `Sisa waktu tunggu [${timeStr}].<br><span class="font-normal opacity-80">${subStr}</span>`;
+            }
+        }
+
+        function doLogin() {
+            const pwd = document.getElementById('login-pwd').value;
+            if(pwd === 'rahasia') {
+                // Success: Auto-Reset History
+                loginFailCount = 0;
+                loginSuspendUntil = null;
+                showSuccess("Login Sukses", "History kegagalan telah direset ke 0.");
+            } else {
+                // Fail
+                loginFailCount++;
+                if (loginFailCount < 3) {
+                    const alertBox = document.getElementById('login-alert');
+                    const alertText = document.getElementById('login-alert-text');
+                    alertBox.classList.remove('hidden', 'bg-amber-50', 'text-amber-700', 'border-amber-200');
+                    alertBox.classList.add('bg-red-50', 'text-red-700', 'border-red-200');
+                    alertText.innerHTML = `Password salah, ${3 - loginFailCount}x percobaan lagi sebelum ditangguhkan 5 menit.`;
+                    updateTrackerUi();
+                } else {
+                    checkLoginSuspendState();
+                }
+            }
+        }
+
+        // --- OTP Spam Logic ---
+        function moveOtp(input, nextId, prevEl) {
+            if (input.value.length >= 1 && nextId) {
+                document.getElementById(nextId).focus();
+            } else if (input.value.length === 0 && prevEl) {
+                prevEl.focus();
+            }
+        }
+
+        function clearOtpInputs() {
+            document.querySelectorAll('#otp-inputs input').forEach(inp => inp.value = '');
+        }
+
+        function checkOtpSuspendState() {
+            const btnResend = document.getElementById('btn-resend');
+            const alertBox = document.getElementById('otp-alert');
+            const alertText = document.getElementById('otp-alert-text');
+            const icon = document.getElementById('otp-alert-icon');
+            
+            if (otpResendCount >= MAX_OTP_RESEND) {
+                btnResend.disabled = true;
+                btnResend.innerText = "Kirim Ulang";
+                
+                alertBox.classList.remove('hidden', 'bg-amber-50', 'text-amber-800', 'border-amber-200');
+                alertBox.classList.add('bg-red-50', 'text-red-800', 'border-red-200');
+                icon.className = "fas fa-ban mt-0.5 flex-shrink-0 text-red-500";
+                alertText.innerHTML = `Limit Harian Habis. Anda baru dapat melakukan request OTP lagi besok. (Suspend 24 Jam)`;
+            }
+        }
+
+        function doResendOtp() {
+            if(otpResendCount >= MAX_OTP_RESEND) return;
+            
+            otpResendCount++;
+            otpWrongCount = 0; // Reset salah input untuk sesi OTP baru
+            isOtpInvalidated = false;
+            
+            document.getElementById('otp-alert').classList.add('hidden');
+            clearOtpInputs();
+            updateTrackerUi();
+
+            if(otpResendCount >= MAX_OTP_RESEND) {
+                checkOtpSuspendState();
+                return;
+            }
+
+            // Cooldown Timer
+            const btnResend = document.getElementById('btn-resend');
+            btnResend.disabled = true;
+            let time = 60;
+            
+            clearInterval(otpCooldownInterval);
+            btnResend.innerHTML = `Kirim Ulang (<span class="w-4 inline-block text-center">${time}</span>)`;
+            
+            otpCooldownInterval = setInterval(() => {
+                time--;
+                if(time <= 0) {
+                    clearInterval(otpCooldownInterval);
+                    btnResend.disabled = false;
+                    btnResend.innerHTML = "Kirim Ulang";
+                } else {
+                    btnResend.innerHTML = `Kirim Ulang (<span class="w-4 inline-block text-center">${time}</span>)`;
+                }
+            }, 1000);
+        }
+
+        function doVerifyOtp() {
+            if(isOtpInvalidated) return;
+
+            let code = "";
+            document.querySelectorAll('#otp-inputs input').forEach(inp => code += inp.value);
+
+            const alertBox = document.getElementById('otp-alert');
+            const alertText = document.getElementById('otp-alert-text');
+            const icon = document.getElementById('otp-alert-icon');
+
+            if(code === "1234") {
+                showSuccess("OTP Tervalidasi", "Aktivitas Anda berhasil disetujui.");
+            } else {
+                otpWrongCount++;
+                updateTrackerUi();
+
+                alertBox.classList.remove('hidden', 'bg-red-50', 'text-red-800', 'border-red-200');
+                alertBox.classList.add('bg-amber-50', 'text-amber-800', 'border-amber-200');
+                icon.className = "fas fa-exclamation-triangle mt-0.5 flex-shrink-0 text-amber-500";
+                
+                if (otpWrongCount >= 3) {
+                    // Invalidated
+                    isOtpInvalidated = true;
+                    alertBox.classList.replace('bg-amber-50', 'bg-red-50');
+                    alertBox.classList.replace('text-amber-800', 'text-red-800');
+                    alertBox.classList.replace('border-amber-200', 'border-red-200');
+                    icon.className = "fas fa-fire mt-0.5 flex-shrink-0 text-red-500";
+                    alertText.innerHTML = `Kode Hangus karena Anda salah 3 kali berturut-turut. Silakan Request Ulang OTP baru.`;
+                    clearOtpInputs();
+                } else {
+                    alertText.innerHTML = `Kode OTP Salah. (Sisa ${3 - otpWrongCount}x percobaan sebelum kode hangus)`;
+                }
+            }
+        }
+
+        // --- Simulators from Control Panel ---
+        function triggerLoginFail(count) {
+            loginFailCount = count;
+            if(document.getElementById('screen-login').classList.contains('active')) {
+                checkLoginSuspendState();
+            }
+            updateTrackerUi();
+            alert(`Simulasi: Backend mencatat gagal login sebanyak ${count}x.`);
+        }
+
+        function triggerOtpWrong(count) {
+            otpWrongCount = count;
+            isOtpInvalidated = false;
+            updateTrackerUi();
+            alert(`Simulasi: Salah input PIN diset ${count}x. Silakan verifikasi kode asal di layar OTP untuk melihat efek kode hangus di percobaan berikutnya.`);
+        }
+
+        function triggerOtpResendLimit() {
+            otpResendCount = MAX_OTP_RESEND;
+            clearInterval(otpCooldownInterval);
+            if(document.getElementById('screen-otp').classList.contains('active')) {
+                checkOtpSuspendState();
+            }
+            updateTrackerUi();
+            alert("Simulasi: Kuota limit OTP diset habis (5/5). User terkena Suspend 24 Jam.");
+        }
+
+        function resetAll() {
+            loginFailCount = 0;
+            clearInterval(loginSuspendInterval);
+            
+            otpWrongCount = 0;
+            otpResendCount = 0;
+            isOtpInvalidated = false;
+            clearInterval(otpCooldownInterval);
+            
+            const loginAlert = document.getElementById('login-alert');
+            const otpAlert = document.getElementById('otp-alert');
+            if(loginAlert) loginAlert.classList.add('hidden');
+            if(otpAlert) otpAlert.classList.add('hidden');
+
+            document.getElementById('btn-login').disabled = false;
+            document.getElementById('btn-resend').disabled = false;
+            document.getElementById('btn-resend').innerText = "Kirim Ulang";
+
+            updateTrackerUi();
+            alert("Semua State Limit & Suspend berhasil di-reset.");
+        }
+
+        // Initialize Tracker on Load
+        updateTrackerUi();
+
+    </script>
+</body>
+</html>

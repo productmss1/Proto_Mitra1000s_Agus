@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LAPORAN SALES 1000S — Administrator Merchant mitra1000s</title>
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #2196F3;
+      --primary-hover: #1E88E5;
+      --success: #388E3C;
+      --success-hover: #2E7D32;
+      --warning: #F59E0B;
+      --danger: #EF4444;
+      --navy: #1E293B;
+      --bg-light: #F4F6F9;
+      --slate-100: #F8FAFC;
+      --slate-200: #E2E8F0;
+      --slate-300: #CBD5E1;
+      --slate-500: #64748B;
+      --slate-700: #334155;
+      --slate-800: #1E293B;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --font-title: 'Outfit', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg-light);
+      font-family: var(--font-body);
+      color: var(--slate-800);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* TOPBAR (Cyan Theme) */
+    header {
+      background: #00BCD4;
+      color: white;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .brand-logo-container {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .hamburger-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .top-nav-profile {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .bell-icon-container {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .bell-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: red;
+      color: white;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 5px;
+      border-radius: 50%;
+    }
+
+    /* VIEWPORT LAYOUT */
+    .viewport-container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* LEFT SIDEBAR */
+    .left-sidebar {
+      width: 240px;
+      background: white;
+      border-right: 1px solid var(--slate-200);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      flex-shrink: 0;
+      padding-top: 10px;
+    }
+
+    .sidebar-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: all 0.2s;
+      text-decoration: none;
+      width: 100%;
+    }
+
+    .sidebar-menu-item i:first-child {
+      width: 16px;
+      text-align: center;
+      color: #94A3B8;
+    }
+
+    .sidebar-menu-item:hover {
+      background: #F8FAFC;
+      color: #0F172A;
+    }
+
+    .sidebar-menu-item.active {
+      color: #00BCD4;
+      font-weight: 700;
+      background: #E0F7FA;
+      border-left-color: #00BCD4;
+    }
+
+    .sidebar-menu-item.active i:first-child {
+      color: #00BCD4;
+    }
+
+    .sidebar-submenu-item {
+      padding-left: 48px;
+      font-size: 11px;
+      background: #E0F7FA;
+      color: #00BCD4;
+      font-weight: 700;
+      border-left: 3px solid #00BCD4;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      height: 38px;
+    }
+
+    .caret-right {
+      margin-left: auto;
+      font-size: 9px;
+      color: #cbd5e1;
+    }
+
+    .sidebar-menu-item:hover .caret-right {
+      color: #94a3b8;
+    }
+
+    /* MAIN CONTENT */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      background: var(--bg-light);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .breadcrumb-title {
+      font-family: var(--font-title);
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--slate-800);
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* CARDS Grid Layout */
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .report-card {
+      background: white;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--slate-200);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .report-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    .card-header-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: #E0F2FE;
+      color: #0284C7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-family: var(--font-title);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--slate-800);
+      margin-bottom: 6px;
+    }
+
+    .card-desc {
+      font-size: 11px;
+      color: var(--slate-500);
+      line-height: 1.4;
+      margin-bottom: 16px;
+      flex: 1;
+    }
+
+    /* FORM CONTROL */
+    .form-group {
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--slate-500);
+      text-transform: uppercase;
+    }
+
+    .form-control {
+      padding: 10px 12px;
+      border: 1px solid var(--slate-300);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      outline: none;
+      background: white;
+      width: 100%;
+      height: 38px;
+      font-family: inherit;
+    }
+
+    .form-control:focus {
+      border-color: #00BCD4;
+      box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.15);
+    }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      outline: none;
+      width: 100%;
+      height: 38px;
+      color: white;
+      background: var(--success);
+      box-shadow: 0 2px 4px rgba(56, 142, 60, 0.2);
+    }
+
+    .btn:hover {
+      background: var(--success-hover);
+    }
+
+    /* Toast */
+    #flash-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 1000;
+    }
+
+    .toast {
+      background: #1E293B;
+      color: white;
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success {
+      border-left: 4px solid #10B981;
+    }
+
+    /* Loading overlay */
+    .download-progress {
+      display: none;
+      margin-top: 10px;
+      background: var(--slate-100);
+      border-radius: 4px;
+      height: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-bar {
+      background: #00BCD4;
+      width: 0%;
+      height: 100%;
+      transition: width 0.1s linear;
+    }
+
+    /* Floating Side Panel Control Styles */
+    .proto-control-panel {
+      position: fixed;
+      right: -360px;
+      top: 0;
+      bottom: 0;
+      width: 340px;
+      background: #0f172a;
+      color: white;
+      z-index: 1000;
+      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+      transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .proto-control-panel.open {
+      right: 0;
+    }
+
+    .proto-toggle-btn {
+      position: fixed;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #00BCD4;
+      color: white;
+      border: none;
+      padding: 12px 14px;
+      border-radius: 8px 0 0 8px;
+      cursor: pointer;
+      z-index: 1001;
+      box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+      font-size: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s;
+    }
+
+    .proto-toggle-btn:hover {
+      background: #00acc1;
+    }
+
+    .proto-toggle-btn.panel-open {
+      right: 340px;
+      border-radius: 8px 0 0 8px;
+    }
+
+    .proto-toggle-btn .btn-text {
+      writing-mode: vertical-lr;
+      text-orientation: mixed;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .proto-section-card {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: rgba(255, 255, 255, .05);
+      padding: 20px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, .1);
+      backdrop-filter: blur(10px);
+    }
+
+    .proto-section-card h3 {
+      color: #fff;
+      font-size: 13px;
+      margin: 0 0 4px 0;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      opacity: .8;
+      font-weight: 800;
+    }
+
+    .proto-section-card p {
+      color: rgba(255, 255, 255, .7);
+      font-size: 11px;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .proto-sw-btn {
+      background: rgba(255, 255, 255, .08);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, .08);
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 11px;
+      cursor: pointer;
+      text-align: left;
+      transition: all .2s;
+      width: 100%;
+      font-family: inherit;
+    }
+
+    .proto-sw-btn:hover {
+      background: rgba(255, 255, 255, .15);
+    }
+
+    .proto-sw-btn.active {
+      background: #2196F3;
+      border-color: #2196F3;
+      box-shadow: 0 4px 12px rgba(33, 150, 243, .4);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- CYAN TOPBAR -->
+  <header>
+    <div class="brand-logo-container">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <svg width="120" height="30" viewBox="0 0 120 30" style="display: block;">
+          <polygon points="12,4 4,12 20,12" fill="white" />
+          <rect x="7" y="12" width="10" height="10" fill="white" />
+          <rect x="10" y="15" width="4" height="7" fill="#00BCD4" />
+          <text x="28" y="15" fill="white" font-family="'Outfit', sans-serif" font-weight="900"
+            font-size="11">mitra1000s</text>
+          <text x="96" y="22" fill="white" font-family="'Outfit', sans-serif" font-weight="700" font-size="9"></text>
+        </svg>
+      </div>
+      <button class="hamburger-btn" style="margin-left: 12px;">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+
+    <div class="top-nav-profile">
+      <div
+        style="background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.4); border-radius: 4px; padding: 4px 12px; display: flex; align-items: center; gap: 8px; height: 36px; cursor: pointer;">
+        <div
+          style="width: 24px; height: 24px; border-radius: 50%; background: #eceff1; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+          <i class="fa-solid fa-user" style="color: #94a3b8; font-size: 12px;"></i>
+        </div>
+        <span style="color: white; font-size: 12px; font-weight: 700;">Akbar</span>
+      </div>
+
+      <div class="bell-icon-container" style="position: relative; cursor: pointer;">
+        <i class="fa-regular fa-bell" style="font-size: 20px; color: white;"></i>
+        <span class="bell-badge"
+          style="position: absolute; top: -4px; right: -4px; background: #FF5722; color: white; font-size: 9px; font-weight: 800; padding: 1px 4px; border-radius: 10px;">0</span>
+      </div>
+
+      <i class="fa-solid fa-gear" style="font-size: 18px; cursor: pointer; color: white;"></i>
+    </div>
+  </header>
+
+  <!-- VIEWPORT BODY CONTAINER -->
+  <div class="viewport-container">
+
+    <!-- LEFT SIDEBAR -->
+    <div class="left-sidebar">
+      <a href="#" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-gauge"></i>
+          <span>Dashboard</span>
+        </div>
+      </a>
+      <a href="#" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-store"></i> <span>Data
+            Toko</span></div>
+      </a>
+      <a href="#" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-users"></i> <span>Data
+            Pelanggan</span></div>
+      </a>
+      <a href="#" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-box"></i> <span>Data
+            Produk</span></div> <i class="fa-solid fa-chevron-right caret-right"></i>
+      </a>
+      <a href="#" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-cart-shopping"></i> <span>Data
+            Penjualan</span></div> <i class="fa-solid fa-chevron-right caret-right"></i>
+      </a>
+      <a href="#" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-money-bill-wave"></i>
+          <span>Data Finance</span>
+        </div>
+      </a>
+      <a href="#" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-map-location-dot"></i>
+          <span>Data Wilayah</span>
+        </div> <i class="fa-solid fa-chevron-right caret-right"></i>
+      </a>
+      <a href="#" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-user-gear"></i>
+          <span>Manajemen User</span>
+        </div> <i class="fa-solid fa-chevron-right caret-right"></i>
+      </a>
+      <a href="#" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-bullhorn"></i> <span>Manajemen
+            Promo</span></div> <i class="fa-solid fa-chevron-right caret-right"></i>
+      </a>
+      <a href="#" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-file-invoice"></i>
+          <span>Pengajuan Produk SKTTB</span>
+        </div> <i class="fa-solid fa-chevron-right caret-right"></i>
+      </a>
+      <a href="#" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-file-signature"></i>
+          <span>SKTTB (Implementasi)</span>
+        </div> <i class="fa-solid fa-chevron-right caret-right"></i>
+      </a>
+      <a href="#" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-list-check"></i>
+          <span>Tasks</span>
+        </div>
+      </a>
+      <a href="#" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-house-chimney-window"></i>
+          <span>Toko Asuh Non SKTTB</span>
+        </div>
+      </a>
+      <a href="#" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-handshake"></i> <span>Master
+            Mitra</span></div>
+      </a>
+      <a href="#" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-lightbulb"></i> <span>Master
+            Inspirasi</span></div>
+      </a>
+      <a href="#" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-clipboard-check"></i>
+          <span>Approval Inspirasi</span>
+        </div>
+      </a>
+      <a href="#" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-warehouse"></i> <span>Master
+            Toko</span></div>
+      </a>
+      <a href="#" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-mobile-screen"></i>
+          <span>Android App Version</span>
+        </div>
+      </a>
+      <a href="#" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-shop"></i> <span>Manajemen
+            Merchant</span></div> <i class="fa-solid fa-chevron-right caret-right"></i>
+      </a>
+      <a href="#" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-microchip"></i>
+          <span>Manajemen InTechgra</span>
+        </div> <i class="fa-solid fa-chevron-right caret-right"></i>
+      </a>
+      <a href="star_sales_admin.html" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-handshake-angle"></i>
+          <span>Manajemen Partner</span>
+        </div> <i class="fa-solid fa-chevron-right caret-right"></i>
+      </a>
+      <a href="star_sales_admin.html" style="text-decoration: none;">
+        <div class="sidebar-menu-item sidebar-submenu-item" style="padding-left: 48px; opacity: 0.8;"><i
+            class="fa-solid fa-trophy"></i> <span>Manajemen Star Sales</span></div>
+      </a>
+
+      <!-- NEW: Manajemen Sales (Active) -->
+      <a href="#" class="sidebar-menu-item active">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-users-gear"></i>
+          <span>Manajemen Sales</span>
+        </div> <i class="fa-solid fa-chevron-right caret-right"></i>
+      </a>
+      <!-- Indented Submenu for Laporan Sales1000s -->
+      <div class="sidebar-menu-item sidebar-submenu-item">
+        <i class="fa-solid fa-file-excel"></i>
+        <span>Laporan Sales1000s</span>
+      </div>
+
+      <a href="#" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-crown"></i> <span>Manajemen
+            Elite</span></div> <i class="fa-solid fa-chevron-right caret-right"></i>
+      </a>
+      <a href="#" class="sidebar-menu-item">
+        <div style="display: flex; align-items: center; gap: 12px;"><i class="fa-solid fa-diagram-project"></i>
+          <span>Manajemen Proyek</span>
+        </div> <i class="fa-solid fa-chevron-right caret-right"></i>
+      </a>
+    </div>
+
+    <!-- MAIN CONTENT PANEL -->
+    <div class="main-content">
+
+      <!-- Page Header -->
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <h1 class="breadcrumb-title">LAPORAN SALES 1000S</h1>
+      </div>
+
+      <!-- Section: Download Sales Reports Grid -->
+      <div class="report-grid">
+
+        <!-- Card 1: Laporan Data Salesman (All Salesman Data) -->
+        <div class="report-card">
+          <div>
+
+            <h2 class="card-title">All Salesman Data</h2>
+            <p class="card-desc">
+              Unduh data lengkap seluruh Salesman / Customer Representative (CR) aktif yang terdaftar di platform
+              mitra1000s, mencakup ID Sales, NIK, nama lengkap, area penugasan, dan status kemitraan.
+            </p>
+          </div>
+          <div>
+            <button class="btn" style="background: #2E7D32;" onclick="downloadAllSalesData(this)">
+              <i class="fa-solid fa-file-excel"></i> Download Excel
+            </button>
+            <div class="download-progress">
+              <div class="progress-bar"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Laporan Sales of the Month -->
+        <div class="report-card">
+          <div>
+
+            <h2 class="card-title">Sales of the Month</h2>
+            <p class="card-desc">
+              Unduh laporan performa transaksi digital dan pencapaian Toko Aktif (TA) per Salesman untuk bulan tertentu
+              guna verifikasi insentif bulanan.
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 10px;">
+              <div class="form-group">
+                <label for="sales-month">Pilih Bulan</label>
+                <select id="sales-month" class="form-control">
+                  <option value="01">Januari</option>
+                  <option value="02">Februari</option>
+                  <option value="03">Maret</option>
+                  <option value="04">April</option>
+                  <option value="05">Mei</option>
+                  <option value="06" selected>Juni</option>
+                  <option value="07">Juli</option>
+                  <option value="08">Agustus</option>
+                  <option value="09">September</option>
+                  <option value="10">Oktober</option>
+                  <option value="11">November</option>
+                  <option value="12">Desember</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="sales-year">Tahun</label>
+                <select id="sales-year" class="form-control">
+                  <option value="2026" selected>2026</option>
+                  <option value="2025">2025</option>
+                  <option value="2024">2024</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div>
+            <button class="btn" style="background: #2E7D32;" onclick="downloadSalesOfTheMonth(this)">
+              <i class="fa-solid fa-file-excel"></i> Download Excel
+            </button>
+            <div class="download-progress">
+              <div class="progress-bar"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Laporan Order Tanpa Sales -->
+        <div class="report-card">
+          <div>
+
+            <h2 class="card-title">Report Order Tanpa Sales</h2>
+            <p class="card-desc">
+              Unduh daftar pesanan dari merchant yang tidak ter-assign ke Salesman manapun pada tahun yang dipilih.
+              Berguna untuk audit pemerataan wilayah asuhan toko.
+            </p>
+
+            <div class="form-group">
+              <label for="order-no-sales-year">Pilih Tahun</label>
+              <select id="order-no-sales-year" class="form-control">
+                <option value="2026" selected>2026</option>
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <button class="btn" style="background: #2E7D32;" onclick="downloadOrderTanpaSales(this)">
+              <i class="fa-solid fa-file-excel"></i> Download Excel
+            </button>
+            <div class="download-progress">
+              <div class="progress-bar"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Laporan Program Star Sales -->
+        <div class="report-card">
+          <div>
+
+            <h2 class="card-title">Laporan Program Star Sales</h2>
+            <p class="card-desc">
+              Menyediakan data mentah pencapaian per Sales dari program kompetisi Star Sales untuk diolah lebih lanjut.
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px;">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="ss-year">Tahun</label>
+                <select id="ss-year" class="form-control">
+                  <option value="2026" selected>2026</option>
+                  <option value="2025">2025</option>
+                  <option value="2024">2024</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label for="ss-month">Bulan</label>
+                <select id="ss-month" class="form-control">
+                  <option value="01">Januari</option>
+                  <option value="02">Februari</option>
+                  <option value="03">Maret</option>
+                  <option value="04">April</option>
+                  <option value="05">Mei</option>
+                  <option value="06" selected>Juni</option>
+                  <option value="07">Juli</option>
+                  <option value="08">Agustus</option>
+                  <option value="09">September</option>
+                  <option value="10">Oktober</option>
+                  <option value="11">November</option>
+                  <option value="12">Desember</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="ss-area">Area</label>
+              <select id="ss-area" class="form-control">
+                <option value="BNN" selected>BNN</option>
+                <option value="CPD">CPD</option>
+                <option value="ALL">ALL (Lintas Area)</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <button class="btn" style="background: #2E7D32;" onclick="downloadStarSalesReport(this)">
+              <i class="fa-solid fa-file-excel"></i> Download Excel
+            </button>
+            <div class="download-progress">
+              <div class="progress-bar"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="flash-toast"></div>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    function showToast(message, type = "success", icon = "fa-circle-check") {
+      const container = document.getElementById('flash-toast');
+      if (!container) return;
+
+      const id = 'toast-' + Date.now();
+      const toast = document.createElement('div');
+      toast.id = id;
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <i class="fa-solid ${icon}"></i>
+        <span>${message}</span>
+      `;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.add('show');
+      }, 10);
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+          toast.remove();
+        }, 300);
+      }, 3000);
+    }
+
+    // Helper function to animate progress bar before actual download
+    function simulateProgress(btn, callback) {
+      const parent = btn.parentElement;
+      const progressContainer = parent.querySelector('.download-progress');
+      const progressBar = parent.querySelector('.progress-bar');
+
+      btn.style.display = 'none';
+      progressContainer.style.display = 'block';
+      progressBar.style.width = '0%';
+
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.floor(Math.random() * 15) + 5;
+        if (progress >= 100) {
+          progress = 100;
+          progressBar.style.width = '100%';
+          clearInterval(interval);
+          setTimeout(() => {
+            progressContainer.style.display = 'none';
+            btn.style.display = 'inline-flex';
+            callback();
+          }, 300);
+        } else {
+          progressBar.style.width = progress + '%';
+        }
+      }, 80);
+    }
+
+    // 1. Download All Salesman Data
+    function downloadAllSalesData(btn) {
+      simulateProgress(btn, () => {
+        const headers = [["ID_Salesman", "NIK", "Nama_Salesman", "Divisi", "Wilayah_Kerja", "Status_Kemitraan", "Tanggal_Terdaftar"]];
+        const data = [
+          ["CR-1001", "3171020304050001", "Ahmad R.", "BNN", "DKI Jakarta", "CR Mitra", "01/03/2024"],
+          ["CR-1002", "3171020304050002", "Budi S.", "BNN", "Jawa Barat", "CR Mitra", "12/03/2024"],
+          ["CR-1003", "3171020304050003", "Siti R.", "BNN", "Sumatera Utara", "CR Mitra", "15/04/2024"],
+          ["CR-2001", "3273010908070001", "Fandy A.", "CPD", "Jawa Timur", "CR Tetap", "01/01/2024"],
+          ["CR-2002", "3273010908070002", "Dewi L.", "CPD", "Kalimantan Barat", "CR Tetap", "10/02/2024"]
+        ];
+
+        const worksheet = XLSX.utils.aoa_to_sheet(headers.concat(data));
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Daftar Salesman");
+        XLSX.writeFile(workbook, "All_Salesman_Data.xlsx");
+
+        showToast("Laporan All Salesman Data berhasil diunduh.", "success", "fa-file-excel");
+      });
+    }
+
+    // 2. Download Sales of the Month
+    function downloadSalesOfTheMonth(btn) {
+      const month = document.getElementById('sales-month').value;
+      const year = document.getElementById('sales-year').value;
+      const monthName = document.getElementById('sales-month').options[document.getElementById('sales-month').selectedIndex].text;
+
+      simulateProgress(btn, () => {
+        const headers = [["Bulan_Periode", "ID_Salesman", "Nama_Salesman", "Divisi", "Total_Omzet_VA_VA", "Toko_Aktif_Pencapaian", "Level_Star"]];
+        const data = [
+          [`${year}-${month}`, "CR-1001", "Ahmad R.", "BNN", 24500000, 52, "Star 5"],
+          [`${year}-${month}`, "CR-1002", "Budi S.", "BNN", 18900000, 45, "Star 4"],
+          [`${year}-${month}`, "CR-2001", "Fandy A.", "CPD", 12400000, 22, "Star 3"]
+        ];
+
+        const worksheet = XLSX.utils.aoa_to_sheet(headers.concat(data));
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Sales of the Month");
+        XLSX.writeFile(workbook, `Sales_of_the_Month_${month}_${year}.xlsx`);
+
+        showToast(`Laporan Sales of the Month (${monthName} ${year}) berhasil diunduh.`, "success", "fa-file-excel");
+      });
+    }
+
+    // 3. Download Order Tanpa Sales
+    function downloadOrderTanpaSales(btn) {
+      const year = document.getElementById('order-no-sales-year').value;
+
+      simulateProgress(btn, () => {
+        const headers = [["ID_Order", "Tanggal_Order", "Nama_Merchant", "Metode_Pembayaran", "Total_Belanja", "Wilayah_Merchant"]];
+        const data = [
+          ["ORD-900821", `12/03/${year}`, "Toko Sinar Abadi", "Virtual Account", 3450000, "Bekasi, Jawa Barat"],
+          ["ORD-900825", `15/05/${year}`, "Toko Bangunan Jaya", "Saldo Merchant", 1890000, "Medan, Sumatera Utara"],
+          ["ORD-900912", `28/06/${year}`, "CV Maju Bersama", "Virtual Account", 5200000, "Pontianak, Kalimantan Barat"]
+        ];
+
+        const worksheet = XLSX.utils.aoa_to_sheet(headers.concat(data));
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Order Tanpa Sales");
+        XLSX.writeFile(workbook, `Report_Order_Tanpa_Sales_${year}.xlsx`);
+
+        showToast(`Laporan Order Tanpa Sales Tahun ${year} berhasil diunduh.`, "success", "fa-file-excel");
+      });
+    }
+
+    // 4. Download Laporan Program Star Sales (Raw Data)
+    function downloadStarSalesReport(btn) {
+      const year = document.getElementById('ss-year').value;
+      const month = document.getElementById('ss-month').value;
+      const area = document.getElementById('ss-area').value;
+      const monthName = document.getElementById('ss-month').options[document.getElementById('ss-month').selectedIndex].text;
+
+      const programId = `SS-${area}-${month}${year}01`;
+      const programName = `Star Sales ${monthName} ${year} (${area})`;
+
+      simulateProgress(btn, () => {
+        // Raw data format: Objective is to provide data for user to process themselves
+        const headers = [["ID_Program", "ID_Salesman", "Nama_Salesman", "Level_Star", "Area", "Distributor", "Kota_Distributor", "ID_Toko", "Nama_Toko", "Omzet_Toko", "Status_Toko", "Porsi_Pembayaran_Digital", "Nominal_Pembayaran_Digital", "Jumlah_Brand_Unik", "Jumlah_SKU_Unik", "Tanggal_Transaksi_Terakhir"]];
+        const data = [
+          [programId, "CR-1001", "Ahmad R.", "Star 5", "BNN", "PT Varian Maju", "Jakarta Selatan", "TK-001", "Toko Sinar Rejeki", 1500000, "Aktif", "80%", 1200000, 4, 12, "28/06/2026"],
+          [programId, "CR-1001", "Ahmad R.", "Star 5", "BNN", "PT Varian Maju", "Jakarta Selatan", "TK-002", "Toko Bangunan Jaya", 800000, "Belum Aktif", "100%", 800000, 2, 5, "15/06/2026"],
+          [programId, "CR-1001", "Ahmad R.", "Star 5", "BNN", "PT Varian Maju", "Jakarta Selatan", "TK-003", "Sumber Makmur", 3500000, "Aktif", "50%", 1750000, 6, 20, "29/06/2026"],
+          [programId, "CR-2001", "Fandy A.", "Star Elite", "CPD", "PT Cipta Perkasa", "Surabaya", "TK-004", "Toko Jaya Baya", 1200000, "Aktif", "100%", 1200000, 3, 8, "20/06/2026"],
+          [programId, "CR-2002", "Dewi L.", "Star 1", "CPD", "CV Sinar Mas", "Pontianak", "TK-005", "Bintang Terang", 500000, "Belum Aktif", "40%", 200000, 1, 2, "10/06/2026"],
+          [programId, "CR-2002", "Dewi L.", "Star 1", "CPD", "CV Sinar Mas", "Pontianak", "TK-006", "Maju Bersama", 1100000, "Aktif", "100%", 1100000, 2, 4, "30/06/2026"]
+        ];
+
+        const worksheet = XLSX.utils.aoa_to_sheet(headers.concat(data));
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Raw_Data_StarSales");
+        XLSX.writeFile(workbook, `Raw_Data_StarSales_${programId}.xlsx`);
+
+        showToast(`Laporan Program Star Sales (${programName}) berhasil diunduh.`, "success", "fa-file-excel");
+      });
+    }
+
+    // Prototype Control Panel Logic
+    let currentScenario = 'general';
+
+    function toggleProtoPanel(event) {
+      const panel = document.getElementById('proto-control-panel');
+      const btn = document.getElementById('proto-toggle-btn');
+      if (panel.classList.contains('open')) {
+        panel.classList.remove('open');
+        btn.classList.remove('panel-open');
+      } else {
+        panel.classList.add('open');
+        btn.classList.add('panel-open');
+      }
+      if (event) event.stopPropagation();
+    }
+
+    document.addEventListener('click', function (e) {
+      const panel = document.getElementById('proto-control-panel');
+      const btn = document.getElementById('proto-toggle-btn');
+      if (panel && panel.classList.contains('open')) {
+        if (!panel.contains(e.target) && !btn.contains(e.target)) {
+          panel.classList.remove('open');
+          btn.classList.remove('panel-open');
+        }
+      }
+    });
+
+    function setCase(caseId, elEvent) {
+      currentScenario = caseId;
+      document.querySelectorAll('.proto-sw-btn').forEach(btn => btn.classList.remove('active'));
+      if (elEvent) {
+        elEvent.currentTarget.classList.add('active');
+      }
+      updateDropdownsByScenario();
+      showToast(`Skenario diubah ke: ${caseId === 'general' ? 'General' : 'Waktu Berjalan (Juni 2027)'}`, "info", "fa-clock");
+    }
+
+    function updateDropdownsByScenario() {
+      const yearSelect = document.getElementById('ss-year');
+      const monthSelect = document.getElementById('ss-month');
+
+      const currentYearValue = yearSelect.value;
+      const currentMonthValue = monthSelect.value;
+
+      let years = [];
+      let maxYear = 2026;
+
+      if (currentScenario === 'general') {
+        years = [2026];
+        maxYear = 2026;
+      } else if (currentScenario === 'juni2027') {
+        years = [2026, 2027];
+        maxYear = 2027;
+      }
+
+      yearSelect.innerHTML = '';
+      years.forEach(y => {
+        const option = document.createElement('option');
+        option.value = y;
+        option.text = y;
+        yearSelect.appendChild(option);
+      });
+
+      if (years.includes(parseInt(currentYearValue))) {
+        yearSelect.value = currentYearValue;
+      } else {
+        yearSelect.value = maxYear;
+      }
+
+      updateMonths();
+    }
+
+    function updateMonths() {
+      const yearSelect = document.getElementById('ss-year');
+      const monthSelect = document.getElementById('ss-month');
+      const selectedYear = parseInt(yearSelect.value);
+
+      const prevMonth = monthSelect.value;
+      monthSelect.innerHTML = '';
+
+      const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+      let startIdx = 0;
+      let endIdx = 11;
+
+      // Program started August 2026
+      if (selectedYear === 2026) {
+        startIdx = 7; // August
+      }
+
+      if (currentScenario === 'general' && selectedYear === 2026) {
+        endIdx = 11; // Dec 2026
+      } else if (currentScenario === 'juni2027' && selectedYear === 2027) {
+        endIdx = 5; // Jun 2027
+      }
+
+      for (let i = startIdx; i <= endIdx; i++) {
+        const option = document.createElement('option');
+        const val = (i + 1).toString().padStart(2, '0');
+        option.value = val;
+        option.text = monthNames[i];
+        monthSelect.appendChild(option);
+      }
+
+      let found = false;
+      for (let i = 0; i < monthSelect.options.length; i++) {
+        if (monthSelect.options[i].value === prevMonth) {
+          monthSelect.value = prevMonth;
+          found = true;
+          break;
+        }
+      }
+      if (!found && monthSelect.options.length > 0) {
+        monthSelect.selectedIndex = monthSelect.options.length - 1;
+      }
+
+      updateAreas();
+    }
+
+    function updateAreas() {
+      const yearSelect = document.getElementById('ss-year');
+      const monthSelect = document.getElementById('ss-month');
+      const areaSelect = document.getElementById('ss-area');
+
+      if (!yearSelect || !monthSelect || !areaSelect) return;
+
+      const selectedYear = parseInt(yearSelect.value);
+      const selectedMonth = parseInt(monthSelect.value);
+      const prevArea = areaSelect.value;
+
+      areaSelect.innerHTML = '';
+
+      // Default: semua area tersedia
+      let availableAreas = ['BNN', 'CPD', 'ALL'];
+
+      // Simulasi validasi (Mulai Agustus 2026):
+      if (selectedYear === 2026) {
+        if (selectedMonth === 8 || selectedMonth === 9) {
+          // Agustus - September 2026: Hanya BNN
+          availableAreas = ['BNN'];
+        } else if (selectedMonth === 11) {
+          // November 2026: Hanya CPD
+          availableAreas = ['CPD'];
+        }
+        // Oktober dan Desember 2026: Tersedia BNN dan CPD (kembali ke default)
+      }
+
+      availableAreas.forEach(area => {
+        const option = document.createElement('option');
+        option.value = area;
+        if (area === 'ALL') {
+          option.text = 'ALL (Lintas Area)';
+        } else {
+          option.text = area;
+        }
+        areaSelect.appendChild(option);
+      });
+
+      // Coba pertahankan pilihan sebelumnya
+      let found = false;
+      for (let i = 0; i < areaSelect.options.length; i++) {
+        if (areaSelect.options[i].value === prevArea) {
+          areaSelect.value = prevArea;
+          found = true;
+          break;
+        }
+      }
+      if (!found && areaSelect.options.length > 0) {
+        areaSelect.selectedIndex = 0; // Default ke area pertama yg tersedia
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const yearSelect = document.getElementById('ss-year');
+      const monthSelect = document.getElementById('ss-month');
+      if (yearSelect) {
+        yearSelect.addEventListener('change', updateMonths);
+      }
+      if (monthSelect) {
+        monthSelect.addEventListener('change', updateAreas);
+      }
+      updateDropdownsByScenario();
+    });
+  </script>
+
+  <!-- Floating Prototype Control Panel -->
+  <button class="proto-toggle-btn" onclick="toggleProtoPanel(event)" id="proto-toggle-btn">
+    <i class="fa-solid fa-sliders"></i>
+    <span class="btn-text">Kontrol</span>
+  </button>
+
+  <div class="proto-control-panel" id="proto-control-panel">
+    <div
+      style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.15); padding-bottom: 12px; margin-bottom: 8px;">
+      <h2
+        style="font-size: 13px; font-weight: 900; color: #fff; text-transform: uppercase; margin: 0; display: flex; align-items: center; gap: 6px;">
+        <i class="fa-solid fa-circle-info" style="color: #00BCD4;"></i> KONTROL PROTOTYPE
+      </h2>
+      <i class="fa-solid fa-xmark" onclick="toggleProtoPanel()"
+        style="cursor: pointer; font-size: 16px; opacity: 0.7;"></i>
+    </div>
+
+    <!-- Info Project Card -->
+    <div class="proto-section-card">
+      <h3>Skenario Test Report</h3>
+      <p>Pilih skenario simulasi di bawah ini untuk melihat bagaimana dropdown Laporan Program Star Sales merespon.</p>
+    </div>
+
+    <!-- Skenario Cases Card -->
+    <div class="proto-section-card" style="display: flex; flex-direction: column; gap: 10px;">
+      <h3>Pilih Skenario</h3>
+      <button class="proto-sw-btn active" id="case-btn-general" onclick="setCase('general', event)"><b>SKENARIO
+          GENERAL</b><br>Hari ini adalah Desember 2026. Program dimulai Agustus 2026.</button>
+      <button class="proto-sw-btn" id="case-btn-juni2027" onclick="setCase('juni2027', event)"><b>WAKTU
+          BERJALAN</b><br>Hari ini adalah Juni 2027. Program dimulai Agustus 2026.</button>
+    </div>
+  </div>
+</body>
+
+</html>

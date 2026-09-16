@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Master Data Mapping Sales — Administrator Merchant mitra1000s</title>
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #2196F3;
+      --primary-hover: #1E88E5;
+      --success: #388E3C;
+      --success-hover: #2E7D32;
+      --warning: #F59E0B;
+      --danger: #EF4444;
+      --navy: #1E293B;
+      --bg-light: #F4F6F9;
+      --slate-100: #F8FAFC;
+      --slate-200: #E2E8F0;
+      --slate-300: #CBD5E1;
+      --slate-400: #94A3B8;
+      --slate-500: #64748B;
+      --slate-700: #334155;
+      --slate-800: #1E293B;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --font-title: 'Outfit', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg-light);
+      font-family: var(--font-body);
+      color: var(--slate-800);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* TOPBAR (Cyan Theme) */
+    header {
+      background: #00BCD4;
+      color: white;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .brand-logo-container {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .hamburger-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .top-nav-profile {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .profile-info-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .avatar-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      border: 2px solid white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      color: white;
+    }
+
+    .profile-meta {
+      text-align: left;
+      font-size: 12px;
+      color: white;
+    }
+
+    /* VIEWPORT LAYOUT */
+    .viewport-container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* LEFT SIDEBAR */
+    .left-sidebar {
+      width: 240px;
+      background: white;
+      border-right: 1px solid var(--slate-200);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      flex-shrink: 0;
+      padding-top: 10px;
+    }
+
+    .sidebar-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: all 0.2s;
+      text-decoration: none;
+      width: 100%;
+    }
+
+    .sidebar-menu-item i:first-child {
+      width: 16px;
+      text-align: center;
+      color: #94A3B8;
+    }
+
+    .sidebar-menu-item:hover {
+      background: #F8FAFC;
+      color: #0F172A;
+    }
+
+    .sidebar-menu-item.active {
+      color: #00BCD4;
+      font-weight: 700;
+      background: #E0F7FA;
+      border-left-color: #00BCD4;
+    }
+
+    .sidebar-menu-item.active i:first-child {
+      color: #00BCD4;
+    }
+
+    .sidebar-submenu-item {
+      padding-left: 48px;
+      font-size: 11px;
+      background: #E0F7FA;
+      color: #00BCD4;
+      font-weight: 700;
+      border-left: 3px solid #00BCD4;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    /* MAIN CONTENT */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      background: var(--bg-light);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .page-title {
+      font-family: var(--font-title);
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* CARDS */
+    .summary-cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .summary-card {
+      background: white;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .summary-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--slate-500);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .summary-card-value {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--navy);
+      font-family: var(--font-title);
+    }
+    
+    .summary-card-sub {
+      font-size: 11px;
+      color: var(--slate-500);
+    }
+
+    .card {
+      background: white;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+      font-family: var(--font-body);
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-outline {
+      background: white;
+      border-color: var(--slate-300);
+      color: var(--slate-700);
+    }
+
+    .btn-outline:hover {
+      background: var(--slate-100);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: var(--success-hover);
+    }
+
+    /* FILTERS */
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--slate-200);
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .filter-group label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--slate-500);
+      text-transform: uppercase;
+    }
+
+    .filter-input {
+      height: 36px;
+      padding: 0 12px;
+      border: 1px solid var(--slate-300);
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      outline: none;
+      font-family: inherit;
+    }
+    
+    .search-wrapper {
+      position: relative;
+    }
+    .search-wrapper i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--slate-400);
+      font-size: 12px;
+    }
+    .search-wrapper input {
+      padding-left: 32px;
+      width: 250px;
+    }
+
+    /* TABLE */
+    .table-container {
+      overflow-x: auto;
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-sm);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    th {
+      background: var(--slate-100);
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 700;
+      color: var(--slate-700);
+      border-bottom: 1px solid var(--slate-200);
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--slate-200);
+      color: var(--slate-700);
+      vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background: #F8FAFC;
+    }
+
+    /* TABS */
+    .tabs-container {
+      display: flex;
+      border-bottom: 1px solid var(--slate-200);
+      margin-bottom: 20px;
+    }
+    .tab-item {
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--slate-500);
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+    .tab-item:hover {
+      color: var(--navy);
+    }
+    .tab-item.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: rgba(33, 150, 243, 0.05);
+    }
+
+    /* PILLS */
+    .pill {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    
+    .pill.aktif { background: #E8F5E9; color: #2E7D32; border: 1px solid #C8E6C9; }
+    .pill.resign { background: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2; }
+    .pill.diskualifikasi { background: #FFF3E0; color: #EF6C00; border: 1px solid #FFE0B2; }
+
+    /* TOAST */
+    .toast-container {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      min-width: 250px;
+      background: white;
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideInRight 0.3s ease-out forwards;
+      border-left: 4px solid var(--primary);
+    }
+
+    .toast.success { border-left-color: var(--success); }
+    .toast.error { border-left-color: var(--danger); }
+    .toast.warning { border-left-color: var(--warning); }
+
+    .toast-icon { font-size: 16px; }
+    .toast.success .toast-icon { color: var(--success); }
+    .toast.error .toast-icon { color: var(--danger); }
+    .toast.warning .toast-icon { color: var(--warning); }
+    .toast-content { font-size: 12px; font-weight: 500; color: var(--slate-700); }
+
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="brand-logo-container">
+      <button class="hamburger-btn">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div style="font-family: var(--font-title); font-size: 18px; font-weight: 900; letter-spacing: -0.5px;">
+        mitra<span style="color: #FFEB3B;">1000s</span>
+      </div>
+      <div style="width: 1px; height: 24px; background: rgba(255,255,255,0.3); margin: 0 8px;"></div>
+      <div style="font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+        Administrator Portal
+      </div>
+    </div>
+    <div class="top-nav-profile">
+      <div class="bell-icon-container">
+        <i class="fa-solid fa-bell" style="font-size: 16px;"></i>
+        <div class="bell-badge">3</div>
+      </div>
+      <div class="profile-info-group">
+        <div class="profile-meta">
+          <div style="font-weight: 700;">Super Admin</div>
+          <div style="opacity: 0.8; font-size: 10px;">IT Management</div>
+        </div>
+        <div class="avatar-icon">SA</div>
+        <i class="fa-solid fa-caret-down" style="font-size: 10px; margin-left: 4px;"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- VIEWPORT -->
+  <div class="viewport-container">
+
+    <!-- SIDEBAR -->
+    <aside class="left-sidebar">
+      <a href="#" class="sidebar-menu-item">
+        <i class="fa-solid fa-house"></i> Home Dashboard
+      </a>
+      
+      <div style="padding: 12px 20px 4px; font-size: 10px; font-weight: 800; color: var(--slate-400); text-transform: uppercase; margin-top: 10px;">
+        Order & Katalog
+      </div>
+      <a href="#" class="sidebar-menu-item">
+        <i class="fa-solid fa-box-open"></i> Pesanan
+      </a>
+      <a href="#" class="sidebar-menu-item">
+        <i class="fa-solid fa-tags"></i> Produk
+      </a>
+      
+      <div style="padding: 12px 20px 4px; font-size: 10px; font-weight: 800; color: var(--slate-400); text-transform: uppercase; margin-top: 10px;">
+        Marketing & Promosi
+      </div>
+      <a href="#" class="sidebar-menu-item">
+        <i class="fa-solid fa-ticket"></i> Voucher & Diskon
+      </a>
+      
+      <div style="padding: 12px 20px 4px; font-size: 10px; font-weight: 800; color: var(--slate-400); text-transform: uppercase; margin-top: 10px;">
+        Sales Program
+      </div>
+      <a href="#" class="sidebar-menu-item">
+        <i class="fa-solid fa-star" style="color: #F59E0B;"></i> Star Sales Program
+        <i class="fa-solid fa-chevron-down caret-right"></i>
+      </a>
+      <a href="star_sales_admin.html" class="sidebar-submenu-item" style="border-left-color: transparent; background: transparent; color: var(--slate-500);">
+        <i class="fa-solid fa-list-check"></i> Kelola Kompetisi
+      </a>
+      
+      <div style="padding: 12px 20px 4px; font-size: 10px; font-weight: 800; color: var(--slate-400); text-transform: uppercase; margin-top: 10px;">
+        Partner & Jaringan
+      </div>
+      <a href="#" class="sidebar-menu-item">
+        <i class="fa-solid fa-store" style="color: #475569;"></i> Manajemen Partner
+        <i class="fa-solid fa-chevron-down caret-right"></i>
+      </a>
+      <a href="#" class="sidebar-submenu-item">
+        <i class="fa-solid fa-database"></i> Master Sales
+      </a>
+
+      <div style="padding: 12px 20px 4px; font-size: 10px; font-weight: 800; color: var(--slate-400); text-transform: uppercase; margin-top: 10px;">
+        Sistem
+      </div>
+      <a href="#" class="sidebar-menu-item">
+        <i class="fa-solid fa-shield-halved"></i> Global Whitelist
+      </a>
+      <a href="#" class="sidebar-menu-item">
+        <i class="fa-solid fa-users-gear"></i> Manajemen User
+      </a>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      
+      <!-- Header Area -->
+      <div class="page-header">
+        <div>
+          <h1 class="page-title"><i class="fa-solid fa-database" style="color: var(--primary);"></i> Master Data Mapping Sales BNN</h1>
+          <p style="font-size: 12px; color: var(--slate-500); margin-top: 4px;">
+            Tabel relasi (mapping) master data Sales dan Distributor untuk kebutuhan Auto-Assign Star Sales.
+          </p>
+        </div>
+        
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-outline" onclick="downloadMappingTemplate()">
+            <i class="fa-solid fa-download"></i> Download Template
+          </button>
+          <label class="btn btn-success" style="margin: 0; cursor: pointer;">
+            <i class="fa-solid fa-upload"></i> Upload Excel Mapping
+            <input type="file" id="upload-excel" accept=".xlsx, .xls" style="display: none;" onchange="uploadMappingExcel(event)">
+          </label>
+          <button class="btn btn-primary" onclick="simulateSyncAPI()" id="btn-sync-api">
+            <i class="fa-solid fa-rotate"></i> Sync Live API (Skenario 2)
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs-container">
+        <div class="tab-item active" id="tab-bnn" onclick="switchTab('BNN')">Data BNN</div>
+        <div class="tab-item" id="tab-cpd" onclick="switchTab('CPD')">Data CPD</div>
+      </div>
+
+      <!-- Summary Cards -->
+      <div class="summary-cards-container">
+        <div class="summary-card">
+          <div class="summary-card-header">
+            Total Mapping Terdaftar
+            <i class="fa-solid fa-users" style="color: var(--primary); font-size: 14px;"></i>
+          </div>
+          <div class="summary-card-value" id="count-total">0</div>
+          <div class="summary-card-sub">Keseluruhan data mapping di MSS</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-header">
+            Sales Aktif
+            <i class="fa-solid fa-user-check" style="color: var(--success); font-size: 14px;"></i>
+          </div>
+          <div class="summary-card-value" id="count-active">0</div>
+          <div class="summary-card-sub">Siap diikutsertakan ke program</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-header">
+            Terakhir Diperbarui (Last Sync)
+            <i class="fa-regular fa-clock" style="color: var(--warning); font-size: 14px;"></i>
+          </div>
+          <div class="summary-card-value" id="last-sync-time" style="font-size: 16px; margin-top: 8px;">Belum pernah</div>
+          <div class="summary-card-sub" id="last-sync-source">Metode: -</div>
+        </div>
+      </div>
+
+      <!-- Main Data Card -->
+      <div class="card">
+        <!-- Filters -->
+        <div class="filter-bar">
+          <div class="filter-group">
+            <label>Pencarian</label>
+            <div class="search-wrapper">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" class="filter-input" id="search-keyword" placeholder="Cari ID Sales atau Nama..." onkeyup="applyFilters()">
+            </div>
+          </div>
+          <div class="filter-group">
+            <label>Filter Distributor</label>
+            <select class="filter-input" id="filter-distributor" onchange="applyFilters()" style="min-width: 180px;">
+              <option value="ALL">Semua Distributor</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Filter Role</label>
+            <select class="filter-input" id="filter-role" onchange="applyFilters()">
+              <option value="ALL">Semua Role</option>
+              <option value="Sales">Sales</option>
+              <option value="Supervisor">Supervisor</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Status</label>
+            <select class="filter-input" id="filter-status" onchange="applyFilters()">
+              <option value="ALL">Semua Status</option>
+              <option value="Aktif">Aktif</option>
+              <option value="Resign">Resign</option>
+              <option value="Diskualifikasi">Diskualifikasi</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 50px; text-align: center;">No.</th>
+                <th>ID Sales / NIK</th>
+                <th>Nama Sales</th>
+                <th>Distributor (Mapping Base)</th>
+                <th>Role</th>
+                <th style="text-align: center;">Status BNN</th>
+                <th style="text-align: right;">Terakhir Update</th>
+              </tr>
+            </thead>
+            <tbody id="mapping-tbody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+          
+          <div id="empty-state" style="display: none; padding: 40px; text-align: center; color: var(--slate-500);">
+            <i class="fa-solid fa-database" style="font-size: 32px; color: var(--slate-300); margin-bottom: 12px;"></i>
+            <h3 style="font-family: var(--font-title); color: var(--navy); margin-bottom: 4px;">Belum Ada Data Mapping</h3>
+            <p style="font-size: 12px;">Silakan upload Excel mapping atau jalankan sinkronisasi API.</p>
+          </div>
+          
+          <div id="no-result" style="display: none; padding: 40px; text-align: center; color: var(--slate-500);">
+            Pencarian tidak menemukan hasil.
+          </div>
+        </div>
+        
+      </div>
+
+    </main>
+  </div>
+  
+  <div class="toast-container" id="toast-container"></div>
+
+  <script>
+    // --- MOCK DATA SETUP ---
+    let activeTab = 'BNN';
+    let masterData = [];
+    let lastSyncInfo = { time: null, source: null };
+
+    // Initial dummy load if localstorage empty
+    function loadInitialData() {
+      const stored = localStorage.getItem('star_sales_master_mapping_v2'); // New key to avoid conflicts with old structure
+      const syncStr = localStorage.getItem('star_sales_mapping_sync');
+      
+      if (stored) {
+        masterData = JSON.parse(stored);
+      } else {
+        // Mock data initialization
+        masterData = [
+          { area: 'BNN', id: 'CR-1001', name: 'Ahmad Riyadi', distributor: 'PT. Mitra Distributor Jabar', role: 'Supervisor', status: 'Aktif', updated: new Date(Date.now() - 86400000).toISOString() },
+          { area: 'BNN', id: 'CR-1002', name: 'Budi Santoso', distributor: 'PT. Mitra Distributor Jabar', role: 'Sales', status: 'Aktif', updated: new Date(Date.now() - 86400000).toISOString() },
+          { area: 'BNN', id: 'CR-1003', name: 'Siti Rahmawati', distributor: 'PT. Mitra Distributor Jatim', role: 'Sales', status: 'Resign', updated: new Date(Date.now() - 172800000).toISOString() },
+          { area: 'BNN', id: 'CR-1004', name: 'Joko Anwar', distributor: 'PT. Mitra Distributor Jateng', role: 'Sales', status: 'Diskualifikasi', updated: new Date(Date.now() - 259200000).toISOString() },
+          { area: 'CPD', id: 'CR-2001', name: 'Andi Saputra', distributor: 'PT. Distributor CPD Jabar', role: 'Supervisor', status: 'Aktif', updated: new Date(Date.now() - 86400000).toISOString() },
+          { area: 'CPD', id: 'CR-2002', name: 'Beni Setiawan', distributor: 'PT. Distributor CPD Jatim', role: 'Sales', status: 'Aktif', updated: new Date().toISOString() },
+        ];
+        saveData();
+      }
+      
+      if (syncStr) {
+        lastSyncInfo = JSON.parse(syncStr);
+      } else {
+        lastSyncInfo = { time: new Date().toISOString(), source: 'Sistem Terinisialisasi (Mock)' };
+        localStorage.setItem('star_sales_mapping_sync', JSON.stringify(lastSyncInfo));
+      }
+    }
+
+    function saveData() {
+      localStorage.setItem('star_sales_master_mapping_v2', JSON.stringify(masterData));
+    }
+    
+    function switchTab(area) {
+      activeTab = area;
+      document.getElementById('tab-bnn').classList.toggle('active', area === 'BNN');
+      document.getElementById('tab-cpd').classList.toggle('active', area === 'CPD');
+      
+      // Update page title
+      const titleSpan = document.querySelector('.page-title');
+      titleSpan.innerHTML = `<i class="fa-solid fa-database" style="color: var(--primary);"></i> Master Data Mapping Sales ${area}`;
+      
+      // Clear filters
+      document.getElementById('search-keyword').value = '';
+      document.getElementById('filter-role').value = 'ALL';
+      document.getElementById('filter-status').value = 'ALL';
+      
+      populateDistributorFilter();
+      renderSummary();
+      applyFilters();
+    }
+
+    // --- UI RENDERING ---
+    function populateDistributorFilter() {
+      const select = document.getElementById('filter-distributor');
+      const areaData = masterData.filter(d => d.area === activeTab);
+      // get unique dists
+      const dists = [...new Set(areaData.map(d => d.distributor))].filter(Boolean).sort();
+      
+      // keep first option
+      select.innerHTML = '<option value="ALL">Semua Distributor</option>';
+      dists.forEach(d => {
+        const opt = document.createElement('option');
+        opt.value = d;
+        opt.textContent = d;
+        select.appendChild(opt);
+      });
+    }
+
+    function formatDate(isoString) {
+      if (!isoString) return '-';
+      const d = new Date(isoString);
+      return d.toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit' });
+    }
+
+    function renderSummary() {
+      const areaData = masterData.filter(d => d.area === activeTab);
+      document.getElementById('count-total').innerText = areaData.length;
+      document.getElementById('count-active').innerText = areaData.filter(d => d.status === 'Aktif').length;
+      
+      if (lastSyncInfo.time) {
+        document.getElementById('last-sync-time').innerText = formatDate(lastSyncInfo.time);
+        document.getElementById('last-sync-source').innerText = `Metode: ${lastSyncInfo.source}`;
+      }
+    }
+
+    function renderTable(dataToRender) {
+      const tbody = document.getElementById('mapping-tbody');
+      const emptyState = document.getElementById('empty-state');
+      const noResult = document.getElementById('no-result');
+      
+      tbody.innerHTML = '';
+      
+      const areaData = masterData.filter(d => d.area === activeTab);
+      if (areaData.length === 0) {
+        emptyState.style.display = 'block';
+        noResult.style.display = 'none';
+        return;
+      } else {
+        emptyState.style.display = 'none';
+      }
+      
+      if (dataToRender.length === 0) {
+        noResult.style.display = 'block';
+        return;
+      } else {
+        noResult.style.display = 'none';
+      }
+
+      dataToRender.forEach((item, index) => {
+        let statusPill = '';
+        if (item.status === 'Aktif') statusPill = '<span class="pill aktif">Aktif</span>';
+        else if (item.status === 'Resign') statusPill = '<span class="pill resign">Resign</span>';
+        else if (item.status === 'Diskualifikasi') statusPill = '<span class="pill diskualifikasi">Diskualifikasi</span>';
+        else statusPill = `<span class="pill">${item.status}</span>`;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="text-align: center;">${index + 1}</td>
+          <td style="font-weight: 700; color: var(--primary);">${item.id}</td>
+          <td style="font-weight: 600;">${item.name}</td>
+          <td>${item.distributor || '-'}</td>
+          <td>${item.role || '-'}</td>
+          <td style="text-align: center;">${statusPill}</td>
+          <td style="text-align: right; font-size: 11px; color: var(--slate-500);">${formatDate(item.updated)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function applyFilters() {
+      const kw = document.getElementById('search-keyword').value.toLowerCase();
+      const dist = document.getElementById('filter-distributor').value;
+      const role = document.getElementById('filter-role').value;
+      const status = document.getElementById('filter-status').value;
+
+      let filtered = masterData.filter(d => d.area === activeTab).filter(d => {
+        let matchKw = true;
+        if (kw) {
+          matchKw = d.id.toLowerCase().includes(kw) || d.name.toLowerCase().includes(kw);
+        }
+        
+        let matchDist = dist === 'ALL' || d.distributor === dist;
+        let matchRole = role === 'ALL' || d.role === role;
+        let matchStatus = status === 'ALL' || d.status === status;
+        
+        return matchKw && matchDist && matchRole && matchStatus;
+      });
+
+      renderTable(filtered);
+    }
+
+    function initPage() {
+      loadInitialData();
+      populateDistributorFilter();
+      renderSummary();
+      applyFilters(); // instead of renderTable(masterData)
+    }
+
+    // --- ACTIONS ---
+    function downloadMappingTemplate() {
+      const data = [
+        ["ID_Sales", "Nama_Sales", "Distributor", "Role", "Status"],
+        ["CR-2001", "Contoh Sales 1", "PT. Distributor A", "Supervisor", "Aktif"],
+        ["CR-2002", "Contoh Sales 2", "PT. Distributor A", "Sales", "Aktif"],
+        ["CR-2003", "Contoh Sales 3", "PT. Distributor B", "Sales", "Resign"]
+      ];
+
+      const ws = XLSX.utils.aoa_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Mapping Data " + activeTab);
+      XLSX.writeFile(wb, `Template_Upload_Mapping_Sales_${activeTab}.xlsx`);
+      
+      showToast(`Template Excel ${activeTab} berhasil diunduh.`, "success", "fa-file-excel");
+    }
+
+    function uploadMappingExcel(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, {type: 'array'});
+          const ws = workbook.Sheets[workbook.SheetNames[0]];
+          const json = XLSX.utils.sheet_to_json(ws, {header: 1});
+          
+          if(json.length < 2) {
+             showToast("Excel kosong atau format salah.", "error", "fa-triangle-exclamation");
+             return;
+          }
+          
+          const header = json[0].map(h => h?h.toString().toLowerCase().trim():"");
+          const idxId = header.findIndex(h => h.includes("id_sales") || h.includes("nik"));
+          const idxName = header.findIndex(h => h.includes("nama"));
+          const idxDist = header.findIndex(h => h.includes("distributor"));
+          const idxRole = header.findIndex(h => h.includes("role"));
+          const idxStatus = header.findIndex(h => h.includes("status"));
+          
+          if (idxId === -1 || idxDist === -1) {
+            showToast("Kolom ID_Sales dan Distributor wajib ada.", "error", "fa-triangle-exclamation");
+            return;
+          }
+
+          let addedCount = 0;
+          let updateCount = 0;
+          const nowIso = new Date().toISOString();
+
+          // Skenario: Upsert data
+          for (let i = 1; i < json.length; i++) {
+            const row = json[i];
+            if (!row || row.length === 0) continue;
+            
+            const id = row[idxId] ? row[idxId].toString().trim() : "";
+            if (!id) continue;
+
+            const name = idxName !== -1 && row[idxName] ? row[idxName].toString().trim() : "Unknown";
+            const dist = row[idxDist] ? row[idxDist].toString().trim() : "";
+            const role = idxRole !== -1 && row[idxRole] ? row[idxRole].toString().trim() : "Sales";
+            let status = "Aktif";
+            if (idxStatus !== -1 && row[idxStatus]) {
+               const s = row[idxStatus].toString().trim().toLowerCase();
+               if (s === "resign" || s === "resigned") status = "Resign";
+               if (s === "diskualifikasi") status = "Diskualifikasi";
+            }
+
+            const existingIdx = masterData.findIndex(m => m.id === id && m.area === activeTab);
+            if (existingIdx !== -1) {
+              masterData[existingIdx].name = name;
+              masterData[existingIdx].distributor = dist;
+              masterData[existingIdx].role = role;
+              masterData[existingIdx].status = status;
+              masterData[existingIdx].updated = nowIso;
+              updateCount++;
+            } else {
+              masterData.push({
+                area: activeTab, id: id, name: name, distributor: dist, role: role, status: status, updated: nowIso
+              });
+              addedCount++;
+            }
+          }
+          
+          // Save and Update Sync Info
+          saveData();
+          updateSyncInfo(`Upload Manual Excel ${activeTab} (${file.name})`);
+          
+          // Re-render
+          populateDistributorFilter();
+          applyFilters();
+          renderSummary();
+          
+          showToast(`Berhasil upload mapping ${activeTab}! (Baru: ${addedCount}, Update: ${updateCount})`, "success", "fa-check");
+
+        } catch (err) {
+          console.error(err);
+          showToast("Gagal membaca file Excel.", "error", "fa-triangle-exclamation");
+        }
+      };
+      reader.readAsArrayBuffer(file);
+      event.target.value = ''; // reset input
+    }
+    
+    function simulateSyncAPI() {
+      const btn = document.getElementById('btn-sync-api');
+      const originalHtml = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menarik Data API...';
+      btn.disabled = true;
+      
+      // Simulate network request 1.5s
+      setTimeout(() => {
+        btn.innerHTML = originalHtml;
+        btn.disabled = false;
+        
+        // Let's just update the timestamp to simulate a sync check that found no changes
+        updateSyncInfo(`Otomatis API ${activeTab} (Skenario 2)`);
+        renderSummary();
+        showToast(`Sinkronisasi Skenario 2 API ${activeTab} berhasil disimulasikan.`, "success", "fa-cloud-arrow-down");
+      }, 1500);
+    }
+    
+    function updateSyncInfo(sourceText) {
+      lastSyncInfo = {
+        time: new Date().toISOString(),
+        source: sourceText
+      };
+      localStorage.setItem('star_sales_mapping_sync', JSON.stringify(lastSyncInfo));
+    }
+
+    // --- UTILS ---
+    function showToast(message, type = 'success', iconClass = 'fa-check-circle') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <div class="toast-icon"><i class="fa-solid ${iconClass}"></i></div>
+        <div class="toast-content">${message}</div>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.animation = 'fadeOut 0.3s ease-out forwards';
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
+    // Run on load
+    document.addEventListener('DOMContentLoaded', initPage);
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+    <title>Migrasi OTP — Interactive Premium Prototype</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        :root {
+            --navy: #0D2461;
+            --blue: #1565C0;
+            --blue2: #1E88E5;
+            --gold: #FFB300;
+            --ok: #4CAF50;
+            --warn: #FF9800;
+            --danger: #F44336;
+            --bg: #F0F4F8;
+            --white: #fff;
+            --gray1: #F5F5F5;
+            --gray2: #E0E0E0;
+            --gray3: #9E9E9E;
+            --gray4: #424242
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            font-family: 'Inter', sans-serif
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a1a4e, #1565C0, #0a1a4e);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            gap: 50px
+        }
+
+        /* PHONE FRAME v1 Style */
+        .phone {
+            width: 390px;
+            height: 820px;
+            background: var(--bg);
+            border-radius: 40px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 0 10px #111, 0 40px 80px rgba(0, 0, 0, .6);
+            position: relative;
+            flex-shrink: 0
+        }
+
+        .statusbar {
+            background: var(--navy);
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 22px;
+            font-size: 12px;
+            font-weight: 600
+        }
+
+        .screens {
+            flex: 1;
+            overflow: hidden;
+            position: relative
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            background: var(--bg);
+            display: none;
+            flex-direction: column;
+            padding: 24px;
+        }
+
+        .screen.active {
+            display: flex
+        }
+
+        /* EXTERNAL CONTROLS (Clean Style) */
+        .controls {
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(255, 255, 255, .05);
+            padding: 25px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, .1);
+            backdrop-filter: blur(10px)
+        }
+
+        .controls h3 {
+            color: #fff;
+            font-size: 15px;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            opacity: .8
+        }
+
+        .sw-btn {
+            background: rgba(255, 255, 255, .1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, .1);
+            padding: 14px;
+            border-radius: 14px;
+            font-size: 12px;
+            cursor: pointer;
+            text-align: left;
+            transition: all .3s
+        }
+
+        .sw-btn:hover {
+            background: rgba(255, 255, 255, .2)
+        }
+
+        .sw-btn.active {
+            background: var(--blue);
+            border-color: var(--blue2);
+            box-shadow: 0 4px 12px rgba(21, 101, 192, .4)
+        }
+
+        /* Flowchart Overlay Panel */
+        .flow-panel {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: white;
+            z-index: 999;
+            display: none;
+        }
+
+        .canvas-container {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            cursor: grab;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .canvas-container:active { cursor: grabbing; }
+
+        #flow-area {
+            transform-origin: 0 0;
+            transition: transform 0.1s ease-out;
+            padding: 500px;
+            display: inline-block;
+            white-space: nowrap;
+            position: relative;
+            min-width: 4000px;
+            min-height: 2000px;
+        }
+
+        .node {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px 20px;
+            min-width: 160px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            font-size: 12px;
+            font-weight: 700;
+            color: #1e293b;
+            position: absolute;
+            z-index: 10;
+            user-select: none;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .node:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+            z-index: 20;
+        }
+
+        .n-start { width: 80px; height: 80px; min-width: 80px; border-radius: 50%; background: #dcfce7; border-color: #22c55e; color: #166534; }
+        .n-end { width: 80px; height: 80px; min-width: 80px; border-radius: 50%; background: #fee2e2; border-color: #ef4444; color: #991b1b; }
+        .n-purple { background: #f3e8ff; border-color: #d8b4fe; color: #6b21a8; }
+        .n-gray { background: #f1f5f9; border-color: #cbd5e1; color: #334155; }
+        .n-pink { background: #fce7f3; border-color: #f9a8d4; color: #9d174d; border-style: dashed; font-size: 10px; min-width: 120px; }
+        
+        .n-decision {
+            width: 100px; height: 100px; min-width: 100px; transform: rotate(45deg);
+            background: #ffedd5; border-color: #fdba74; color: #9a3412; padding: 0; border-radius: 10px;
+        }
+        .n-decision:hover { transform: rotate(45deg) scale(1.05); }
+        .n-decision span { transform: rotate(-45deg); text-align: center; display: block; width: 100%; }
+
+        .svg-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+        .connection-path { fill: none; stroke: #94a3b8; stroke-width: 2; }
+        
+        .connection-label {
+            position: absolute; background: white; padding: 3px 10px; border-radius: 6px;
+            font-size: 11px; font-weight: 800; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            pointer-events: none; transform: translate(-50%, -50%); z-index: 15; border: 1px solid #e2e8f0;
+        }
+        .label-yes { color: #059669; border-color: #10b981; }
+        .label-no { color: #dc2626; border-color: #ef4444; }
+
+        .flow-ctrl-panel { position: absolute; top: 25px; right: 25px; display: flex; gap: 10px; z-index: 100; }
+        .btn-ctrl {
+            width: 45px; height: 45px; background: white; border-radius: 12px; border: 1px solid #e2e8f0;
+            display: flex; align-items: center; justify-content: center; color: #64748b;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.2s; cursor: pointer;
+        }
+        .btn-ctrl:hover { background: #f8fafc; color: #4f46e5; transform: translateY(-2px); }
+
+        .legend {
+            position: absolute; bottom: 30px; left: 30px; background: white; padding: 15px;
+            border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 100; font-size: 11px; pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PHONE FRAME -->
+    <div class="phone">
+        <div class="statusbar"><span>15:38</span><span>⚡ 80%</span></div>
+        <div class="screens">
+            <!-- Screen 0: Dashboard (Scenario Launcher inside Phone) -->
+            <div id="screen-dashboard" class="screen active justify-center">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 bg-[#eff6ff] rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 text-[#0B1F8F] shadow-sm">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h2 class="text-xl font-black text-gray-800">Simulasi OTP</h2>
+                    <p class="text-xs text-gray-500 mt-1">Pilih skenario di panel kanan untuk memulai simulasi alur OTP</p>
+                </div>
+                
+                <div class="bg-blue-50 border border-blue-100 p-4 rounded-2xl text-xs text-blue-800 leading-relaxed">
+                    <p class="font-bold mb-1"><i class="fas fa-info-circle mr-1"></i> Cara Simulasi:</p>
+                    Gunakan panel kontrol di sebelah kanan untuk mengganti skenario case secara real-time dan melihat bagaimana sistem membatasi spam serta menangani fallback.
+                </div>
+                
+                <div class="mt-auto border-t pt-4">
+                    <p class="text-xs text-gray-500 mb-2 font-bold"><i class="fas fa-bug"></i> Status Limitasi WA</p>
+                    <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border">
+                        <span class="text-xs text-gray-600 font-semibold">Tembak API Qontak:</span>
+                        <span id="debug-count" class="text-sm font-black text-red-600">0 / 5x</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Screen 1: Trigger -->
+            <div id="screen-trigger" class="screen justify-center">
+                <button onclick="showScreen('screen-dashboard')" class="text-left text-gray-500 mb-6 hover:text-gray-800 absolute top-6 left-6"><i class="fas fa-arrow-left"></i></button>
+                <h2 id="trigger-title" class="text-xl font-bold mb-6 text-center text-[#0B1F8F]">Mitra1000s</h2>
+                <p id="trigger-subtitle" class="text-sm text-gray-600 text-center mb-4">Masuk ke akun Anda</p>
+                <input type="text" id="trigger-input" value="081234567890" disabled class="w-full bg-gray-100 border border-gray-300 rounded px-3 py-3 mb-4 text-center font-semibold text-gray-700">
+                <button id="trigger-btn" onclick="goToMethodSelection()" class="w-full bg-[#0B1F8F] text-white font-bold py-3 rounded hover:bg-blue-900 transition">Kirim OTP</button>
+            </div>
+
+            <!-- Screen 2: Method Selection -->
+            <div id="screen-method" class="screen">
+                <button onclick="goToTrigger()" class="text-left text-gray-500 mb-6 hover:text-gray-800"><i class="fas fa-arrow-left"></i> Kembali</button>
+                <h2 class="text-lg font-bold mb-2 text-gray-800">Pilih Metode Verifikasi</h2>
+                <p class="text-sm text-gray-600 mb-6">Pilih metode pengiriman kode OTP yang Anda inginkan.</p>
+
+                <div id="wa-error-msg" class="hidden bg-red-50 border border-red-200 text-red-700 px-3 py-3 rounded text-xs mb-4">
+                    <i class="fas fa-exclamation-circle mr-1"></i> Batas maksimal pengiriman OTP via WhatsApp telah tercapai. Silakan coba kembali setelah 24 jam atau gunakan metode Email.
+                </div>
+
+                <button id="btn-wa" onclick="requestOTP('wa')" class="w-full border-2 border-green-500 bg-green-50 text-green-700 font-bold py-3.5 rounded-lg flex items-center justify-center gap-2 mb-1 hover:bg-green-100 transition disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fab fa-whatsapp text-xl"></i> WhatsApp
+                </button>
+                <div class="text-[10px] text-gray-500 mb-4 px-1 flex items-center gap-1">
+                    <i class="fas fa-info-circle text-gray-400"></i> Dibatasi maksimal 5 kali pengiriman per hari.
+                </div>
+
+                <button id="btn-email" onclick="requestOTP('email')" class="w-full border-2 border-gray-300 bg-white text-gray-700 font-bold py-3.5 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-envelope text-xl"></i> Email
+                </button>
+            </div>
+
+            <!-- Screen 3: Input PIN -->
+            <div id="screen-pin" class="screen">
+                <button onclick="goToMethodSelection()" class="text-left text-gray-500 mb-6 hover:text-gray-800"><i class="fas fa-arrow-left"></i> Kembali</button>
+                <h2 id="pin-title" class="text-lg font-bold mb-2 text-center text-[#0B1F8F]">Masukkan Kode OTP</h2>
+                
+                <p id="pin-instruction" class="text-sm text-gray-600 mb-4 leading-relaxed text-center">Kode OTP telah kami kirim via Whatsapp ke nomor HP yang kamu masukkan<br><span id="pin-phone" class="font-bold text-gray-800 mt-1 block">081234567890</span></p>
+                
+                <!-- Info Limitasi Resend OTP (WA only) -->
+                <div id="wa-limit-info" class="hidden bg-amber-50 border border-amber-200 text-amber-800 px-3.5 py-3 rounded-2xl text-xs mb-4 flex items-start gap-2 shadow-xs">
+                    <i class="fas fa-exclamation-triangle mt-0.5 flex-shrink-0 text-amber-500"></i>
+                    <span id="wa-limit-text">Pengiriman OTP via WhatsApp dibatasi maksimal <b>5 kali per hari</b>.</span>
+                </div>
+
+                <div class="bg-blue-50 border border-blue-200 text-blue-800 px-3 py-2 rounded-lg text-xs mb-6 text-center shadow-sm">
+                    <i class="fas fa-info-circle mr-1"></i> (Simulasi) Gunakan kode OTP: <b>123456</b>
+                </div>
+
+                <div id="otp-error-msg" class="hidden bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded text-xs mb-4 text-center">
+                    <i class="fas fa-times-circle mr-1"></i> Kode OTP salah, silakan coba lagi.
+                </div>
+
+                <div class="flex gap-2 justify-center mb-6" id="otp-inputs">
+                    <input type="text" maxlength="1" class="w-10 h-12 text-center border-2 border-gray-300 bg-white rounded font-bold text-lg focus:border-[#f36c01] focus:outline-none transition-colors" onkeyup="moveToNext(this, 'otp2')">
+                    <input type="text" maxlength="1" id="otp2" class="w-10 h-12 text-center border-2 border-gray-300 bg-white rounded font-bold text-lg focus:border-[#f36c01] focus:outline-none transition-colors" onkeyup="moveToNext(this, 'otp3', this.previousElementSibling)">
+                    <input type="text" maxlength="1" id="otp3" class="w-10 h-12 text-center border-2 border-gray-300 bg-white rounded font-bold text-lg focus:border-[#f36c01] focus:outline-none transition-colors" onkeyup="moveToNext(this, 'otp4', this.previousElementSibling)">
+                    <input type="text" maxlength="1" id="otp4" class="w-10 h-12 text-center border-2 border-gray-300 bg-white rounded font-bold text-lg focus:border-[#f36c01] focus:outline-none transition-colors" onkeyup="moveToNext(this, 'otp5', this.previousElementSibling)">
+                    <input type="text" maxlength="1" id="otp5" class="w-10 h-12 text-center border-2 border-gray-300 bg-white rounded font-bold text-lg focus:border-[#f36c01] focus:outline-none transition-colors" onkeyup="moveToNext(this, 'otp6', this.previousElementSibling)">
+                    <input type="text" maxlength="1" id="otp6" class="w-10 h-12 text-center border-2 border-gray-300 bg-white rounded font-bold text-lg focus:border-[#f36c01] focus:outline-none transition-colors" onkeyup="moveToNext(this, null, this.previousElementSibling)">
+                </div>
+
+                <button id="btn-verify" onclick="verifyOTP()" class="w-full bg-[#0B1F8F] text-white font-bold py-3.5 rounded-lg hover:bg-blue-900 transition mb-6 shadow-md">
+                    Verifikasi OTP
+                </button>
+
+                <div class="text-center mb-6">
+                    <p id="resend-text-prefix" class="text-sm text-gray-600 mb-1">Belum terima Kodenya ?</p>
+                    <p class="text-sm font-bold text-[#0B1F8F]" id="timer-text">Kirim Ulang (60)</p>
+                </div>
+
+                <button id="btn-change-method" onclick="goToMethodSelection()" class="w-full border-2 border-[#0B1F8F] text-[#0B1F8F] bg-white font-bold py-3.5 rounded-lg hover:bg-blue-50 transition disabled:opacity-50 disabled:cursor-not-allowed">
+                    Ubah Metode
+                </button>
+            </div>
+
+            <!-- Screen 4: Success -->
+            <div id="screen-success" class="screen justify-center items-center text-center">
+                <div class="w-20 h-20 bg-green-100 rounded-full flex justify-center items-center mb-6 shadow-sm">
+                    <i class="fas fa-check text-4xl text-green-600"></i>
+                </div>
+                <h2 class="text-2xl font-bold mb-2 text-gray-800">Berhasil Masuk</h2>
+                <p class="text-sm text-gray-600 mb-8">Verifikasi OTP berhasil, Anda telah login.</p>
+                <button onclick="resetDebug(); showScreen('screen-dashboard')" class="w-full border-2 border-gray-300 bg-white text-gray-700 font-bold py-3.5 rounded-lg hover:bg-gray-50 transition">Kembali ke Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXTERNAL CONTROLS (v6 Matching Style) -->
+    <div class="controls">
+        <h3>Skenario Case</h3>
+        <button class="sw-btn active" id="btn-scen-reg" onclick="selectFlow('merchant_reg', event)">
+            <b>1. Registrasi (Merchant)</b><br>Tampilan Biru Navy · OTP 10m
+        </button>
+        <button class="sw-btn" id="btn-scen-forgot" onclick="selectFlow('merchant_forgot', event)">
+            <b>2. Lupa Sandi (Merchant)</b><br>Ubah Password · HP Alternatif
+        </button>
+        <button class="sw-btn" id="btn-scen-incent" onclick="selectFlow('sales_incentive', event)">
+            <b>3. Insentif (Sales)</b><br>Tampilan Biru Cerah · OTP 3m
+        </button>
+
+        <div style="height:10px"></div>
+        <h3>Simulasi Tools</h3>
+        
+        <button class="sw-btn" style="background:rgba(245, 158, 11, 0.2); border-color: rgba(245, 158, 11, 0.4)" onclick="resetDebug()">
+            🔄 Reset Limit WA (24 Jam)
+        </button>
+        <div style="height:5px"></div>
+        <button class="sw-btn" style="background:rgba(239, 68, 68, 0.2); border-color: rgba(239, 68, 68, 0.4)" onclick="triggerMaxLimitWA()">
+            🚨 Habiskan Limit WA (Set 5x)
+        </button>
+        <button class="sw-btn" style="background:rgba(168, 85, 247, 0.2); border-color: rgba(168, 85, 247, 0.4)" onclick="openFlowchart()">
+            <i class="fas fa-sitemap mr-1"></i> Lihat Flowchart Terkoneksi
+        </button>
+        
+        <div style="height:5px"></div>
+        <button class="sw-btn" style="background:rgba(255,255,255,.15)" onclick="showScreen('screen-dashboard')">
+            🏠 Menu Utama Skenario
+        </button>
+        <button class="sw-btn" style="background:rgba(21, 101, 192, 0.4); border-color: var(--blue2)" onclick="goToDashboardProto()">
+            💻 Ke Dashboard Hub (Utama)
+        </button>
+    </div>
+
+    <!-- FLOWCHART PANEL OVERLAY -->
+    <div class="flow-panel">
+        <button onclick="closeFlowchart()" class="absolute top-6 left-6 bg-white text-gray-800 px-4 py-2 rounded-lg shadow-md border border-gray-200 hover:bg-gray-50 z-[250] font-bold flex items-center gap-2"><i class="fas fa-arrow-left"></i> Kembali ke Prototype</button>
+        <div class="flow-ctrl-panel">
+            <button class="btn-ctrl" onclick="zoomView(1.2)" title="Zoom In"><i class="fas fa-search-plus"></i></button>
+            <button class="btn-ctrl" onclick="zoomView(0.8)" title="Zoom Out"><i class="fas fa-search-minus"></i></button>
+            <button class="btn-ctrl" onclick="resetZoom()" title="Reset View"><i class="fas fa-expand"></i></button>
+        </div>
+
+        <div class="legend space-y-2">
+            <p class="font-extrabold text-gray-800 mb-2 border-b pb-1">Keterangan Node</p>
+            <div class="flex items-center gap-2">
+                <div class="w-3 h-3 rounded-full bg-green-200 border border-green-500"></div> Titik Mulai
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-3 h-3 rounded bg-purple-100 border border-purple-400"></div> Aksi User
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-3 h-3 rounded bg-slate-100 border border-slate-400"></div> Proses Sistem
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-3 h-3 rotate-45 bg-orange-100 border border-orange-400"></div> Keputusan
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-3 h-3 rounded-full bg-red-200 border border-red-500"></div> Titik Akhir
+            </div>
+        </div>
+
+        <div class="canvas-container" id="canvas-container">
+            <div id="flow-area">
+                <svg class="svg-layer" id="svg-layer">
+                    <defs>
+                        <marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="6" markerHeight="6" orient="auto">
+                            <path d="M 0 -5 L 10 0 L 0 5 Z" fill="#94a3b8" />
+                        </marker>
+                    </defs>
+                </svg>
+
+                <!-- FLOWCHART NODES -->
+                <div id="f-start" class="node n-start" style="left: 600px; top: 600px;">Trigger OTP</div>
+                <div id="f-check-limit" class="node n-decision" style="left: 800px; top: 590px;">
+                    <span>Limit WA<br>&lt;= 5?</span>
+                </div>
+                <div id="f-show-methods" class="node n-gray" style="left: 1050px; top: 600px;">Tampilkan Opsi<br>WA & Email</div>
+                <div id="f-wa-disabled" class="node n-gray" style="left: 1050px; top: 800px;">Disable WA<br>Tampil Info Suspend</div>
+                <div id="f-select-wa" class="node n-purple" style="left: 1250px; top: 500px;">User Pilih<br>WhatsApp</div>
+                <div id="f-select-email" class="node n-purple" style="left: 1250px; top: 700px;">User Pilih<br>Email</div>
+                <div id="f-req-wa" class="node n-gray" style="left: 1450px; top: 500px;">API Qontak<br>Kirim WA</div>
+                <div id="f-req-email" class="node n-gray" style="left: 1450px; top: 700px;">API Provider<br>Kirim Email</div>
+                <div id="f-show-pin" class="node n-gray" style="left: 1700px; top: 600px;">Tampil Layar PIN<br>& Timer 60s</div>
+                <div id="f-timer-end" class="node n-decision" style="left: 1950px; top: 590px;">
+                    <span>Timer<br>Habis?</span>
+                </div>
+                <div id="f-enable-btns" class="node n-gray" style="left: 2200px; top: 600px;">Enable Tombol<br>Kirim Ulang &<br>Ubah Metode</div>
+                <div id="f-action-resend" class="node n-purple" style="left: 2200px; top: 800px;">User Klik<br>"Kirim Ulang"</div>
+                <div id="f-action-change" class="node n-purple" style="left: 1950px; top: 800px;">User Klik<br>"Ubah Metode"</div>
+                <div id="f-input-ok" class="node n-purple" style="left: 2450px; top: 600px;">User Input<br>PIN Benar</div>
+                <div id="f-end" class="node n-end" style="left: 2650px; top: 600px;">Berhasil<br>Masuk</div>
+                <div class="node n-pink" style="left: 820px; top: 480px;">
+                    <i class="fas fa-info-circle mr-1"></i> Pengecekan limit harian<br>hanya untuk WhatsApp
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let waLimitCount = 0;
+        let isWaSuspended = false;
+        let currentMethod = '';
+        let timerInterval;
+        let activeFlow = 'merchant_reg';
+
+        const themeColors = {
+            merchant: { primary: '#0D2461', hover: '#1e3a8a', light: '#eff6ff', phoneColor: 'text-gray-800' },
+            sales: { primary: '#2563EB', hover: '#1d4ed8', light: '#eff6ff', phoneColor: 'text-blue-600' }
+        };
+
+        function goToDashboardProto() {
+            if (window.location.pathname.includes('/prototypes/')) {
+                window.location.href = '../index.html';
+            } else {
+                window.location.href = '../../index.html';
+            }
+        }
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function openFlowchart() {
+            document.querySelector('.flow-panel').style.display = 'block';
+            setTimeout(updateConnections, 100);
+        }
+
+        function closeFlowchart() {
+            document.querySelector('.flow-panel').style.display = 'none';
+        }
+
+        function selectFlow(flowType, event) {
+            activeFlow = flowType;
+            
+            // Manage Active Button Style
+            if(event) {
+                document.querySelectorAll('.controls .sw-btn').forEach(btn => btn.classList.remove('active'));
+                event.currentTarget.classList.add('active');
+            }
+
+            let theme = themeColors.merchant;
+            let triggerTitle = "Pendaftaran Akun";
+            let triggerSub = "Lengkapi data toko Anda";
+            let phone = "081234567890";
+            let pinTitle = "Masukkan Kode OTP";
+            let pinDescPrefix = "Kode OTP telah kami kirim via Whatsapp ke nomor HP yang kamu masukkan";
+            let resendPrefix = "Belum terima Kodenya ?";
+
+            if (flowType === 'merchant_forgot') {
+                triggerTitle = "Atur Ulang Kata Sandi";
+                triggerSub = "Masukkan nomor HP yang terdaftar";
+                phone = "0877888757283";
+            } else if (flowType === 'sales_incentive') {
+                theme = themeColors.sales;
+                triggerTitle = "Tarik Saldo";
+                triggerSub = "Masukkan nominal tarik saldo";
+                phone = "0852-1075-8866";
+                pinTitle = "Masukkan 6 digit kode OTP";
+                pinDescPrefix = "Kode OTP telah kami kirim via Whatsapp ke nomor:";
+                resendPrefix = "Tidak menerima kode?";
+            }
+
+            // Apply Texts
+            document.getElementById('trigger-title').innerText = triggerTitle;
+            document.getElementById('trigger-subtitle').innerText = triggerSub;
+            document.getElementById('trigger-input').value = phone;
+            document.getElementById('pin-title').innerText = pinTitle;
+            document.getElementById('pin-instruction').innerHTML = `${pinDescPrefix}<br><span id="pin-phone" class="font-bold ${theme.phoneColor} mt-1 block">${phone}</span>`;
+            document.getElementById('resend-text-prefix').innerText = resendPrefix;
+
+            // Apply Colors
+            document.getElementById('trigger-title').style.color = theme.primary;
+            document.getElementById('trigger-btn').style.backgroundColor = theme.primary;
+            document.getElementById('pin-title').style.color = theme.primary;
+            
+            const btnVerify = document.getElementById('btn-verify');
+            btnVerify.style.backgroundColor = theme.primary;
+            
+            const btnChange = document.getElementById('btn-change-method');
+            btnChange.style.color = theme.primary;
+            btnChange.style.borderColor = theme.primary;
+
+            document.getElementById('timer-text').style.color = theme.primary;
+            
+            document.querySelectorAll('#otp-inputs input').forEach(input => {
+                input.onfocus = function() { this.style.borderColor = theme.primary; }
+                input.onblur = function() { this.style.borderColor = '#d1d5db'; }
+            });
+
+            showScreen('screen-trigger');
+        }
+
+        function goToTrigger() {
+            clearInterval(timerInterval);
+            showScreen('screen-trigger');
+        }
+
+        function resetDebug() {
+            waLimitCount = 0;
+            isWaSuspended = false;
+            document.getElementById('debug-count').innerText = `${waLimitCount} / 5x`;
+            const limitInfo = document.getElementById('wa-limit-info');
+            if (limitInfo) {
+                limitInfo.classList.add('hidden');
+                limitInfo.classList.remove('bg-red-50', 'border-red-200', 'text-red-800');
+                limitInfo.classList.add('bg-amber-50', 'border-amber-200', 'text-amber-800');
+            }
+            const timerEl = document.getElementById('timer-text');
+            if (timerEl) {
+                timerEl.classList.remove('text-gray-400');
+                timerEl.classList.add(activeFlow === 'sales_incentive' ? 'text-[#2563EB]' : 'text-[#0B1F8F]');
+            }
+            alert("Limit WA telah di-reset! (Simulasi 24 Jam berlalu)");
+        }
+
+        function triggerMaxLimitWA() {
+            waLimitCount = 5;
+            isWaSuspended = true;
+            document.getElementById('debug-count').innerText = `${waLimitCount} / 5x`;
+            
+            const futureDate = new Date();
+            futureDate.setHours(futureDate.getHours() + 24);
+            const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+            const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            const dayName = days[futureDate.getDay()];
+            const dateNum = futureDate.getDate();
+            const monthName = months[futureDate.getMonth()];
+            const yearNum = futureDate.getFullYear();
+            const hours = futureDate.getHours().toString().padStart(2, '0');
+            const mins = futureDate.getMinutes().toString().padStart(2, '0');
+            const resendTimeStr = `${dayName}, ${dateNum} ${monthName} ${yearNum} pukul ${hours}:${mins}`;
+
+            // Update wa-error-msg on Method Selection screen
+            const waError = document.getElementById('wa-error-msg');
+            const btnWa = document.getElementById('btn-wa');
+            if (waError && btnWa) {
+                waError.innerHTML = `<i class="fas fa-exclamation-circle mr-1"></i> Batas maksimal pengiriman OTP via WhatsApp telah tercapai. Anda baru dapat mencoba kembali pada <b>${resendTimeStr}</b> atau gunakan metode Email.`;
+                btnWa.disabled = true;
+                btnWa.classList.add('opacity-50', 'cursor-not-allowed', 'border-gray-300', 'bg-gray-100', 'text-gray-400');
+                btnWa.classList.remove('border-green-500', 'bg-green-50', 'text-green-700', 'hover:bg-green-100');
+                waError.classList.remove('hidden');
+            }
+
+            // Only update PIN screen warnings if currentMethod is WA
+            if (currentMethod === 'wa') {
+                // Update wa-limit-info on PIN screen
+                const limitInfo = document.getElementById('wa-limit-info');
+                const limitText = document.getElementById('wa-limit-text');
+                if (limitInfo && limitText) {
+                    limitInfo.classList.remove('hidden');
+                    limitInfo.classList.remove('bg-amber-50', 'border-amber-200', 'text-amber-800');
+                    limitInfo.classList.add('bg-red-50', 'border-red-200', 'text-red-800');
+                    limitText.innerHTML = `Batas pengiriman OTP via WhatsApp adalah 5x sehari. <b>Sisa limit Anda: 0 kali. WhatsApp Anda ditangguhkan selama 24 jam. Anda baru dapat meminta OTP WhatsApp kembali pada ${resendTimeStr}.</b>`;
+                }
+
+                const timerEl = document.getElementById('timer-text');
+                if (timerEl) {
+                    timerEl.style.cursor = "not-allowed";
+                    timerEl.classList.remove('text-[#0B1F8F]', 'text-[#2563EB]');
+                    timerEl.classList.add('text-gray-400');
+                    timerEl.onclick = null;
+                }
+            } else {
+                // Ensure warning banner is hidden if we are on Email screen
+                const limitInfo = document.getElementById('wa-limit-info');
+                if (limitInfo) {
+                    limitInfo.classList.add('hidden');
+                }
+            }
+            alert("Limit WA disimulasikan habis! (Request ke-5 terkirim)");
+        }
+
+        function goToMethodSelection() {
+            clearInterval(timerInterval);
+            
+            if (waLimitCount >= 5) {
+                isWaSuspended = true;
+            }
+
+            const btnWa = document.getElementById('btn-wa');
+            const waError = document.getElementById('wa-error-msg');
+
+            if (isWaSuspended) {
+                btnWa.disabled = true;
+                btnWa.classList.add('opacity-50', 'cursor-not-allowed', 'border-gray-300', 'bg-gray-100', 'text-gray-400');
+                btnWa.classList.remove('border-green-500', 'bg-green-50', 'text-green-700', 'hover:bg-green-100');
+                
+                // Calculate release date/time H+24h
+                const futureDate = new Date();
+                futureDate.setHours(futureDate.getHours() + 24);
+                const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+                const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+                const dayName = days[futureDate.getDay()];
+                const dateNum = futureDate.getDate();
+                const monthName = months[futureDate.getMonth()];
+                const yearNum = futureDate.getFullYear();
+                const hours = futureDate.getHours().toString().padStart(2, '0');
+                const mins = futureDate.getMinutes().toString().padStart(2, '0');
+                const resendTimeStr = `${dayName}, ${dateNum} ${monthName} ${yearNum} pukul ${hours}:${mins}`;
+
+                waError.innerHTML = `<i class="fas fa-exclamation-circle mr-1"></i> Batas maksimal pengiriman OTP via WhatsApp telah tercapai. Anda baru dapat mencoba kembali pada <b>${resendTimeStr}</b> atau gunakan metode Email.`;
+                waError.classList.remove('hidden');
+            } else {
+                btnWa.disabled = false;
+                btnWa.classList.remove('opacity-50', 'cursor-not-allowed', 'border-gray-300', 'bg-gray-100', 'text-gray-400');
+                btnWa.classList.add('border-green-500', 'bg-green-50', 'text-green-700', 'hover:bg-green-100');
+                waError.classList.add('hidden');
+            }
+
+            showScreen('screen-method');
+        }
+
+        function requestOTP(method) {
+            if (method === 'wa' && isWaSuspended) {
+                alert("WhatsApp ditangguhkan selama 24 jam karena limit harian tercapai. Silakan pilih metode Email.");
+                goToMethodSelection();
+                return;
+            }
+            currentMethod = method;
+            let phone = document.getElementById('trigger-input').value;
+            let themeClass = activeFlow === 'sales_incentive' ? 'text-blue-600' : 'text-gray-800';
+            
+            let resendTimeStr = '';
+            if (method === 'wa') {
+                waLimitCount++;
+                document.getElementById('debug-count').innerText = `${waLimitCount} / 5x`;
+                
+                let pinDescPrefix = activeFlow === 'sales_incentive' ? 
+                    "Kode OTP telah kami kirim via Whatsapp ke nomor:" : 
+                    "Kode OTP telah kami kirim via Whatsapp ke nomor HP yang kamu masukkan";
+                
+                document.getElementById('pin-instruction').innerHTML = `${pinDescPrefix}<br><span id="pin-phone" class="font-bold ${themeClass} mt-1 block">${phone}</span>`;
+                
+                // Show limit warning banner and calculate remaining sends
+                const limitInfo = document.getElementById('wa-limit-info');
+                const limitText = document.getElementById('wa-limit-text');
+                if (limitInfo && limitText) {
+                    limitInfo.classList.remove('hidden');
+                    const remaining = Math.max(0, 5 - waLimitCount);
+                    if (remaining === 0) {
+                        limitInfo.classList.remove('bg-amber-50', 'border-amber-200', 'text-amber-800');
+                        limitInfo.classList.add('bg-red-50', 'border-red-200', 'text-red-800');
+                        
+                        const futureDate = new Date();
+                        futureDate.setHours(futureDate.getHours() + 24);
+                        const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+                        const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+                        const dayName = days[futureDate.getDay()];
+                        const dateNum = futureDate.getDate();
+                        const monthName = months[futureDate.getMonth()];
+                        const yearNum = futureDate.getFullYear();
+                        const hours = futureDate.getHours().toString().padStart(2, '0');
+                        const mins = futureDate.getMinutes().toString().padStart(2, '0');
+                        resendTimeStr = `${dayName}, ${dateNum} ${monthName} ${yearNum} pukul ${hours}:${mins}`;
+
+                        limitText.innerHTML = `Batas pengiriman OTP via WhatsApp adalah 5x sehari. <b>Sisa limit Anda: 0 kali. WhatsApp Anda ditangguhkan selama 24 jam. Anda baru dapat meminta OTP WhatsApp kembali pada ${resendTimeStr}.</b>`;
+                    } else {
+                        limitInfo.classList.remove('bg-red-50', 'border-red-200', 'text-red-800');
+                        limitInfo.classList.add('bg-amber-50', 'border-amber-200', 'text-amber-800');
+                        limitText.innerHTML = `Batas pengiriman OTP via WhatsApp adalah 5x sehari. Sisa limit Anda: <b>${remaining} kali</b>.`;
+                    }
+                }
+
+                document.querySelectorAll('.node').forEach(n => {
+                    if(n.id !== 'f-start') {
+                        n.classList.remove('n-purple', 'n-red');
+                        n.classList.add('n-gray');
+                        n.style.boxShadow = "none";
+                    }
+                });
+                document.getElementById('f-req-wa').classList.replace('n-gray', 'n-purple');
+                
+                if (waLimitCount >= 5) {
+                    isWaSuspended = true;
+                }
+            } else {
+                let emailMock = "agus****@gmail.com";
+                if(activeFlow === 'sales_incentive') emailMock = "sales****@1000s.com";
+                
+                document.getElementById('pin-instruction').innerHTML = `Kode OTP telah kami kirim via Email ke alamat:<br><span id="pin-phone" class="font-bold ${themeClass} mt-1 block">${emailMock}</span>`;
+                
+                // Hide limit warning banner for email method
+                const limitInfo = document.getElementById('wa-limit-info');
+                if (limitInfo) {
+                    limitInfo.classList.add('hidden');
+                }
+
+                document.getElementById('f-req-email').classList.replace('n-gray', 'n-purple');
+            }
+
+            document.getElementById('f-show-pin').classList.replace('n-gray', 'n-purple');
+            const btnChange = document.getElementById('btn-change-method');
+            const timerEl = document.getElementById('timer-text');
+            
+            btnChange.disabled = true;
+            
+            let timeLeft = 5; 
+            timerEl.innerText = `Kirim Ulang (05)`;
+            timerEl.style.cursor = "default";
+            timerEl.onclick = null;
+            timerEl.classList.remove('text-gray-400');
+            timerEl.classList.add(activeFlow === 'sales_incentive' ? 'text-[#2563EB]' : 'text-[#0B1F8F]');
+            
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                let sec = timeLeft < 10 ? '0' + timeLeft : timeLeft;
+                timerEl.innerText = `Kirim Ulang (${sec})`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    if (currentMethod === 'wa' && waLimitCount >= 5) {
+                        timerEl.innerText = `Kirim Ulang`;
+                        timerEl.style.cursor = "not-allowed";
+                        timerEl.classList.remove('text-[#0B1F8F]', 'text-[#2563EB]');
+                        timerEl.classList.add('text-gray-400');
+                        timerEl.onclick = null;
+                    } else {
+                        timerEl.innerText = `Kirim Ulang`;
+                        timerEl.style.cursor = "pointer";
+                        timerEl.classList.remove('text-gray-400');
+                        timerEl.classList.add(activeFlow === 'sales_incentive' ? 'text-[#2563EB]' : 'text-[#0B1F8F]');
+                        timerEl.onclick = function() { requestOTP(currentMethod); };
+                    }
+                    
+                    btnChange.disabled = false;
+                    document.getElementById('f-timer-end').classList.replace('n-decision', 'n-purple');
+                    document.getElementById('f-enable-btns').classList.replace('n-gray', 'n-purple');
+                }
+            }, 1000);
+
+            document.getElementById('otp-error-msg').classList.add('hidden');
+            const inputs = document.querySelectorAll('#otp-inputs input');
+            inputs.forEach(input => {
+                input.value = '';
+                input.classList.remove('border-red-500', 'bg-red-50');
+                input.classList.add('border-gray-300', 'bg-white');
+            });
+            inputs[0].focus();
+
+            showScreen('screen-pin');
+        }
+
+        function moveToNext(input, nextFieldId, prevField) {
+            if (input.value.length >= 1) {
+                if (nextFieldId) {
+                    document.getElementById(nextFieldId).focus();
+                }
+            } else if (input.value.length === 0 && prevField) {
+                prevField.focus();
+            }
+        }
+
+        function verifyOTP() {
+            const inputs = document.querySelectorAll('#otp-inputs input');
+            let otp = '';
+            inputs.forEach(input => otp += input.value);
+            
+            if (otp === '123456') {
+                showScreen('screen-success');
+                document.getElementById('f-input-ok').style.boxShadow = "0 0 0 4px #22c55e";
+                setTimeout(() => document.getElementById('f-input-ok').style.boxShadow = "", 2000);
+            } else {
+                document.getElementById('otp-error-msg').classList.remove('hidden');
+                inputs.forEach(input => {
+                    input.classList.remove('border-gray-300', 'bg-white');
+                    input.classList.add('border-red-500', 'bg-red-50');
+                });
+                const errorMsg = document.getElementById('otp-error-msg');
+                errorMsg.style.transform = 'translateX(-5px)';
+                setTimeout(() => errorMsg.style.transform = 'translateX(5px)', 100);
+                setTimeout(() => errorMsg.style.transform = 'translateX(-5px)', 200);
+                setTimeout(() => errorMsg.style.transform = 'translateX(0)', 300);
+            }
+        }
+
+        // --- FLOWCHART RENDERING LOGIC ---
+        const connections = [
+            { from: 'f-start', to: 'f-check-limit', fromEdge: 'right', toEdge: 'left' },
+            { from: 'f-check-limit', to: 'f-show-methods', fromEdge: 'right', toEdge: 'left', label: 'YA (< 5x)', labelClass: 'label-yes' },
+            { from: 'f-check-limit', to: 'f-wa-disabled', fromEdge: 'bottom', toEdge: 'top', label: 'TIDAK (>= 5x)', labelClass: 'label-no' },
+            { from: 'f-wa-disabled', to: 'f-show-methods', fromEdge: 'top', toEdge: 'bottom' },
+            { from: 'f-show-methods', to: 'f-select-wa', fromEdge: 'top', toEdge: 'left' },
+            { from: 'f-show-methods', to: 'f-select-email', fromEdge: 'bottom', toEdge: 'left' },
+            { from: 'f-select-wa', to: 'f-req-wa', fromEdge: 'right', toEdge: 'left' },
+            { from: 'f-select-email', to: 'f-req-email', fromEdge: 'right', toEdge: 'left' },
+            { from: 'f-req-wa', to: 'f-show-pin', fromEdge: 'right', toEdge: 'top' },
+            { from: 'f-req-email', to: 'f-show-pin', fromEdge: 'right', toEdge: 'bottom' },
+            { from: 'f-show-pin', to: 'f-timer-end', fromEdge: 'right', toEdge: 'left' },
+            { from: 'f-timer-end', to: 'f-enable-btns', fromEdge: 'right', toEdge: 'left', label: 'YA (00:00)', labelClass: 'label-yes' },
+            { from: 'f-enable-btns', to: 'f-action-resend', fromEdge: 'bottom', toEdge: 'top' },
+            { from: 'f-enable-btns', to: 'f-action-change', fromEdge: 'bottom', toEdge: 'top' },
+            { from: 'f-enable-btns', to: 'f-input-ok', fromEdge: 'right', toEdge: 'left' },
+            { from: 'f-action-resend', to: 'f-check-limit', fromEdge: 'left', toEdge: 'bottom' },
+            { from: 'f-action-change', to: 'f-check-limit', fromEdge: 'left', toEdge: 'bottom' },
+            { from: 'f-input-ok', to: 'f-end', fromEdge: 'right', toEdge: 'left' }
+        ];
+
+        let scale = 1;
+        const area = document.getElementById('flow-area');
+        const container = document.getElementById('canvas-container');
+        const svgLayer = document.getElementById('svg-layer');
+
+        function getEdgePoint(el, edge) {
+            const isDiamond = el.classList.contains('n-decision');
+            const isCircle = el.classList.contains('n-start') || el.classList.contains('n-end');
+            
+            const x = el.offsetLeft; const y = el.offsetTop;
+            const w = el.offsetWidth; const h = el.offsetHeight;
+            const cx = x + w / 2; const cy = y + h / 2;
+
+            if (isDiamond) {
+                const offset = (w / 2) * Math.SQRT2;
+                switch (edge) {
+                    case 'top': return { x: cx, y: cy - offset };
+                    case 'bottom': return { x: cx, y: cy + offset };
+                    case 'left': return { x: cx - offset, y: cy };
+                    case 'right': return { x: cx + offset, y: cy };
+                }
+            } else if (isCircle) {
+                 const r = w / 2;
+                 switch (edge) {
+                    case 'top': return { x: cx, y: cy - r };
+                    case 'bottom': return { x: cx, y: cy + r };
+                    case 'left': return { x: cx - r, y: cy };
+                    case 'right': return { x: cx - r, y: cy };
+                }
+            } else {
+                switch (edge) {
+                    case 'top': return { x: cx, y: y };
+                    case 'bottom': return { x: cx, y: y + h };
+                    case 'left': return { x: x, y: cy };
+                    case 'right': return { x: x + w, y: cy };
+                }
+            }
+            return { x: cx, y: cy };
+        }
+
+        function updateConnections() {
+            while (svgLayer.firstChild) {
+                if (svgLayer.firstChild.tagName === 'defs') {
+                    if (svgLayer.children.length === 1) break;
+                    let defs = svgLayer.firstChild;
+                    svgLayer.innerHTML = '';
+                    svgLayer.appendChild(defs);
+                    break;
+                }
+                svgLayer.removeChild(svgLayer.firstChild);
+            }
+            document.querySelectorAll('.connection-label').forEach(l => l.remove());
+
+            connections.forEach(conn => {
+                const fromEl = document.getElementById(conn.from);
+                const toEl = document.getElementById(conn.to);
+                if (!fromEl || !toEl) return;
+
+                const start = getEdgePoint(fromEl, conn.fromEdge);
+                const end = getEdgePoint(toEl, conn.toEdge);
+
+                const points = [start];
+                const offset = 25;
+
+                let p1 = { ...start };
+                if (conn.fromEdge === 'top') p1.y -= offset;
+                else if (conn.fromEdge === 'bottom') p1.y += offset;
+                else if (conn.fromEdge === 'left') p1.x -= offset;
+                else if (conn.fromEdge === 'right') p1.x += offset;
+                points.push(p1);
+
+                let p2 = { ...end };
+                if (conn.toEdge === 'top') p2.y -= offset;
+                else if (conn.toEdge === 'bottom') p2.y += offset;
+                else if (conn.toEdge === 'left') p2.x -= offset;
+                else if (conn.toEdge === 'right') p2.x += offset;
+
+                if (conn.fromEdge === 'left' || conn.fromEdge === 'right') {
+                    if (conn.toEdge === 'top' || conn.toEdge === 'bottom') {
+                        points.push({ x: p2.x, y: p1.y });
+                    } else {
+                        const midX = (p1.x + p2.x) / 2;
+                        points.push({ x: midX, y: p1.y });
+                        points.push({ x: midX, y: p2.y });
+                    }
+                } else {
+                    if (conn.toEdge === 'left' || conn.toEdge === 'right') {
+                        points.push({ x: p1.x, y: p2.y });
+                    } else {
+                        const midY = (p1.y + p2.y) / 2;
+                        points.push({ x: p1.x, y: midY });
+                        points.push({ x: p2.x, y: midY });
+                    }
+                }
+
+                points.push(p2);
+                points.push(end);
+
+                let d = `M ${points[0].x} ${points[0].y}`;
+                for (let i = 1; i < points.length; i++) {
+                    d += ` L ${points[i].x} ${points[i].y}`;
+                }
+
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                path.setAttribute("d", d);
+                path.setAttribute("class", "connection-path");
+                path.setAttribute("marker-end", "url(#arrow)");
+                svgLayer.appendChild(path);
+
+                if (conn.label) {
+                    const label = document.createElement('div');
+                    label.className = `connection-label ${conn.labelClass || ''}`;
+                    label.innerText = conn.label;
+                    
+                    let labelX, labelY;
+                    if (points.length === 6) { 
+                        labelX = (points[2].x + points[3].x) / 2;
+                        labelY = (points[2].y + points[3].y) / 2;
+                    } else { 
+                        labelX = points[2].x;
+                        labelY = points[2].y;
+                    }
+                    
+                    label.style.left = `${labelX}px`;
+                    label.style.top = `${labelY}px`;
+                    area.appendChild(label);
+                }
+            });
+        }
+
+        function zoomView(factor) {
+            scale *= factor;
+            scale = Math.min(Math.max(0.1, scale), 3);
+            area.style.transform = `scale(${scale})`;
+        }
+
+        function resetZoom() {
+            scale = 1;
+            area.style.transform = `scale(1)`;
+            container.scrollLeft = 200; 
+            container.scrollTop = 200;
+        }
+
+        let isPanning = false;
+        let startX, startY, scrollLeft, scrollTop;
+
+        container.addEventListener('mousedown', (e) => {
+            if (e.target.closest('.btn-ctrl') || e.target.closest('button')) return; 
+            isPanning = true;
+            startX = e.pageX - container.offsetLeft;
+            startY = e.pageY - container.offsetTop;
+            scrollLeft = container.scrollLeft;
+            scrollTop = container.scrollTop;
+            container.style.cursor = 'grabbing';
+        });
+
+        container.addEventListener('mouseleave', () => { isPanning = false; container.style.cursor = 'grab'; });
+        container.addEventListener('mouseup', () => { isPanning = false; container.style.cursor = 'grab'; });
+        container.addEventListener('mousemove', (e) => {
+            if (!isPanning) return;
+            e.preventDefault();
+            const x = e.pageX - container.offsetLeft;
+            const y = e.pageY - container.offsetTop;
+            container.scrollLeft = scrollLeft - (x - startX) * 2;
+            container.scrollTop = scrollTop - (y - startY) * 2;
+        });
+
+        container.addEventListener('wheel', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                e.preventDefault();
+                if (e.deltaY > 0) zoomView(0.9);
+                else zoomView(1.1);
+            }
+        });
+        
+        setTimeout(() => {
+            container.scrollLeft = 300;
+            container.scrollTop = 300;
+        }, 100);
+    </script>
+</body>
+</html>

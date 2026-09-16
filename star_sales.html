@@ -1,0 +1,3931 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+  <title>Star Sales — Final Premium Prototype</title>
+  <meta name="last-updated" content="2026-05-20">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* CSS ASLI v1 - JANGAN DIUBAH DASARNYA */
+    :root {
+      --navy: #0D2461;
+      --blue: #1565C0;
+      --blue2: #1E88E5;
+      --gold: #FFB300;
+      --ok: #4CAF50;
+      --warn: #FF9800;
+      --danger: #F44336;
+      --bg: #F0F4F8;
+      --white: #fff;
+      --gray1: #F5F5F5;
+      --gray2: #E0E0E0;
+      --gray3: #9E9E9E;
+      --gray4: #424242
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      font-family: 'Inter', sans-serif
+    }
+
+    body {
+      background: linear-gradient(135deg, #0a1a4e, #1565C0, #0a1a4e);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      gap: 50px
+    }
+
+    /* PHONE FRAME v1 */
+    .phone {
+      width: 390px;
+      height: 820px;
+      background: var(--bg);
+      border-radius: 40px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 0 10px #111, 0 40px 80px rgba(0, 0, 0, .6);
+      position: relative;
+      flex-shrink: 0
+    }
+
+    .statusbar {
+      background: var(--navy);
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 22px;
+      font-size: 12px;
+      font-weight: 600
+    }
+
+    .screens {
+      flex: 1;
+      overflow: hidden;
+      position: relative
+    }
+
+    .screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      background: var(--bg);
+      display: none;
+      flex-direction: column
+    }
+
+    .screen.active {
+      display: flex
+    }
+
+    /* HOME COMPONENTS v1 */
+    .hdr {
+      background: linear-gradient(180deg, #0D2461, #0f2d75);
+      padding: 12px 16px
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px
+    }
+
+    .logo-ic {
+      width: 30px;
+      height: 30px;
+      background: linear-gradient(135deg, #1E88E5, #0D2461);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 900;
+      color: #fff
+    }
+
+    .pcard {
+      background: rgba(255, 255, 255, .13);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: #fff
+    }
+
+    .av {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .25);
+      border: 2px solid rgba(255, 255, 255, .4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px
+    }
+
+    .saldo-amt {
+      color: #fff;
+      font-size: 22px;
+      font-weight: 800;
+      margin-top: 2px
+    }
+
+    .ss-card {
+      background: linear-gradient(135deg, #0D2461, #1565C0, #1E88E5);
+      margin: 12px;
+      border-radius: 16px;
+      padding: 16px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(21, 101, 192, .35);
+      color: #fff
+    }
+
+    .ss-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255, 255, 255, .2);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 10px;
+      margin-bottom: 8px
+    }
+
+    .ss-stats {
+      display: flex;
+      gap: 12px;
+      margin: 12px 0
+    }
+
+    .ss-stat {
+      text-align: center;
+      flex: 1
+    }
+
+    .ss-stat h4 {
+      font-size: 18px;
+      font-weight: 800
+    }
+
+    .ss-stat p {
+      font-size: 10px;
+      opacity: .7
+    }
+
+    .divv {
+      width: 1px;
+      background: rgba(255, 255, 255, .2);
+      align-self: stretch
+    }
+
+    /* DASHBOARD HERO v1 BASED */
+    .ss-hero {
+      padding: 14px 16px 22px;
+      background: linear-gradient(180deg, #1565C0, #0D2461 130%);
+      color: #fff
+    }
+
+    .hero-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px
+    }
+
+    .back-btn {
+      width: 32px;
+      height: 32px;
+      background: rgba(255, 255, 255, .15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      color: #fff;
+      border: none
+    }
+
+    .hero-info-line {
+      font-size: 11px;
+      color: rgba(255, 255, 255, .75);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 500
+    }
+
+    .hero-rank-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px
+    }
+
+    .hero-stars-box {
+      display: flex;
+      gap: 3px
+    }
+
+    .hero-stars-box span {
+      font-size: 24px
+    }
+
+    .hero-rank-pill {
+      background: rgba(255, 255, 255, .15);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, .25)
+    }
+
+    /* GRID 4 KOLOM v1 BASED (Boxes Style) */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px
+    }
+
+    .hero-box {
+      background: rgba(255, 255, 255, .13);
+      border-radius: 14px;
+      padding: 12px 4px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 95px;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, .05)
+    }
+
+    .hero-box .l-top {
+      font-size: 9px;
+      font-weight: 700;
+      opacity: .65;
+      margin-bottom: 4px;
+      letter-spacing: .3px
+    }
+
+    .hero-box h4 {
+      font-size: 22px;
+      font-weight: 800;
+      margin-bottom: 2px
+    }
+
+    .hero-box .l-bot {
+      font-size: 10px;
+      opacity: .6
+    }
+
+    /* ALERT v1 */
+    .alert-bar {
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #FFFFFF;
+      width: 100%;
+      box-sizing: border-box;
+      line-height: 1.4;
+    }
+
+    .alert-bar.warn {
+      background: #FF9100;
+      /* Solid Orange from screenshot */
+    }
+
+    .alert-bar.danger {
+      background: #D32F2F;
+      /* Solid Red */
+    }
+
+    .alert-bar.success {
+      background: #2E7D32;
+      /* Solid Green */
+    }
+
+    .alert-bar.info {
+      background: #546E7A;
+      /* Solid Grey */
+    }
+
+    .tab-badge {
+      background: #E8F0FE;
+      color: #1A73E8;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 10px;
+      margin-left: 4px;
+      font-weight: 700;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    /* TABS v1 */
+    .tabs {
+      display: flex;
+      background: var(--white);
+      border-bottom: 2px solid var(--gray2);
+      position: sticky;
+      top: 0;
+      z-index: 15
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gray3);
+      cursor: pointer;
+      border-bottom: 2px solid transparent
+    }
+
+    .tab.active {
+      color: var(--blue);
+      border-bottom-color: var(--blue)
+    }
+
+    /* LEADERBOARD v1 STYLE */
+    .podium {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 6px;
+      padding: 20px 14px 10px;
+      background: linear-gradient(180deg, #0D2461, #1565C0)
+    }
+
+    .pod-av {
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      border: 3px solid rgba(255, 255, 255, .4);
+      background: rgba(255, 255, 255, .2)
+    }
+
+    .pod-av.s1 {
+      width: 56px;
+      height: 56px;
+      border-color: var(--gold)
+    }
+
+    .pod-base {
+      border-radius: 10px 10px 0 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      color: #fff
+    }
+
+    .pod-base.b1 {
+      height: 60px;
+      background: rgba(255, 179, 0, .4);
+      min-width: 90px
+    }
+
+    .pod-base.b2 {
+      height: 44px;
+      background: rgba(255, 255, 255, .2);
+      min-width: 80px
+    }
+
+    .pod-base.b3 {
+      height: 34px;
+      background: rgba(255, 255, 255, .1);
+      min-width: 70px
+    }
+
+    .lb-item {
+      background: var(--white);
+      margin: 0 10px 6px;
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .06)
+    }
+
+    .lb-item.me {
+      background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+      border: 2px solid var(--blue2)
+    }
+
+    .lb-rank {
+      width: 28px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--gray3)
+    }
+
+    .lb-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gray4)
+    }
+
+    .lb-star-tag {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px
+    }
+
+    .s5-tag {
+      background: #FFF8E1;
+      color: #F57F17
+    }
+
+    .s4-tag {
+      background: #E8EAF6;
+      color: #283593
+    }
+
+    /* SIDEBAR & CARD LAYOUT */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 320px;
+      flex-shrink: 0;
+    }
+
+    .info-card {
+      width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: rgba(255, 255, 255, .05);
+      padding: 25px;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, .1);
+      backdrop-filter: blur(10px);
+    }
+
+    .info-card h3 {
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 4px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      opacity: .8;
+    }
+
+    .info-card p {
+      color: rgba(255, 255, 255, .7);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .flow-btn {
+      background: rgba(168, 85, 247, 0.2) !important;
+      border-color: rgba(168, 85, 247, 0.4) !important;
+      text-align: center !important;
+      font-weight: 700 !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .flow-btn:hover {
+      background: rgba(168, 85, 247, 0.35) !important;
+    }
+
+    /* EXTERNAL CONTROLS (Clean Style) */
+    .controls {
+      width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: rgba(255, 255, 255, .05);
+      padding: 25px;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, .1);
+      backdrop-filter: blur(10px)
+    }
+
+    .controls h3 {
+      color: #fff;
+      font-size: 15px;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      opacity: .8
+    }
+
+    .sw-btn {
+      background: rgba(255, 255, 255, .1);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, .1);
+      padding: 14px;
+      border-radius: 14px;
+      font-size: 12px;
+      cursor: pointer;
+      text-align: left;
+      transition: all .3s
+    }
+
+    .sw-btn:hover {
+      background: rgba(255, 255, 255, .2)
+    }
+
+    .sw-btn.active {
+      background: var(--blue);
+      border-color: var(--blue2);
+      box-shadow: 0 4px 12px rgba(21, 101, 192, .4)
+    }
+
+    /* Flowchart Overlay Panel */
+    .flow-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: white;
+      z-index: 999;
+      display: none;
+    }
+
+    .canvas-container {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      cursor: grab;
+      background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    .canvas-container:active {
+      cursor: grabbing;
+    }
+
+    #flow-area {
+      transform-origin: 0 0;
+      transition: transform 0.1s ease-out;
+      padding: 500px;
+      display: inline-block;
+      white-space: nowrap;
+      position: relative;
+      min-width: 4000px;
+      min-height: 2000px;
+    }
+
+    .node {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 15px 20px;
+      min-width: 160px;
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      font-size: 12px;
+      font-weight: 700;
+      color: #1e293b;
+      position: absolute;
+      z-index: 10;
+      user-select: none;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .node:hover {
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+      z-index: 20;
+    }
+
+    .n-start {
+      width: 80px;
+      height: 80px;
+      min-width: 80px;
+      border-radius: 50%;
+      background: #dcfce7;
+      border-color: #22c55e;
+      color: #166534;
+    }
+
+    .n-end {
+      width: 80px;
+      height: 80px;
+      min-width: 80px;
+      border-radius: 50%;
+      background: #fee2e2;
+      border-color: #ef4444;
+      color: #991b1b;
+    }
+
+    .n-purple {
+      background: #f3e8ff;
+      border-color: #d8b4fe;
+      color: #6b21a8;
+    }
+
+    .n-gray {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+      color: #334155;
+    }
+
+    .n-pink {
+      background: #fce7f3;
+      border-color: #f9a8d4;
+      color: #9d174d;
+      border-style: dashed;
+      font-size: 10px;
+      min-width: 120px;
+    }
+
+    .n-decision {
+      width: 100px;
+      height: 100px;
+      min-width: 100px;
+      transform: rotate(45deg);
+      background: #ffedd5;
+      border-color: #fdba74;
+      color: #9a3412;
+      padding: 0;
+      border-radius: 10px;
+    }
+
+    .n-decision:hover {
+      transform: rotate(45deg) scale(1.05);
+    }
+
+    .n-decision span {
+      transform: rotate(-45deg);
+      text-align: center;
+      display: block;
+      width: 100%;
+    }
+
+    .svg-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .connection-path {
+      fill: none;
+      stroke: #94a3b8;
+      stroke-width: 2;
+    }
+
+    .connection-label {
+      position: absolute;
+      background: white;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 15;
+      border: 1px solid #e2e8f0;
+    }
+
+    .label-yes {
+      color: #059669;
+      border-color: #10b981;
+    }
+
+    .label-no {
+      color: #dc2626;
+      border-color: #ef4444;
+    }
+
+    .flow-ctrl-panel {
+      position: absolute;
+      top: 25px;
+      right: 25px;
+      display: flex;
+      gap: 10px;
+      z-index: 100;
+    }
+
+    .btn-ctrl {
+      width: 45px;
+      height: 45px;
+      background: white;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #64748b;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .btn-ctrl:hover {
+      background: #f8fafc;
+      color: #4f46e5;
+      transform: translateY(-2px);
+    }
+
+    .legend {
+      position: absolute;
+      bottom: 30px;
+      left: 30px;
+      background: white;
+      padding: 15px;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      z-index: 100;
+      font-size: 11px;
+      pointer-events: none;
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, .8);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: 28px;
+      width: 100%;
+      max-width: 350px;
+      overflow: hidden;
+      animation: pop .3s cubic-bezier(.17, .67, .83, .67)
+    }
+
+    .modal-header {
+      padding: 20px;
+      background: var(--navy);
+      color: #fff;
+      text-align: center;
+      font-weight: 800
+    }
+
+    .modal-body {
+      padding: 20px;
+      max-height: 480px;
+      overflow-y: auto;
+    }
+
+    .prize-table {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    .prize-table td,
+    .prize-table th {
+      padding: 12px 8px;
+      font-size: 12px;
+      border-bottom: 1px solid #f0f0f0
+    }
+
+    .close-modal {
+      width: 100%;
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      padding: 14px;
+      border-radius: 14px;
+      margin-top: 15px;
+      font-weight: 800;
+      cursor: pointer
+    }
+
+    /* STORE TAB STYLES (RESTORED) */
+    .search-row {
+      padding: 12px 14px;
+      background: var(--bg)
+    }
+
+    .search-box {
+      background: var(--white);
+      border-radius: 14px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .05)
+    }
+
+    .search-box input {
+      border: none;
+      outline: none;
+      font-size: 13px;
+      width: 100%;
+      color: var(--gray4);
+      background: transparent
+    }
+
+    .store-card {
+      background: var(--white);
+      margin: 0 12px 10px;
+      border-radius: 18px;
+      padding: 14px;
+      position: relative;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, .05);
+      display: flex;
+      flex-direction: column;
+      gap: 10px
+    }
+
+    .store-top {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .store-ic {
+      width: 40px;
+      height: 40px;
+      background: #E8F5E9;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px
+    }
+
+    .store-ic.warn {
+      background: #FFF3E0
+    }
+
+    .store-info {
+      flex: 1
+    }
+
+    .store-info h5 {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--gray4)
+    }
+
+    .store-info p {
+      font-size: 11px;
+      color: var(--gray3)
+    }
+
+    .status-flag {
+      background: #E8F5E9;
+      color: #2E7D32;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px
+    }
+
+    .status-flag.active-flag {
+      border: 1px solid #C8E6C9
+    }
+
+    .amt-text {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gray3);
+      text-align: right
+    }
+
+    .progress-container {
+      margin-top: 4px
+    }
+
+    .progress-bg {
+      height: 6px;
+      background: var(--gray1);
+      border-radius: 10px;
+      overflow: hidden
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #FF9800, #F57C00);
+      border-radius: 10px
+    }
+
+    .show-more {
+      text-align: center;
+      padding: 10px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer
+    }
+
+    /* LEADERBOARD REFINEMENT (CLEAN) */
+    .podium {
+      display: none !important;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 12px;
+      padding: 35px 14px 15px;
+      background: linear-gradient(180deg, #0D2461, #1565C0)
+    }
+
+    .pod-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      width: 95px
+    }
+
+    .pod-icon {
+      font-size: 28px;
+      margin-bottom: 4px;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))
+    }
+
+    .pod-name {
+      font-size: 12px;
+      font-weight: 800;
+      color: #fff;
+      margin-top: 5px
+    }
+
+    .pod-ta {
+      font-size: 11px;
+      color: rgba(255, 255, 255, .8);
+      margin-bottom: 8px
+    }
+
+    .pod-base {
+      border-radius: 10px 10px 0 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 22px;
+      color: rgba(255, 255, 255, .8)
+    }
+
+    .pod-base.b1 {
+      height: 75px;
+      background: rgba(255, 255, 255, .25);
+      color: #fff
+    }
+
+    .pod-base.b2 {
+      height: 55px;
+      background: rgba(255, 255, 255, .15)
+    }
+
+    .pod-base.b3 {
+      height: 45px;
+      background: rgba(255, 255, 255, .1)
+    }
+
+    .lb-item {
+      background: var(--white);
+      margin: 0 12px 10px;
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .04)
+    }
+
+    .lb-rank {
+      width: 36px;
+      height: 36px;
+      border: 1.5px solid #e3f2fd;
+      background: #f8fafc;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 800;
+      color: #1e88e5;
+    }
+
+    .lb-av-small {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #F5F5F5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--gray4)
+    }
+
+    .lb-info {
+      flex: 1
+    }
+
+    .lb-info h5 {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--gray4);
+      margin-bottom: 2px
+    }
+
+    .lb-info p {
+      font-size: 12px;
+      color: var(--gray3)
+    }
+
+    .star-tag {
+      background: #FFF9E1;
+      color: #FF8F00;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      border: 1px solid #FFE082
+    }
+    @keyframes float-icon {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    /* CUSTOM CLAIMS SCENARIO STYLES */
+    #s-scan {
+      background: #000;
+      position: relative;
+    }
+    .scan-camera-sim {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(185deg, #222, #111, #333);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .scan-header {
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      color: white;
+      font-weight: 700;
+      font-size: 14px;
+      z-index: 10;
+    }
+    .scan-back-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      margin-right: 12px;
+    }
+    .scan-target-box {
+      width: 220px;
+      height: 220px;
+      border: 3px solid rgba(255, 255, 255, 0.6);
+      border-radius: 24px;
+      position: absolute;
+      top: 35%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 0 999px rgba(0, 0, 0, 0.6);
+    }
+    .scan-target-line {
+      width: 100%;
+      height: 2px;
+      background: #ef4444;
+      position: absolute;
+      top: 50%;
+      animation: scan-move 2s infinite ease-in-out;
+    }
+    @keyframes scan-move {
+      0%, 100% { top: 10%; }
+      50% { top: 90%; }
+    }
+    .scan-instruction {
+      position: absolute;
+      bottom: 24px;
+      left: 16px;
+      right: 16px;
+      background: rgba(0, 0, 0, 0.75);
+      color: white;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 10px;
+      text-align: center;
+      line-height: 1.4;
+      z-index: 10;
+    }
+
+    /* Modal overlay inside .phone */
+    .claim-modal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 16px;
+    }
+    .claim-modal-card {
+      background: white;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 320px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: modal-pop 0.3s ease-out;
+    }
+    @keyframes modal-pop {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .claim-modal-header {
+      padding: 16px 16px 8px 16px;
+      text-align: center;
+    }
+    .claim-modal-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+    }
+    .claim-modal-subtitle {
+      font-size: 10px;
+      color: #666;
+      line-height: 1.3;
+    }
+    .claim-modal-divider {
+      height: 2px;
+      background: #1e88e5;
+      width: 100%;
+    }
+    .claim-modal-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 480px;
+      overflow-y: auto;
+    }
+    .claim-detail-box {
+      background: #f5f7fa;
+      border-radius: 12px;
+      padding: 12px;
+      border: 1px solid #e1e8ed;
+    }
+    .claim-ord-num {
+      font-size: 13px;
+      font-weight: 800;
+      color: #0f2d75;
+      margin-bottom: 8px;
+    }
+    .claim-detail-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 10px;
+    }
+    .claim-detail-label {
+      color: #777;
+      font-weight: 500;
+      width: 100px;
+    }
+    .claim-detail-val {
+      color: #333;
+      font-weight: 700;
+      text-align: right;
+      flex: 1;
+    }
+    .claim-warning-banner {
+      background: #FFF3CD;
+      color: #856404;
+      border: 1px solid #FFEBA5;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 600;
+      line-height: 1.4;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      text-align: left;
+    }
+    .claim-warning-banner i {
+      margin-top: 2px;
+    }
+    .claim-modal-actions {
+      padding: 12px 16px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .btn-claim-primary {
+      background: #1565C0;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.2s;
+    }
+    .btn-claim-primary:hover {
+      background: #0d47a1;
+    }
+    .btn-claim-secondary {
+      background: none;
+      border: none;
+      color: #1565C0;
+      padding: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    /* Success Screen style */
+    #s-claim-success {
+      background: white;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+    }
+    .success-illustration-area {
+      background: linear-gradient(135deg, #E3F2FD, #BBDEFB);
+      height: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .success-rays {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+      animation: spin-rays 20s linear infinite;
+    }
+    @keyframes spin-rays {
+      100% { transform: rotate(360deg); }
+    }
+    .success-cuan-title {
+      font-size: 24px;
+      font-weight: 900;
+      color: #0d2461;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 8px;
+      z-index: 2;
+    }
+    .success-avatar-group {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      z-index: 2;
+    }
+    .success-char {
+      width: 60px;
+      height: 60px;
+      background: #fff;
+      border-radius: 50%;
+      border: 3px solid #1e88e5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+    .success-badge {
+      width: 36px;
+      height: 36px;
+      background: #4CAF50;
+      color: white;
+      border-radius: 50%;
+      border: 3px solid white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      position: absolute;
+      bottom: 20px;
+      z-index: 3;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .success-body {
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      flex: 1;
+    }
+    .success-claim-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: #333;
+      margin-top: 12px;
+      margin-bottom: 8px;
+    }
+    .success-claim-desc {
+      font-size: 11px;
+      color: #666;
+      line-height: 1.5;
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    .success-claim-desc strong {
+      color: #d32f2f;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="phone">
+    <div class="statusbar"><span>15:38</span><span>⚡ 30%</span></div>
+    <div class="screens">
+      <!-- HOME SCREEN (Identical v1) -->
+      <div class="screen active" id="s-home">
+        <div class="hdr">
+          <div class="logo">
+            <div class="logo-ic">NN</div>
+            <p style="color:#fff;font-size:14px;font-weight:700">Sales 1000s</p>
+          </div>
+          <div class="pcard">
+            <div class="av">👤</div>
+            <div style="flex:1">
+              <p style="font-size:11px;opacity:.7">T50044</p>
+              <p style="font-size:15px;font-weight:700">AFIF CHOIRUL ANAM</p>
+              <div class="saldo-amt">Rp15,133,662</div>
+            </div>
+          </div>
+        </div>
+        <div class="ss-card" id="home-ss-card" onclick="goToDashboard()">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div class="ss-tag" id="home-period-tag" style="margin-bottom:0">⭐ STAR SALES · JUNI 2026</div>
+            <span id="home-status-badge" style="font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 8px; background: rgba(255,255,255,0.25); color: white; text-transform: uppercase;">BERJALAN</span>
+          </div>
+          <!-- Active Content -->
+          <div id="home-ss-active-content">
+            <p style="font-size:17px;font-weight:800;margin-bottom:4px">Posisi Kamu Saat Ini</p>
+            <div class="ss-stats">
+              <div class="ss-stat">
+                <p>Peringkat</p>
+                <h4 id="home-rank">#31</h4>
+              </div>
+              <div class="divv"></div>
+              <div class="ss-stat">
+                <p>Total Toko Aktif</p>
+                <h4 id="home-ta">22</h4>
+              </div>
+              <div class="divv"></div>
+              <div class="ss-stat">
+                <p>Level</p>
+                <h4 id="home-level">Star 4</h4>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-size:18px" id="home-stars">⭐⭐⭐⭐<span style="filter:grayscale(1);opacity:.4">⭐</span></div>
+              <span style="font-size:12px;font-weight:800">Lihat Detail →</span>
+            </div>
+          </div>
+
+          <!-- Empty Content -->
+          <div id="home-ss-empty-content" style="display: none; padding: 12px 0;">
+            <p id="home-ss-empty-title" style="font-size: 16px; font-weight: 800; margin-bottom: 6px;">Belum Ada Program Aktif</p>
+            <p id="home-ss-empty-desc" style="font-size: 11px; opacity: 0.8; line-height: 1.6; margin-bottom: 12px;">Saat ini tidak ada program Star Sales yang sedang berjalan.</p>
+            <div style="text-align: right;">
+              <span style="font-size:12px;font-weight:800">Lihat Detail →</span>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+      <!-- DASHBOARD SCREEN (v1 Style Tokens + Image Layout) -->
+      <div class="screen" id="s-dashboard">
+        <div class="ss-hero">
+          <!-- Top row: back button (absolute) + centered title -->
+          <div style="position: relative; display: flex; align-items: center; justify-content: center; margin-bottom: 10px;">
+            <button class="back-btn" onclick="goToHome()" style="position: absolute; left: 0;">←</button>
+            <h2 style="font-size: 16px; font-weight: 800; color: white; letter-spacing: 0.3px;">Star Sales</h2>
+          </div>
+
+          <!-- Period Selector: centered pill-style dropdown -->
+          <div style="display: flex; justify-content: center; margin-bottom: 10px;">
+            <div style="position: relative; display: inline-flex; align-items: center;">
+              <select id="sales-period-selector" onchange="switchSalesPeriod(this.value)"
+                style="appearance: none; -webkit-appearance: none; background: rgba(255,255,255,0.18); border: 1.5px solid rgba(255,255,255,0.35); color: white; padding: 5px 28px 5px 12px; border-radius: 20px; font-size: 12px; outline: none; cursor: pointer; font-weight: 700; font-family: inherit; min-width: 160px; max-width: 320px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; text-align: center;">
+                <!-- Dynamically populated -->
+              </select>
+              <span style="position: absolute; right: 10px; pointer-events: none; font-size: 10px; color: white; opacity: 0.85;">∨</span>
+            </div>
+          </div>
+
+          <!-- Wrapper for stats content to hide in empty states -->
+          <div id="hero-stats-content">
+            <!-- Summary line: star icon + level + rank + status badge -->
+            <div id="dash-summary-line" style="text-align: center; margin-bottom: 14px; display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap;">
+              <span style="font-size: 16px; line-height: 1;">⭐</span>
+              <span id="dash-summary-text" style="font-size: 13px; font-weight: 800; color: white;">Star 4 &nbsp;•&nbsp; #31 dari 98</span>
+              <span id="dash-status-badge" style="font-size: 10px; font-weight: 700; color: white; background: rgba(255,255,255,0.22); border: 1px solid rgba(255,255,255,0.35); border-radius: 20px; padding: 3px 10px; white-space: nowrap; max-width: 180px; overflow: hidden; text-overflow: ellipsis;">Program Aktif</span>
+            </div>
+
+            <!-- Unified stats card with dividers -->
+            <div style="background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.06)); border: 1px solid rgba(255,255,255,0.18); border-radius: 16px; display: grid; grid-template-columns: repeat(4, 1fr); margin-bottom: 16px; backdrop-filter: blur(8px);">
+              <div style="padding: 12px 4px; text-align: center; border-right: 1px solid rgba(255,255,255,0.2);">
+                <div style="font-size: 9px; font-weight: 700; opacity: 0.65; margin-bottom: 4px; letter-spacing: 0.3px;">Toko Aktif</div>
+                <div id="m-ta" style="font-size: 22px; font-weight: 800; color: white;">22</div>
+              </div>
+              <div style="padding: 12px 4px; text-align: center; border-right: 1px solid rgba(255,255,255,0.2);">
+                <div style="font-size: 9px; font-weight: 700; opacity: 0.65; margin-bottom: 4px; letter-spacing: 0.3px;">Peringkat</div>
+                <div id="m-rank" style="font-size: 22px; font-weight: 800; color: white;">31</div>
+              </div>
+              <div style="padding: 12px 4px; text-align: center; border-right: 1px solid rgba(255,255,255,0.2);">
+                <div style="font-size: 9px; font-weight: 700; opacity: 0.65; margin-bottom: 4px; letter-spacing: 0.3px;">Brand</div>
+                <div id="m-brand" style="font-size: 22px; font-weight: 800; color: white;">5</div>
+              </div>
+              <div style="padding: 12px 4px; text-align: center;">
+                <div style="font-size: 9px; font-weight: 700; opacity: 0.65; margin-bottom: 4px; letter-spacing: 0.3px;">SKU</div>
+                <div id="m-sku" style="font-size: 22px; font-weight: 800; color: white;">34</div>
+              </div>
+            </div>
+
+            <!-- Description blockquote -->
+            <div style="position: relative; padding: 0 20px; margin-bottom: 14px;">
+              <span style="position: absolute; left: 2px; top: -4px; font-size: 32px; font-weight: 900; color: rgba(255,255,255,0.25); line-height: 1; font-family: serif;">"</span>
+              <p id="dash-description" style="font-size: 11px; color: rgba(255,255,255,0.85); line-height: 1.65; text-align: center; font-style: italic; margin: 0;">Star Sales adalah program apresiasi untuk mendorong sales memasarkan produk digital ke toko bangunan.</p>
+              <span style="position: absolute; right: 2px; bottom: -10px; font-size: 32px; font-weight: 900; color: rgba(255,255,255,0.25); line-height: 1; font-family: serif;">"</span>
+            </div>
+
+            <!-- S&K link + last update -->
+            <div style="text-align: center; margin-top: 14px; margin-bottom: 2px;">
+              <a onclick="openTncView()" style="font-size: 11px; font-weight: 700; color: white; text-decoration: underline; cursor: pointer;">Syarat &amp; Ketentuan</a>
+            </div>
+            <div id="dash-last-update-time" style="text-align: center; font-size: 10px; opacity: 0.7; color: white; margin-top: 6px; margin-bottom: 2px;">
+              Terakhir update: 27 Apr 2026, 14:00 WIB
+            </div>
+          </div>
+
+          <!-- Hidden status-label kept for JS compatibility -->
+          <span id="status-label" style="display: none;">STATUS: BERJALAN</span>
+        </div>
+
+        <div id="alert-area"></div>
+
+        <!-- Dashboard Empty State Container -->
+        <div id="dashboard-empty-state" style="display: none; flex-direction: column; align-items: center; justify-content: center; padding: 60px 24px; text-align: center; background: var(--white); margin: 12px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); flex: 1;">
+          <div id="empty-state-icon" style="font-size: 64px; margin-bottom: 16px; display: inline-block; animation: float-icon 3s ease-in-out infinite;">📭</div>
+          <h4 id="empty-state-title" style="font-size: 16px; font-weight: 800; color: var(--navy); margin-bottom: 8px;">Belum Ada Program</h4>
+          <p id="empty-state-desc" style="font-size: 11px; color: var(--gray3); line-height: 1.6; max-width: 260px;">Saat ini tidak ada program Star Sales yang aktif di area Anda.</p>
+        </div>
+
+        <div class="tabs">
+          <div class="tab active" id="t-toko-btn" onclick="switchTab('toko')">
+            Toko
+          </div>
+          <div class="tab" id="tab-lb-btn" onclick="switchTab('lb')">
+            Leaderboard
+          </div>
+        </div>
+
+        <div id="cont-toko" style="flex:1;overflow-y:auto;padding-bottom:100px;display:none">
+          <!-- SEARCH -->
+          <div class="search-row">
+            <div class="search-box">
+              <span>🔍</span>
+              <input type="text" id="store-search-input" placeholder="Cari toko..." oninput="onStoreSearch(this.value)">
+            </div>
+          </div>
+
+          <!-- SUB-TABS (Toko Aktif vs Toko Hampir Aktif vs Tidak Valid) -->
+          <div style="padding: 0 12px 12px; display: flex; gap: 8px;">
+            <button id="subtab-aktif-btn" onclick="switchStoreSubTab('aktif')"
+              style="flex: 1; padding: 10px; border-radius: 12px; border: none; font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.2s; background: var(--white); color: var(--blue); box-shadow: 0 1px 4px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; gap: 4px;">
+              Aktif <span id="subbadge-aktif" class="tab-badge"
+                style="margin: 0; background: #E8F5E9; color: #2E7D32;">0</span>
+            </button>
+            <button id="subtab-hampir-btn" onclick="switchStoreSubTab('hampir')"
+              style="flex: 1; padding: 10px; border-radius: 12px; border: none; font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.2s; background: var(--gray1); color: var(--gray3); display: flex; align-items: center; justify-content: center; gap: 4px;">
+              Hampir Aktif <span id="subbadge-hampir" class="tab-badge"
+                style="margin: 0; background: #FFF3E0; color: #E65100;">0</span>
+            </button>
+            <button id="subtab-invalid-btn" onclick="switchStoreSubTab('invalid')"
+              style="flex: 1; padding: 10px; border-radius: 12px; border: none; font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.2s; background: var(--gray1); color: var(--gray3); display: flex; align-items: center; justify-content: center; gap: 4px;">
+              Tidak Valid <span id="subbadge-invalid" class="tab-badge"
+                style="margin: 0; background: #FFEBEE; color: #C62828;">0</span>
+            </button>
+          </div>
+
+          <!-- LIST CONT CONTAINER -->
+          <div id="store-list-title"
+            style="display: none; padding:10px 14px 8px;font-size:13px;font-weight:800;color:var(--gray4);align-items:center;gap:6px">
+            Toko Aktif (0)
+          </div>
+
+          <div id="store-cards-container">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <div id="cont-lb" style="flex:1;overflow-y:auto;padding-bottom:100px;display:none">
+          <div
+            style="padding:12px 16px;background:#fff;display:flex;justify-content:flex-start;align-items:center;border-bottom:1px solid var(--gray1)">
+            <button style="color: #1e293b; font-size: 11px; font-weight: 700; background: #fff; border: 1px solid #e2e8f0; border-radius: 20px; padding: 6px 14px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);"
+              onclick="openPrize()">🎁 Daftar Pemenang</button>
+          </div>
+
+          <div class="podium">
+            <!-- Rank 2 -->
+            <div class="pod-item">
+              <div class="pod-icon">🥈</div>
+              <div class="pod-name">Budi S.</div>
+              <div class="pod-ta">45 TA</div>
+              <div class="pod-base b2">2</div>
+            </div>
+            <!-- Rank 1 -->
+            <div class="pod-item">
+              <div class="pod-icon" style="font-size:36px;margin-bottom:0">👑</div>
+              <div class="pod-name" style="font-size:14px">Ahmad R.</div>
+              <div class="pod-ta">52 TA</div>
+              <div class="pod-base b1">1</div>
+            </div>
+            <!-- Rank 3 -->
+            <div class="pod-item">
+              <div class="pod-icon">🥉</div>
+              <div class="pod-name">Siti R.</div>
+              <div class="pod-ta">41 TA</div>
+              <div class="pod-base b3">3</div>
+            </div>
+          </div>
+
+          <div id="lb-dynamic-list" style="margin-top:10px"></div>
+        </div>
+      </div>
+
+      <!-- TERMS & CONDITIONS SCREEN -->
+      <div class="screen" id="s-tnc" style="background: var(--bg); flex-direction: column;">
+        <div
+          style="background: linear-gradient(180deg, #0D2461, #0f2d75); padding: 16px; display: flex; align-items: center; gap: 12px; color: white;">
+          <button onclick="closeTncView()"
+            style="background: none; border: none; color: white; font-size: 18px; cursor: pointer; padding: 4px 8px; display: flex; align-items: center; justify-content: center;">←</button>
+          <div style="flex: 1;">
+            <h4 style="margin: 0; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">
+              Syarat & Ketentuan</h4>
+            <p id="tnc-period-title" style="margin: 2px 0 0 0; font-size: 10px; opacity: 0.7; font-weight: 500;">Period
+              Title</p>
+          </div>
+        </div>
+
+        <div style="padding: 16px; flex: 1; overflow-y: auto;">
+          <div class="store-card"
+            style="margin: 0 0 16px 0; padding: 16px; background: white; border-radius: 12px; border: 1px solid var(--gray2); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <div id="tnc-list-content">
+              <!-- Ordered list will be rendered here dynamically -->
+            </div>
+          </div>
+
+          <div style="text-align: center; color: var(--gray4); font-size: 10px; line-height: 1.5; padding: 0 8px;">
+            Syarat & ketentuan ini dapat disesuaikan sewaktu-waktu oleh pihak manajemen Mitra 1000s. Keputusan panitia
+            bersifat mutlak dan tidak dapat diganggu gugat.
+          </div>
+        </div>
+      </div>
+
+      <!-- SCAN SCREEN (SIMULATION) -->
+      <div class="screen" id="s-scan">
+        <div class="scan-camera-sim">
+          <div class="scan-header">
+            <button onclick="triggerExpiredClaimSimulation()" class="scan-back-btn"><i class="fas fa-arrow-left"></i></button>
+            Klaim Order Merchant
+          </div>
+          <div class="scan-target-box">
+            <div class="scan-target-line"></div>
+          </div>
+          <div class="scan-instruction">
+            <strong>Scan QR untuk klaim order, bayar tagihan atau konfirmasi order</strong><br>
+            QR Code akan secara otomatis dibaca oleh sistem sesuai dengan kebutuhan
+          </div>
+        </div>
+      </div>
+
+      <!-- CLAIM SUCCESS SCREEN -->
+      <div class="screen" id="s-claim-success">
+        <div style="background: white; padding: 16px; display: flex; align-items: center; border-bottom: 1px solid var(--gray2);">
+          <button onclick="triggerExpiredClaimSimulation()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: #333; margin-right: 12px;">←</button>
+          <span style="font-weight: 800; font-size: 14px; color: #333;">Klaim Sukses</span>
+        </div>
+        <div class="success-illustration-area">
+          <div class="success-rays"></div>
+          <div class="success-cuan-title">Si Paling Cuan!</div>
+          <div class="success-avatar-group">
+            <div class="success-char">🙋‍♂️</div>
+            <div class="success-char">🙋‍♀️</div>
+          </div>
+          <div class="success-badge"><i class="fas fa-check"></i></div>
+        </div>
+        <div class="success-body">
+          <div class="success-claim-title">Orderan berhasil diklaim</div>
+          <div class="success-claim-desc">
+            Selamat orderan ini berhasil diklaim! Estimasi insentif sudah masuk ke saldo pending anda.<br><br>
+            <span style="display: block; padding: 10px; background: #FFF3CD; border: 1px solid #FFEBA5; color: #856404; border-radius: 8px; font-weight: 600; font-size: 10px; text-align: left;">
+              ⚠️ Namun, ORD ini <strong>TIDAK</strong> masuk ke capaian Star Sales (TA) bulan ini karena sudah melewati batas waktu 3 bulan sejak ORD dibuat. Hanya pembayaran melalui VA yang akan dihitung ke dalam omzet.
+            </span>
+          </div>
+          <button onclick="goToHome()" class="btn-claim-primary" style="width: 100%;">Ke Halaman Utama</button>
+          <button onclick="triggerExpiredClaimSimulation()" class="btn-claim-secondary" style="width: 100%; margin-top: 8px;">Scan order lainnya</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLAIM CONFIRMATION MODAL -->
+    <div class="claim-modal-overlay" id="claim-confirm-modal" style="display: none;" onclick="if(event.target === this) closeClaimModal()">
+      <div class="claim-modal-card">
+        <div class="claim-modal-header">
+          <div class="claim-modal-title">Konfirmasi klaim order</div>
+          <div class="claim-modal-subtitle">Silahkan klaim orderan yang akan masuk menjadi insentif anda</div>
+        </div>
+        <div class="claim-modal-divider"></div>
+        <div class="claim-modal-body">
+          <div class="claim-warning-banner">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div>ORD ini melebihi batas 3 bulan. Tidak akan terhitung ke dalam Target Achievement (TA) Star Sales.</div>
+          </div>
+          <div class="claim-detail-box">
+            <div class="claim-ord-num">ORD/202606/0221</div>
+            <div class="claim-detail-row">
+              <div class="claim-detail-label">Toko</div>
+              <div class="claim-detail-val">TB. TESTER AKBAR (TESTER MSS)</div>
+            </div>
+            <div class="claim-detail-row">
+              <div class="claim-detail-label">Tanggal pemesanan</div>
+              <div class="claim-detail-val">Senin, 29 Jun 2026</div>
+            </div>
+            <div class="claim-detail-row">
+              <div class="claim-detail-label">Informasi pembelian</div>
+              <div class="claim-detail-val">• ORTA Rp 3,600,000</div>
+            </div>
+            <div style="border-top: 1px dashed #cbd5e1; margin: 8px 0;"></div>
+            <div class="claim-detail-row">
+              <div class="claim-detail-label" style="color: #333; font-weight: 700;">Total orderan</div>
+              <div class="claim-detail-val" style="color: #1a1a1a; font-weight: 800; font-size: 11px;">Rp 3,600,000</div>
+            </div>
+            <div class="claim-detail-row">
+              <div class="claim-detail-label" style="color: #333; font-weight: 700;">Estimasi insentif</div>
+              <div class="claim-detail-val" style="color: #2e7d32; font-weight: 800; font-size: 11px;">Rp 36,000</div>
+            </div>
+          </div>
+        </div>
+        <div class="claim-modal-actions">
+          <button onclick="confirmClaimExpired()" class="btn-claim-primary">Klaim orderan</button>
+          <button onclick="closeClaimModal()" class="btn-claim-secondary">Scan ulang</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRIZE MODAL -->
+    <div class="modal-overlay" id="prize-modal" onclick="if (event.target === this) closePrize()">
+      <div class="modal">
+        <div class="modal-header">DAFTAR PENERIMA HADIAH</div>
+        <div class="modal-body" style="padding-bottom: 5px;">
+          <table class="prize-table">
+            <tr style="background:#f9f9f9;text-align:left">
+              <th>NO</th>
+              <th>NAMA</th>
+              <th>HADIAH</th>
+            </tr>
+            <tr>
+              <td><b>1</b></td>
+              <td>Ahmad R.</td>
+              <td>Trip Bali (All-in)</td>
+            </tr>
+            <tr>
+              <td><b>2</b></td>
+              <td>Budi S.</td>
+              <td>Voucher Belanja Rp 1jt</td>
+            </tr>
+            <tr>
+              <td><b>...</b></td>
+              <td>...</td>
+              <td>...</td>
+            </tr>
+          </table>
+        </div>
+        <div style="padding: 10px 20px 20px; background: #fff; border-top: 1px solid #f0f0f0;">
+          <button class="close-modal" onclick="closePrize()" style="margin-top: 0;">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR CONTAINER -->
+  <div class="sidebar">
+    <!-- PROJECT INFO CARD -->
+    <div class="info-card">
+      <h3>Info Project</h3>
+      <p>Meningkatkan performa penjualan melalui gamifikasi dan leveling Star Sales. Sistem melacak pencapaian toko
+        aktif berdasarkan akumulasi transaksi dan menampilkan peringkat sales pada leaderboard.</p>
+      <button class="sw-btn flow-btn" onclick="openFlowchart()">
+        <i class="fas fa-sitemap"></i> Flowchart
+      </button>
+    </div>
+
+    <!-- EXTERNAL CONTROLS (v6) -->
+    <div class="controls">
+      <div style="margin-bottom: 12px; background: rgba(255,255,255,0.08); padding: 10px; border-radius: 8px;">
+        <label
+          style="font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.8); display: block; margin-bottom: 6px;">Pilih
+          Area Sales (Simulasi):</label>
+        <select id="sales-area-selector" onchange="switchSalesArea(this.value)"
+          style="width: 100%; background: #0D2461; border: 1px solid rgba(255,255,255,0.3); color: white; padding: 6px 10px; border-radius: 6px; font-size: 12px; outline: none; cursor: pointer; font-weight: 600;">
+          <option value="BNN" style="color: black;">BNN Area</option>
+          <option value="CPD" style="color: black;">CPD Area</option>
+        </select>
+      </div>
+      <h3>Skenario Case</h3>
+      <button class="sw-btn active" onclick="setCase('star4', event)"><b>#31 (Star 4)</b><br>Lihat Top 20% + Kamu + 3
+        Bawah</button>
+      <button class="sw-btn" onclick="setCase('star5', event)"><b>#15 (Star 5)</b><br>Lihat Full Daftar Star 5
+        (1-25)</button>
+      <button class="sw-btn" onclick="setCase('star1', event)"><b>#112 (Star 1)</b><br>Peringatan Penalti TA &lt;
+        15</button>
+      <button class="sw-btn" onclick="setCase('empty_store', event)"><b>SKENARIO AWAL PROGRAM</b><br>125 sales dengan 0 TA, Kamu Star 1 di urutan 120</button>
+      <button class="sw-btn" onclick="setCase('general', event)"><b>SKENARIO GENERAL</b><br>Tampilan parameter default tiap status program</button>
+      <button class="sw-btn" onclick="setCase('grace_period', event)"><b>MASA TENGGANG (GRACE)</b><br>Simulasi Masa Verifikasi (GP)</button>
+      <button class="sw-btn" onclick="setCase('no_program', event)"><b>BELUM ADA PROGRAM</b><br>Simulasi fallback ke program periode sebelumnya</button>
+      <button class="sw-btn" style="background: rgba(239, 68, 68, 0.2); border-color: #EF4444; color: white;"
+        onclick="triggerCancelReturnSimulation()">
+        <b>Simulasi Cancel/Retur</b><br>Dampak terhadap bulan berjalan vs lalu
+      </button>
+      <button class="sw-btn" style="background: rgba(239, 108, 0, 0.2); border-color: #EF6C00; color: white;"
+        onclick="triggerExpiredReturSimulation()">
+        <b>RETUR EXPIRED (> 3 BULAN)</b><br>Retur ORD lewat 3 bulan tidak memotong TA
+      </button>
+      <button class="sw-btn" style="background: rgba(33, 150, 243, 0.2); border-color: #2196F3; color: white;"
+        onclick="triggerExpiredClaimSimulation()">
+        <b>KLAIM EXPIRED (> 3 BULAN)</b><br>Pelunasan ORD lewat 3 bulan tidak menambah TA
+      </button>
+      <div style="height:5px"></div>
+      <button class="sw-btn" style="background:rgba(255,255,255,.15)" onclick="goToHome()">🏠 Ke Beranda
+        Internal</button>
+      <button class="sw-btn" style="background:rgba(21, 101, 192, 0.4); border-color: var(--blue2)"
+        onclick="goToDashboardProto()">💻 Ke Dashboard Hub (Utama)</button>
+    </div>
+  </div>
+
+  <!-- FLOWCHART PANEL OVERLAY -->
+  <div class="flow-panel">
+    <button onclick="closeFlowchart()"
+      class="absolute top-6 left-6 bg-white text-gray-800 px-4 py-2 rounded-lg shadow-md border border-gray-200 hover:bg-gray-50 z-[250] font-bold flex items-center gap-2"
+      style="position: absolute; top: 24px; left: 24px;"><i class="fas fa-arrow-left"></i> Kembali ke Prototype</button>
+    <div class="flow-ctrl-panel">
+      <button class="btn-ctrl" onclick="zoomView(1.2)" title="Zoom In"><i class="fas fa-search-plus"></i></button>
+      <button class="btn-ctrl" onclick="zoomView(0.8)" title="Zoom Out"><i class="fas fa-search-minus"></i></button>
+      <button class="btn-ctrl" onclick="resetZoom()" title="Reset View"><i class="fas fa-expand"></i></button>
+    </div>
+
+    <div class="legend space-y-2">
+      <p class="font-extrabold text-gray-800 mb-2 border-b pb-1"
+        style="font-weight: 800; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">Keterangan Node</p>
+      <div class="flex items-center gap-2"
+        style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font-size: 11px; color: #475569;">
+        <div class="w-3 h-3 rounded-full bg-green-200 border border-green-500"
+          style="width: 12px; height: 12px; border-radius: 50%; background: #dcfce7; border: 1px solid #22c55e;"></div>
+        Titik Mulai
+      </div>
+      <div class="flex items-center gap-2"
+        style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font-size: 11px; color: #475569;">
+        <div class="w-3 h-3 rounded bg-purple-100 border border-purple-400"
+          style="width: 12px; height: 12px; border-radius: 2px; background: #f3e8ff; border: 1px solid #d8b4fe;"></div>
+        Aksi User
+      </div>
+      <div class="flex items-center gap-2"
+        style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font-size: 11px; color: #475569;">
+        <div class="w-3 h-3 rounded bg-slate-100 border border-slate-400"
+          style="width: 12px; height: 12px; border-radius: 2px; background: #f1f5f9; border: 1px solid #cbd5e1;"></div>
+        Proses Sistem
+      </div>
+      <div class="flex items-center gap-2"
+        style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font-size: 11px; color: #475569;">
+        <div class="w-3 h-3 rotate-45 bg-orange-100 border border-orange-400"
+          style="width: 12px; height: 12px; transform: rotate(45deg); background: #ffedd5; border: 1px solid #fdba74;">
+        </div> Keputusan
+      </div>
+      <div class="flex items-center gap-2"
+        style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font-size: 11px; color: #475569;">
+        <div class="w-3 h-3 rounded-full bg-red-200 border border-red-500"
+          style="width: 12px; height: 12px; border-radius: 50%; background: #fee2e2; border: 1px solid #ef4444;"></div>
+        Titik Akhir
+      </div>
+    </div>
+
+    <div class="canvas-container" id="canvas-container">
+      <div id="flow-area">
+        <svg class="svg-layer" id="svg-layer">
+          <defs>
+            <marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M 0 -5 L 10 0 L 0 5 Z" fill="#94a3b8" />
+            </marker>
+          </defs>
+        </svg>
+
+        <!-- FLOWCHART NODES -->
+        <div id="f-start" class="node n-start" style="left: 600px; top: 600px;">Buka Star Sales</div>
+        <div id="f-fetch-data" class="node n-gray" style="left: 800px; top: 600px;">Tarik Data Order (ORD)<br>&
+          Pembayaran</div>
+        <div id="f-elig-check" class="node n-decision" style="left: 1020px; top: 590px;">
+          <span>ORD ≥ 50%<br>VA/Saldo?</span>
+        </div>
+        <div id="f-ignore-ord" class="node n-purple"
+          style="left: 1020px; top: 750px; background: #fee2e2; border-color: #ef4444; color: #991b1b;">Abaikan
+          ORD<br>(Tidak Dihitung)</div>
+        <div id="f-accum-va" class="node n-gray" style="left: 1260px; top: 600px;">Akumulasi Nominal<br>VA & Saldo Saja
+        </div>
+        <div id="f-lunas-check" class="node n-decision" style="left: 1480px; top: 590px;">
+          <span>Status ORD<br>Lunas Penuh?</span>
+        </div>
+        <div id="f-pending-lunas" class="node n-purple"
+          style="left: 1480px; top: 750px; background: #fffbeb; border-color: #f59e0b; color: #78350f;">Pending
+          TA<br>(Tunggu Lunas)</div>
+        <div id="f-is-active" class="node n-decision" style="left: 1720px; top: 590px;">
+          <span>Akumulasi Toko<br>≥ Rp 1 Juta?</span>
+        </div>
+        <div id="f-mark-active" class="node n-purple" style="left: 1960px; top: 500px;">Tercatat Sebagai<br>Toko Aktif
+          (1 TA)</div>
+        <div id="f-mark-almost" class="node n-purple" style="left: 1960px; top: 700px;">Tercatat Sebagai<br>Hampir Aktif
+        </div>
+        <div id="f-calc-level" class="node n-gray" style="left: 2200px; top: 600px;">Hitung Star Level<br>& Klasemen
+          Ranking</div>
+        <div id="f-check-penalti" class="node n-decision" style="left: 2440px; top: 590px;">
+          <span>TA &lt; 15 di<br>Star Level 1?</span>
+        </div>
+        <div id="f-show-warning" class="node n-gray" style="left: 2680px; top: 500px;">Tampilkan Alert<br>Potensi
+          Penalti</div>
+        <div id="f-show-normal" class="node n-gray" style="left: 2680px; top: 700px;">Tampilkan Progres<br>& Ranking
+          Normal</div>
+        <div id="f-end" class="node n-end" style="left: 2920px; top: 600px;">Selesai</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Inject Premium Badge Styles
+    (function () {
+      const style = document.createElement('style');
+      style.textContent = `
+          .badge-premium {
+            background: #FAF5FF;
+            color: #7E3AF2;
+            border: 1px solid #E9D8FD;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 700;
+          }
+          .badge-cash {
+            background: #ECFDF5;
+            color: #059669;
+            border: 1px solid #A7F3D0;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 700;
+          }
+        `;
+      document.head.appendChild(style);
+    })();
+
+    // --- MOCK STORAGE UNTUK READ-ONLY PROTOTYPE ---
+    const _memStorage = {};
+    const _originalGetItem = Storage.prototype.getItem;
+    const _originalSetItem = Storage.prototype.setItem;
+    const _originalRemoveItem = Storage.prototype.removeItem;
+    
+    Storage.prototype.getItem = function(key) {
+      if(key.startsWith('star_sales_')) return _memStorage[key] || null;
+      return _originalGetItem.call(this, key);
+    };
+    Storage.prototype.setItem = function(key, val) {
+      if(key.startsWith('star_sales_')) { _memStorage[key] = val; return; }
+      _originalSetItem.call(this, key, val);
+    };
+    Storage.prototype.removeItem = function(key) {
+      if(key.startsWith('star_sales_')) { delete _memStorage[key]; return; }
+      _originalRemoveItem.call(this, key);
+    };
+
+    // State
+    let activeArea = "BNN";
+    let currentCase = localStorage.getItem('star_sales_case') || 'star4'; // star4 | star5 | star1 | done
+    let cancelDeductionJune = 0;
+    let cancelDeductionJuly = 0;
+
+    // Initialize State & Storage
+    // Auto-Rollover Simulation Engine (runs once per day, dedup-safe)
+    function applyAutoRolloverSimulation(periods) {
+      // --- Step 1: Deduplicate by area+month (keep the most recent by id) ---
+      const seen = {};
+      const toRemoveIds = new Set();
+      periods.forEach(p => {
+        const key = p.area + '|' + p.month;
+        if (seen[key]) {
+          toRemoveIds.add(p.id);
+        } else {
+          seen[key] = p;
+        }
+      });
+      let dedupChanged = false;
+      if (toRemoveIds.size > 0) {
+        for (let i = periods.length - 1; i >= 0; i--) {
+          if (toRemoveIds.has(periods[i].id)) {
+            periods.splice(i, 1);
+            dedupChanged = true;
+          }
+        }
+      }
+
+      // --- Step 2: Once-per-day guard ---
+      const todayStr = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+      const lastRun = localStorage.getItem('star_sales_rollover_date');
+      if (lastRun === todayStr) {
+        return dedupChanged;
+      }
+
+      // --- Step 3: Run transitions and auto-rollover at H-7 ---
+      let rolloverChanged = false;
+      const now = new Date();
+      const latestByArea = {};
+
+      // 3.1: Run automatic date-based state transitions
+      periods.forEach(p => {
+        if (!p.startDate || !p.endDate) return;
+        const start = new Date(p.startDate);
+        const end = new Date(p.endDate);
+        end.setHours(23, 59, 59, 999);
+
+        if (now >= start && now <= end) {
+          if (p.status === 'scheduled' || p.status === 'draft') {
+            p.status = 'active-running';
+            rolloverChanged = true;
+          }
+        } else if (now > end) {
+          if (p.status === 'active-running') {
+            p.status = 'grace-period';
+            rolloverChanged = true;
+          }
+        }
+      });
+
+      // 3.2: Perform H-7 duplication
+      periods.forEach(p => {
+        if (!p.month) return;
+        if (!latestByArea[p.area] || p.month > latestByArea[p.area].month) {
+          latestByArea[p.area] = p;
+        }
+      });
+
+      Object.values(latestByArea).forEach(p => {
+        if (!p.autoRollover || !p.endDate) return;
+        const end = new Date(p.endDate);
+
+        // H-7 Date boundary
+        const h7Date = new Date(end);
+        h7Date.setDate(h7Date.getDate() - 7);
+
+        if (now < h7Date) return; // Not yet H-7
+
+        // Calculate next month
+        const [year, month] = p.month.split('-');
+        let nextMonth = parseInt(month) + 1;
+        let nextYear = parseInt(year);
+        if (nextMonth > 12) { nextMonth = 1; nextYear += 1; }
+        const nextMonthStr = `${nextYear}-${nextMonth.toString().padStart(2, '0')}`;
+
+        // Check if next month's program already exists (including global ALL overlap)
+        const exists = periods.some(x =>
+          x.month === nextMonthStr &&
+          (x.area === p.area || x.area === 'ALL' || p.area === 'ALL')
+        );
+
+        if (!exists) {
+          const nextStart = `${nextYear}-${nextMonth.toString().padStart(2, '0')}-01`;
+          const lastDay = new Date(nextYear, nextMonth, 0).getDate();
+          const nextEnd = `${nextYear}-${nextMonth.toString().padStart(2, '0')}-${lastDay.toString().padStart(2, '0')}`;
+
+          const cloned = JSON.parse(JSON.stringify(p));
+          cloned.id = 'p_' + Date.now() + '_' + Math.floor(Math.random() * 9999);
+
+          const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+          let baseTitle = cloned.title.replace(/Januari|Februari|Maret|April|Mei|Juni|Juli|Agustus|September|Oktober|November|Desember|\d{4}/g, '').trim();
+          cloned.title = `${baseTitle} ${monthNames[nextMonth - 1]} ${nextYear}`.replace(/\s+/g, ' ').trim();
+
+          cloned.month = nextMonthStr;
+          cloned.startDate = nextStart;
+          cloned.endDate = nextEnd;
+          cloned.status = 'scheduled'; // Init as scheduled, wait for tanggal 1 to auto-start
+          cloned.winners = [];
+          cloned.autoRollover = true;
+          cloned.lastUpdateUser = 'System (H-7 Auto-Rollover)';
+          cloned.lastUpdateTime = new Date().toLocaleString('id-ID');
+
+          periods.push(cloned);
+          rolloverChanged = true;
+        }
+      });
+
+      if (rolloverChanged) {
+        localStorage.setItem('star_sales_rollover_date', todayStr);
+      }
+
+      return dedupChanged || rolloverChanged;
+    }
+
+
+    function initializeSalesSharedState() {
+      // Force migration: check version to clear old cached periods/configs
+      const EXPECTED_VERSION = "v22"; // Increment to force cache eviction
+      const currentVersion = localStorage.getItem('star_sales_periods_version');
+      if (currentVersion !== EXPECTED_VERSION) {
+        localStorage.removeItem('star_sales_periods');
+        localStorage.removeItem('star_sales_config');
+        localStorage.removeItem('star_sales_cr_population');
+        localStorage.setItem('star_sales_periods_version', EXPECTED_VERSION);
+      }
+
+      const defaultPeriods = [
+          {
+            id: "SS-BNN-05202601",
+            title: "Kompetisi BNN Mei 2026",
+            month: "2026-05",
+            startDate: "2026-05-01",
+            endDate: "2026-05-31",
+            gracePeriodEndDate: "2026-06-09",
+            area: "BNN",
+            targets: { star5: 30, star4: 25, star3: 20, star2: 0, star1: 15 },
+            releaseMode: "immediate",
+            publishDate: "",
+            eligibilityRatio: 50,
+            claimWindow: 3,
+            brandLimit: false,
+            brands: [],
+            description: "Kumpulkan Star Sales dengan membina toko aktif di Mitra 1000s dengan pembayaran Saldo / Virtual Account. Raih peringkat tertinggi nasional dan menangkan hadiahnya!",
+            rewards: [
+              { level: 5, rankStart: 1, rankEnd: 1, type: "cash", prize: 1000000 },
+              { level: 5, rankStart: 2, rankEnd: 2, type: "cash", prize: 900000 },
+              { level: 5, rankStart: 3, rankEnd: 3, type: "cash", prize: 800000 },
+              { level: 5, rankStart: 4, rankEnd: 4, type: "cash", prize: 700000 },
+              { level: 5, rankStart: 5, rankEnd: 5, type: "cash", prize: 600000 },
+              { level: 5, rankStart: 6, rankEnd: 10, type: "cash", prize: 500000 },
+              { level: 5, rankStart: 11, rankEnd: 25, type: "cash", prize: 400000 },
+              { level: 4, rankStart: 1, rankEnd: 999, type: "cash", prize: 300000 },
+              { level: 3, rankStart: 1, rankEnd: 999, type: "cash", prize: 100000 },
+              { level: 2, rankStart: 1, rankEnd: 999, type: "cash", prize: 0 }
+            ],
+            penalty: { active: true, type: "payroll", amt: 100000, limit: 15 },
+            status: "locked",
+            winners: [
+              { rank: 1, cr_id: "CR-1001", name: "Ahmad R.", reward: "Trip Bali (All-in)", reward_type: "non-cash", ta: 52, star: 5 },
+              { rank: 2, cr_id: "CR-1002", name: "Budi S.", reward: "Voucher Belanja Rp 1jt", reward_type: "non-cash", ta: 45, star: 5 },
+              { rank: 3, cr_id: "CR-1003", name: "Siti R.", reward: "E-Voucher Emas Rp 500rb", reward_type: "non-cash", ta: 41, star: 5 }
+            ],
+            lastUpdateUser: "fandy",
+            lastUpdateTime: "25/05/2026 14:19",
+            autoRollover: true,
+            tnc: [
+              "Toko yang berpartisipasi adalah seluruh toko bangunan di wilayah Jawa, Sumatera dan Kalimantan Barat.",
+              "Pencapaian Toko Aktif (TA) dihitung berdasarkan transaksi digital menggunakan saldo atau Virtual Account.",
+              "Hadiah akan dikreditkan otomatis ke VA atau saldo merchant setelah periode kompetisi diverifikasi."
+            ]
+          },
+          {
+            id: "SS-BNN-06202601",
+            title: "Star Sales BNN Juni 2026",
+            month: "2026-06",
+            startDate: "2026-06-01",
+            endDate: "2026-06-30",
+            gracePeriodEndDate: "2026-07-09",
+            area: "BNN",
+            targets: { star5: 30, star4: 25, star3: 20, star2: 0, star1: 15 },
+            releaseMode: "immediate",
+            publishDate: "",
+            eligibilityRatio: 60,
+            claimWindow: 3,
+            brandLimit: true,
+            brands: ["Semesta", "DindingIndo"],
+            description: "Kumpulkan poin Star Sales dengan merekrut toko baru dan bertransaksi menggunakan pembayaran VA/Saldo, menangkan hadiah menarik!",
+            rewards: [
+              { level: 5, rankStart: 1, rankEnd: 1, type: "cash", prize: 1200000 },
+              { level: 5, rankStart: 2, rankEnd: 2, type: "cash", prize: 1000000 },
+              { level: 5, rankStart: 3, rankEnd: 5, type: "cash", prize: 850000 },
+              { level: 5, rankStart: 6, rankEnd: 10, type: "cash", prize: 600000 },
+              { level: 5, rankStart: 11, rankEnd: 25, type: "cash", prize: 500000 },
+              { level: 4, rankStart: 1, rankEnd: 999, type: "cash", prize: 350000 },
+              { level: 3, rankStart: 1, rankEnd: 999, type: "cash", prize: 150000 },
+              { level: 2, rankStart: 1, rankEnd: 999, type: "cash", prize: 0 }
+            ],
+            penalty: { active: true, type: "payroll", amt: 120000, limit: 15 },
+            status: "active-running",
+            winners: [],
+            lastUpdateUser: "Akbar",
+            lastUpdateTime: "27/05/2026 21:43",
+            autoRollover: true,
+            tnc: [
+              "Toko yang berpartisipasi adalah seluruh toko bangunan di wilayah Jawa, Sumatera dan Kalimantan Barat.",
+              "Pencapaian Toko Aktif (TA) dihitung berdasarkan transaksi digital menggunakan saldo atau Virtual Account.",
+              "Hadiah akan dikreditkan otomatis ke VA atau saldo merchant setelah periode kompetisi diverifikasi."
+            ]
+          },
+          {
+            id: "SS-BNN-07202601",
+            title: "Kuartal 3 Kick Off - Juli",
+            month: "2026-07",
+            startDate: "2026-07-01",
+            endDate: "2026-07-31",
+            gracePeriodEndDate: "2026-08-09",
+            area: "BNN",
+            targets: { star5: 30, star4: 25, star3: 20, star2: 0, star1: 15 },
+            releaseMode: "scheduled",
+            publishDate: "2026-07-01",
+            eligibilityRatio: 50,
+            claimWindow: 3,
+            brandLimit: false,
+            brands: [],
+            description: "Program kompetisi Star Sales pembuka Kuartal 3.",
+            rewards: [
+              { level: 5, rankStart: 1, rankEnd: 5, type: "cash", prize: 1000000 },
+              { level: 5, rankStart: 6, rankEnd: 10, type: "cash", prize: 500000 },
+              { level: 4, rankStart: 1, rankEnd: 999, type: "cash", prize: 300000 },
+              { level: 3, rankStart: 1, rankEnd: 999, type: "cash", prize: 100000 },
+              { level: 2, rankStart: 1, rankEnd: 999, type: "cash", prize: 0 }
+            ],
+            penalty: { active: true, type: "payroll", amt: 100000, limit: 15 },
+            status: "scheduled",
+            winners: [],
+            lastUpdateUser: "Akbar",
+            lastUpdateTime: "28/05/2026 09:12",
+            autoRollover: true,
+            tnc: [
+              "Toko yang berpartisipasi adalah seluruh toko bangunan di wilayah Jawa, Sumatera dan Kalimantan Barat.",
+              "Pencapaian Toko Aktif (TA) dihitung berdasarkan transaksi digital menggunakan saldo atau Virtual Account.",
+              "Hadiah akan dikreditkan otomatis ke VA atau saldo merchant setelah periode kompetisi diverifikasi."
+            ]
+          },
+          {
+            id: "SS-CPD-06202601",
+            title: "Star Sales CPD Juni 2026",
+            month: "2026-06",
+            startDate: "2026-06-01",
+            endDate: "2026-06-30",
+            gracePeriodEndDate: "2026-07-09",
+            area: "CPD",
+            targets: { star5: 35, star4: 28, star3: 22, star2: 0, star1: 18 },
+            releaseMode: "immediate",
+            publishDate: "",
+            eligibilityRatio: 50,
+            claimWindow: 3,
+            brandLimit: false,
+            brands: [],
+            description: "Kompetisi area CPD dengan target toko aktif lebih tinggi demi penetrasi pasar regional.",
+            rewards: [
+              { level: 5, rankStart: 1, rankEnd: 5, type: "cash", prize: 1500000 },
+              { level: 5, rankStart: 6, rankEnd: 10, type: "cash", prize: 800000 },
+              { level: 5, rankStart: 11, rankEnd: 25, type: "cash", prize: 600000 },
+              { level: 4, rankStart: 1, rankEnd: 999, type: "cash", prize: 400000 },
+              { level: 3, rankStart: 1, rankEnd: 999, type: "cash", prize: 200000 },
+              { level: 2, rankStart: 1, rankEnd: 999, type: "cash", prize: 0 }
+            ],
+            penalty: { active: true, type: "payroll", amt: 150000, limit: 18 },
+            status: "active-running",
+            winners: [],
+            lastUpdateUser: "Akbar",
+            lastUpdateTime: "27/05/2026 21:43",
+            autoRollover: true,
+            tnc: [
+              "Toko yang berpartisipasi adalah seluruh toko bangunan di wilayah Jawa, Sumatera dan Kalimantan Barat.",
+              "Pencapaian Toko Aktif (TA) dihitung berdasarkan transaksi digital menggunakan saldo atau Virtual Account.",
+              "Hadiah akan dikreditkan otomatis ke VA atau saldo merchant setelah periode kompetisi diverifikasi."
+            ]
+          },
+          {
+            id: "SS-ALL-07202601",
+            title: "Super Campaign Star Sales - Juli",
+            month: "2026-07",
+            startDate: "2026-07-01",
+            endDate: "2026-07-31",
+            gracePeriodEndDate: "2026-08-09",
+            area: "ALL",
+            targets: { star5: 40, star4: 30, star3: 20, star2: 0, star1: 15 },
+            releaseMode: "scheduled",
+            publishDate: "2026-07-01",
+            eligibilityRatio: 50,
+            claimWindow: 3,
+            brandLimit: false,
+            brands: [],
+            description: "Kompetisi akbar Star Sales gabungan lintas divisi (BNN & CPD). Kumpulkan Toko Aktif sebanyak-banyaknya secara nasional!",
+            rewards: [
+              { level: 5, rankStart: 1, rankEnd: 5, type: "cash", prize: 2000000 },
+              { level: 5, rankStart: 6, rankEnd: 10, type: "cash", prize: 1000000 },
+              { level: 4, rankStart: 1, rankEnd: 999, type: "cash", prize: 500000 },
+              { level: 3, rankStart: 1, rankEnd: 999, type: "cash", prize: 250000 },
+              { level: 2, rankStart: 1, rankEnd: 999, type: "cash", prize: 0 }
+            ],
+            penalty: { active: true, type: "payroll", amt: 200000, limit: 15 },
+            status: "scheduled",
+            winners: [],
+            lastUpdateUser: "Akbar",
+            lastUpdateTime: "28/05/2026 10:30",
+            autoRollover: true,
+            tnc: [
+              "Toko yang berpartisipasi adalah seluruh toko bangunan di wilayah Jawa, Sumatera dan Kalimantan Barat.",
+              "Pencapaian Toko Aktif (TA) dihitung berdasarkan transaksi digital menggunakan saldo atau Virtual Account untuk seluruh brand BNN dan CPD.",
+              "Hadiah akan dikreditkan otomatis ke VA atau saldo merchant setelah periode kompetisi diverifikasi."
+            ]
+          },
+          {
+            id: "SS-CPD-05202601",
+            title: "Kompetisi CPD Mei 2026",
+            month: "2026-05",
+            startDate: "2026-05-01",
+            endDate: "2026-05-31",
+            gracePeriodEndDate: "2026-06-09",
+            area: "CPD",
+            targets: { star5: 35, star4: 28, star3: 22, star2: 0, star1: 18 },
+            releaseMode: "immediate",
+            publishDate: "",
+            eligibilityRatio: 50,
+            claimWindow: 3,
+            brandLimit: false,
+            brands: [],
+            description: "Program kompetisi Star Sales CPD bulan Mei 2026. Raih peringkat terbaik dan menangkan hadiah menarik!",
+            rewards: [
+              { level: 5, rankStart: 1, rankEnd: 5, type: "cash", prize: 1500000 },
+              { level: 5, rankStart: 6, rankEnd: 10, type: "cash", prize: 800000 },
+              { level: 5, rankStart: 11, rankEnd: 25, type: "cash", prize: 500000 },
+              { level: 4, rankStart: 1, rankEnd: 999, type: "cash", prize: 350000 },
+              { level: 3, rankStart: 1, rankEnd: 999, type: "cash", prize: 150000 },
+              { level: 2, rankStart: 1, rankEnd: 999, type: "cash", prize: 0 }
+            ],
+            penalty: { active: true, type: "payroll", amt: 150000, limit: 18 },
+            status: "locked",
+            winners: [
+              { rank: 1, cr_id: "CR-2001", name: "Dewi A.", reward: "Voucher Elektronik Rp 1jt", reward_type: "non-cash", ta: 48, star: 5 },
+              { rank: 2, cr_id: "CR-2002", name: "Rahmat F.", reward: "Handphone Samsung", reward_type: "non-cash", ta: 43, star: 5 }
+            ],
+            lastUpdateUser: "fandy",
+            lastUpdateTime: "26/05/2026 10:00",
+            autoRollover: true,
+            tnc: [
+              "Program berlaku untuk seluruh Sales CPD aktif yang terdaftar dalam sistem MSS Online.",
+              "Pencapaian Toko Aktif (TA) dihitung berdasarkan transaksi digital menggunakan saldo atau Virtual Account.",
+              "Reward diberikan dalam bentuk voucher atau non-tunai sesuai ketentuan."
+            ]
+          },
+          {
+            id: "SS-CPD-07202601",
+            title: "Ekspansi CPD Kuartal 3 - Juli",
+            month: "2026-07",
+            startDate: "2026-07-01",
+            endDate: "2026-07-31",
+            gracePeriodEndDate: "2026-08-09",
+            area: "CPD",
+            targets: { star5: 38, star4: 30, star3: 22, star2: 0, star1: 18 },
+            releaseMode: "scheduled",
+            publishDate: "2026-07-01",
+            eligibilityRatio: 50,
+            claimWindow: 3,
+            brandLimit: false,
+            brands: [],
+            description: "Program kompetisi Star Sales CPD pembuka Kuartal 3 dengan target lebih agresif.",
+            rewards: [
+              { level: 5, rankStart: 1, rankEnd: 5, type: "cash", prize: 1800000 },
+              { level: 5, rankStart: 6, rankEnd: 10, type: "cash", prize: 900000 },
+              { level: 4, rankStart: 1, rankEnd: 999, type: "cash", prize: 450000 },
+              { level: 3, rankStart: 1, rankEnd: 999, type: "cash", prize: 200000 },
+              { level: 2, rankStart: 1, rankEnd: 999, type: "cash", prize: 0 }
+            ],
+            penalty: { active: true, type: "payroll", amt: 150000, limit: 18 },
+            status: "scheduled",
+            winners: [],
+            lastUpdateUser: "Akbar",
+            lastUpdateTime: "29/05/2026 08:00",
+            autoRollover: true,
+            tnc: [
+              "Program berlaku untuk seluruh Sales CPD aktif yang terdaftar dalam sistem MSS Online.",
+              "Pencapaian Toko Aktif (TA) dihitung berdasarkan transaksi digital menggunakan saldo atau Virtual Account.",
+              "Hadiah akan dikreditkan otomatis ke VA atau saldo merchant setelah periode kompetisi diverifikasi."
+            ]
+          },
+          {
+            id: "SS-ALL-06202601",
+            title: "Gebyar Star Sales Nasional - Juni",
+            month: "2026-06",
+            startDate: "2026-06-01",
+            endDate: "2026-06-30",
+            gracePeriodEndDate: "2026-07-09",
+            area: "ALL",
+            targets: { star5: 40, star4: 32, star3: 24, star2: 0, star1: 15 },
+            releaseMode: "immediate",
+            publishDate: "",
+            eligibilityRatio: 50,
+            claimWindow: 3,
+            brandLimit: false,
+            brands: [],
+            description: "Kompetisi Star Sales nasional lintas divisi BNN dan CPD bulan Juni 2026. Gabungkan kekuatan seluruh Sales dalam satu arena!",
+            rewards: [
+              { level: 5, rankStart: 1, rankEnd: 5, type: "cash", prize: 2500000 },
+              { level: 5, rankStart: 6, rankEnd: 10, type: "cash", prize: 1200000 },
+              { level: 4, rankStart: 1, rankEnd: 999, type: "cash", prize: 600000 },
+              { level: 3, rankStart: 1, rankEnd: 999, type: "cash", prize: 300000 },
+              { level: 2, rankStart: 1, rankEnd: 999, type: "cash", prize: 0 }
+            ],
+            penalty: { active: true, type: "payroll", amt: 200000, limit: 15 },
+            status: "active-running",
+            winners: [],
+            lastUpdateUser: "Akbar",
+            lastUpdateTime: "01/06/2026 07:00",
+            autoRollover: true,
+            tnc: [
+              "Program berlaku untuk seluruh Sales BNN dan CPD aktif yang terdaftar dalam sistem MSS Online.",
+              "Pencapaian Toko Aktif (TA) dihitung berdasarkan transaksi digital menggunakan saldo atau Virtual Account dari seluruh brand.",
+              "Hadiah akan dikreditkan otomatis ke VA atau saldo merchant setelah periode kompetisi diverifikasi."
+            ]
+          },
+          {
+            id: "SS-BNN-06202602",
+            title: "Kompetisi BNN Juni - Flash Sale (Dibatalkan)",
+            month: "2026-06",
+            startDate: "2026-06-01",
+            endDate: "2026-06-30",
+            gracePeriodEndDate: "2026-07-09",
+            area: "BNN",
+            targets: { star5: 30, star4: 25, star3: 20, star2: 0, star1: 15 },
+            releaseMode: "immediate",
+            publishDate: "",
+            eligibilityRatio: 50,
+            claimWindow: 3,
+            brandLimit: false,
+            brands: [],
+            description: "Kompetisi insidental BNN Juni yang dibatalkan karena kendala operasional logistik.",
+            rewards: [
+              { level: 5, rankStart: 1, rankEnd: 5, type: "cash", prize: 500000 },
+              { level: 4, rankStart: 1, rankEnd: 999, type: "cash", prize: 200000 },
+              { level: 3, rankStart: 1, rankEnd: 999, type: "cash", prize: 100000 },
+              { level: 2, rankStart: 1, rankEnd: 999, type: "cash", prize: 0 }
+            ],
+            penalty: { active: true, type: "payroll", amt: 100000, limit: 15 },
+            status: "cancelled",
+            winners: [],
+            lastUpdateUser: "Akbar",
+            lastUpdateTime: "29/05/2026 11:15",
+            autoRollover: false,
+            tnc: [
+              "Toko yang berpartisipasi adalah seluruh toko bangunan di wilayah Jawa, Sumatera dan Kalimantan Barat.",
+              "Pencapaian Toko Aktif (TA) dihitung berdasarkan transaksi digital menggunakan saldo atau Virtual Account.",
+              "Hadiah akan dikreditkan otomatis ke VA atau saldo merchant setelah periode kompetisi diverifikasi."
+            ]
+          },
+          {
+            id: "SS-CPD-05202602",
+            title: "CPD Mei - Pilot Program (Dibatalkan)",
+            month: "2026-05",
+            startDate: "2026-05-01",
+            endDate: "2026-05-31",
+            gracePeriodEndDate: "2026-06-09",
+            area: "CPD",
+            targets: { star5: 30, star4: 25, star3: 20, star2: 0, star1: 15 },
+            releaseMode: "immediate",
+            publishDate: "",
+            eligibilityRatio: 50,
+            claimWindow: 3,
+            brandLimit: false,
+            brands: [],
+            description: "Program pilot CPD Mei yang dibatalkan karena data mapping sales belum lengkap saat periode dimulai.",
+            rewards: [
+              { level: 5, rankStart: 1, rankEnd: 5, type: "cash", prize: 1000000 },
+              { level: 4, rankStart: 1, rankEnd: 999, type: "cash", prize: 400000 },
+              { level: 3, rankStart: 1, rankEnd: 999, type: "cash", prize: 150000 },
+              { level: 2, rankStart: 1, rankEnd: 999, type: "cash", prize: 0 }
+            ],
+            penalty: { active: true, type: "payroll", amt: 150000, limit: 18 },
+            status: "cancelled",
+            winners: [],
+            lastUpdateUser: "fandy",
+            lastUpdateTime: "02/05/2026 09:30",
+            autoRollover: false,
+            tnc: [
+              "Program berlaku untuk seluruh Sales CPD aktif yang terdaftar dalam sistem MSS Online.",
+              "Pencapaian Toko Aktif (TA) dihitung berdasarkan transaksi digital menggunakan saldo atau Virtual Account.",
+              "Hadiah akan dikreditkan otomatis ke VA atau saldo merchant setelah periode kompetisi diverifikasi."
+            ]
+          },
+          {
+            id: "SS-ALL-05202601",
+            title: "Star Sales Nasional Mei - Kick Off (Dibatalkan)",
+            month: "2026-05",
+            startDate: "2026-05-01",
+            endDate: "2026-05-31",
+            gracePeriodEndDate: "2026-06-09",
+            area: "ALL",
+            targets: { star5: 40, star4: 30, star3: 20, star2: 0, star1: 15 },
+            releaseMode: "immediate",
+            publishDate: "",
+            eligibilityRatio: 50,
+            claimWindow: 3,
+            brandLimit: false,
+            brands: [],
+            description: "Program gabungan nasional BNN & CPD Mei 2026 yang dibatalkan karena keputusan manajemen untuk menjalankan program terpisah per divisi.",
+            rewards: [
+              { level: 5, rankStart: 1, rankEnd: 5, type: "cash", prize: 2000000 },
+              { level: 4, rankStart: 1, rankEnd: 999, type: "cash", prize: 500000 },
+              { level: 3, rankStart: 1, rankEnd: 999, type: "cash", prize: 200000 },
+              { level: 2, rankStart: 1, rankEnd: 999, type: "cash", prize: 0 }
+            ],
+            penalty: { active: true, type: "payroll", amt: 200000, limit: 15 },
+            status: "cancelled",
+            winners: [],
+            lastUpdateUser: "Akbar",
+            lastUpdateTime: "28/04/2026 16:45",
+            autoRollover: false,
+            tnc: [
+              "Program berlaku untuk seluruh Sales BNN dan CPD aktif yang terdaftar dalam sistem MSS Online.",
+              "Pencapaian Toko Aktif (TA) dihitung berdasarkan transaksi digital menggunakan saldo atau Virtual Account dari seluruh brand.",
+              "Hadiah akan dikreditkan otomatis ke VA atau saldo merchant setelah periode kompetisi diverifikasi."
+            ]
+          },
+          {
+            id: "SS-BNN-05202602",
+            title: "Kompetisi BNN Mei 2026 (Menunggu Pengumuman)",
+            month: "2026-05",
+            startDate: "2026-05-01",
+            endDate: "2026-05-31",
+            gracePeriodEndDate: "2026-06-09",
+            area: "BNN",
+            targets: { star5: 30, star4: 25, star3: 20, star2: 0, star1: 15 },
+            releaseMode: "immediate",
+            publishDate: "",
+            eligibilityRatio: 50,
+            claimWindow: 3,
+            brandLimit: false,
+            brands: [],
+            description: "Kompetisi BNN Mei 2026 yang telah berakhir dan sedang dalam masa verifikasi sebelum pengumuman resmi.",
+            rewards: [
+              { level: 5, rankStart: 1, rankEnd: 1, type: "cash", prize: 1000000 },
+              { level: 5, rankStart: 2, rankEnd: 2, type: "cash", prize: 900000 },
+              { level: 5, rankStart: 3, rankEnd: 3, type: "cash", prize: 800000 },
+              { level: 4, rankStart: 1, rankEnd: 999, type: "cash", prize: 300000 },
+              { level: 3, rankStart: 1, rankEnd: 999, type: "cash", prize: 100000 }
+            ],
+            penalty: { active: true, type: "payroll", amt: 100000, limit: 15 },
+            status: "selesai",
+            winners: [],
+            lastUpdateUser: "Akbar",
+            lastUpdateTime: "01/06/2026 09:00",
+            autoRollover: true,
+            tnc: [
+              "Toko yang berpartisipasi adalah seluruh toko bangunan di wilayah Jawa, Sumatera dan Kalimantan Barat.",
+              "Pencapaian Toko Aktif (TA) dihitung berdasarkan transaksi digital menggunakan saldo atau Virtual Account.",
+              "Hadiah akan dikreditkan otomatis ke VA atau saldo merchant setelah periode kompetisi diverifikasi."
+            ]
+          },
+          {
+            id: "SS-CPD-05202603",
+            title: "Kompetisi CPD Mei 2026 (Menunggu Pengumuman)",
+            month: "2026-05",
+            startDate: "2026-05-01",
+            endDate: "2026-05-31",
+            gracePeriodEndDate: "2026-06-09",
+            area: "CPD",
+            targets: { star5: 35, star4: 28, star3: 22, star2: 0, star1: 18 },
+            releaseMode: "immediate",
+            publishDate: "",
+            eligibilityRatio: 50,
+            claimWindow: 3,
+            brandLimit: false,
+            brands: [],
+            description: "Kompetisi CPD Mei 2026 yang telah berakhir dan sedang dalam masa verifikasi sebelum pengumuman resmi.",
+            rewards: [
+              { level: 5, rankStart: 1, rankEnd: 5, type: "cash", prize: 1500000 },
+              { level: 5, rankStart: 6, rankEnd: 10, type: "cash", prize: 800000 },
+              { level: 5, rankStart: 11, rankEnd: 25, type: "cash", prize: 500000 },
+              { level: 4, rankStart: 1, rankEnd: 999, type: "cash", prize: 350000 },
+              { level: 3, rankStart: 1, rankEnd: 999, type: "cash", prize: 150000 },
+              { level: 2, rankStart: 1, rankEnd: 999, type: "cash", prize: 0 }
+            ],
+            penalty: { active: true, type: "payroll", amt: 150000, limit: 18 },
+            status: "selesai",
+            winners: [],
+            lastUpdateUser: "Akbar",
+            lastUpdateTime: "01/06/2026 09:00",
+            autoRollover: true,
+            tnc: [
+              "Program berlaku untuk seluruh Sales CPD aktif yang terdaftar dalam sistem MSS Online.",
+              "Pencapaian Toko Aktif (TA) dihitung berdasarkan transaksi digital menggunakan saldo atau Virtual Account.",
+              "Hadiah akan dikreditkan otomatis ke VA atau saldo merchant setelah periode kompetisi diverifikasi."
+            ]
+          }
+        ];
+        localStorage.setItem('star_sales_periods', JSON.stringify(defaultPeriods));
+
+      // Run simulation on load
+      let periods = [];
+      try {
+        periods = JSON.parse(localStorage.getItem('star_sales_periods') || '[]');
+      } catch (e) { }
+      if (applyAutoRolloverSimulation(periods)) {
+        localStorage.setItem('star_sales_periods', JSON.stringify(periods));
+      }
+
+      if (!localStorage.getItem('star_sales_config')) {
+        const defaultConfig = {
+          BNN: { program_active: true, area: "BNN" },
+          CPD: { program_active: true, area: "CPD" }
+        };
+        localStorage.setItem('star_sales_config', JSON.stringify(defaultConfig));
+      }
+
+      if (!localStorage.getItem('star_sales_cr_population')) {
+        const population = { BNN: [], CPD: [] };
+        const firstNames = ["Ahmad", "Budi", "Siti", "Afif", "Doni", "Rina", "Eko", "Maya", "Andi", "Hendra", "Dewi", "Joko", "Tari", "Roni", "Agus", "Sri", "Iwan", "Yanti", "Hadi", "Lina"];
+        const lastNames = ["R.", "S.", "R.", "Choirul Anam", "Prabowo", "Oktavia", "Prasetyo", "Sari", "Wijaya", "Wibowo", "Lestari", "Utami", "Hidayat", "Saputra", "Rahayu", "Kurniawan", "Fitriani", "Nugroho", "Kusuma", "Laksana"];
+
+        for (let i = 1; i <= 127; i++) {
+          let cr_id = (i === 4) ? "T50044" : `CR-${1000 + i}`;
+          let name = (i === 1) ? "Ahmad R." : (i === 2) ? "Budi S." : (i === 3) ? "Siti R." : (i === 4) ? "Afif Choirul Anam" : (firstNames[i % firstNames.length] + " " + lastNames[(i * 3) % lastNames.length] + " " + (i > 20 ? i : ""));
+          let star = i <= 25 ? 5 : i <= 55 ? 4 : i <= 85 ? 3 : i <= 105 ? 2 : 1;
+          let ta = 55 - Math.floor(i * 0.4);
+          if (i === 1) ta = 52;
+          if (i === 2) ta = 45;
+          if (i === 3) ta = 41;
+          if (i === 4) ta = 22;
+          if (ta < 0) ta = 0;
+          population.BNN.push({ cr_id, name, star, ta, brands: 3 + (i % 5), skus: 20 + (i % 20) });
+        }
+
+        for (let i = 1; i <= 80; i++) {
+          let cr_id = (i === 4) ? "T50044" : `CR-${2000 + i}`;
+          let name = (i === 4) ? "Afif Choirul Anam" : (firstNames[(i + 5) % firstNames.length] + " " + lastNames[(i * 2 + 1) % lastNames.length] + " (CPD) " + (i > 15 ? i : ""));
+          let star = i <= 15 ? 5 : i <= 35 ? 4 : i <= 55 ? 3 : i <= 68 ? 2 : 1;
+          let ta = 50 - Math.floor(i * 0.5);
+          if (i === 4) ta = 22;
+          if (ta < 0) ta = 0;
+          population.CPD.push({ cr_id, name, star, ta, brands: 3 + (i % 4), skus: 15 + (i % 15) });
+        }
+        localStorage.setItem('star_sales_cr_population', JSON.stringify(population));
+      }
+    }
+
+    window.onload = function () {
+      initializeSalesSharedState();
+      document.getElementById('sales-area-selector').value = activeArea;
+      updateSalesApp();
+    };
+
+    function switchSalesArea(area) {
+      activeArea = area;
+      selectedPeriodId = null;
+      updateSalesApp();
+    }
+
+    function formatMonth(monthStr) {
+      const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+      const [year, month] = monthStr.split('-');
+      return `${months[parseInt(month) - 1]} ${year}`;
+    }
+
+    let selectedPeriodId = null;
+
+    function switchSalesPeriod(periodId) {
+      selectedPeriodId = periodId;
+      updateSalesApp();
+    }
+
+    function populatePeriodSelector() {
+      const selector = document.getElementById('sales-period-selector');
+      if (!selector) return;
+
+      const periods = JSON.parse(localStorage.getItem('star_sales_periods') || '[]');
+      let filteredPeriods = periods;
+      if (currentCase === 'no_program') {
+        filteredPeriods = periods.filter(p => p.status !== 'active-running' && p.status !== 'scheduled');
+      }
+      const areaPeriods = filteredPeriods.filter(p => p.area === activeArea);
+
+      const currentOptionsIds = Array.from(selector.options).map(o => o.value).join(',');
+      const newOptionsIds = areaPeriods.map(p => p.id).join(',');
+
+      if (currentOptionsIds !== newOptionsIds) {
+        selector.innerHTML = "";
+        areaPeriods.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.id;
+          let statusLabel = "";
+          if (p.status === 'cancelled') {
+            statusLabel = " (Dibatalkan)";
+          } else if (p.status === 'selesai') {
+            statusLabel = " (Menunggu Pengumuman)";
+          } else if (p.status === 'grace-period') {
+            statusLabel = " (Menunggu Pengumuman)";
+          }
+          opt.innerText = `📅 ${p.title || `Periode ${formatMonth(p.month)}`}${statusLabel}`;
+          opt.style.color = "black";
+          selector.appendChild(opt);
+        });
+      }
+
+      const activePeriod = getActivePeriod();
+      if (activePeriod) {
+        selector.value = activePeriod.id;
+      }
+    }
+
+    function getActivePeriod() {
+      const periods = JSON.parse(localStorage.getItem('star_sales_periods') || '[]');
+      let filteredPeriods = periods;
+      if (currentCase === 'no_program') {
+        filteredPeriods = periods.filter(p => p.status !== 'active-running' && p.status !== 'scheduled');
+      }
+      if (selectedPeriodId) {
+        const found = filteredPeriods.find(p => p.id === selectedPeriodId && p.area === activeArea);
+        if (found) return found;
+      }
+      const fallback = filteredPeriods.find(p => p.area === activeArea && p.status === 'active-running') ||
+        filteredPeriods.find(p => p.area === activeArea && p.status === 'grace-period') ||
+        filteredPeriods.find(p => p.area === activeArea && p.status === 'selesai') ||
+        filteredPeriods.find(p => p.area === activeArea && p.status === 'locked') ||
+        filteredPeriods.find(p => p.area === activeArea) ||
+        filteredPeriods[0];
+      if (fallback) {
+        selectedPeriodId = fallback.id;
+      }
+      return fallback;
+    }
+
+    function updateSalesApp() {
+      const config = JSON.parse(localStorage.getItem('star_sales_config') || '{}');
+      const isProgramActive = config[activeArea]?.program_active ?? true;
+      const card = document.getElementById('home-ss-card');
+      const alertArea = document.getElementById('alert-area');
+
+      if (!isProgramActive) {
+        card.style.display = 'none';
+        document.getElementById('s-dashboard').classList.remove('active');
+        document.getElementById('s-home').classList.add('active');
+        return;
+      } else {
+        card.style.display = 'block';
+      }
+
+      let period = getActivePeriod();
+      if (currentCase === 'grace_period') {
+        if (!period) {
+          period = {
+            id: "SS-BNN-GP-MOCK",
+            title: "Kompetisi BNN Juni (GP MOCK)",
+            month: "2026-06",
+            status: "grace-period",
+            eligibilityRatio: 50,
+            targets: { star5: 30, star4: 25, star3: 20 },
+            penalty: { active: true, type: "payroll", amt: 100000, limit: 15 }
+          };
+        } else {
+          period = { ...period, status: 'grace-period' };
+        }
+      }
+
+      const emptyStateEl = document.getElementById('dashboard-empty-state');
+      const heroStatsEl = document.getElementById('hero-stats-content');
+      const tabsEl = document.querySelector('.tabs');
+      const contTokoEl = document.getElementById('cont-toko');
+      const contLbEl = document.getElementById('cont-lb');
+      
+      const homeSSActiveContent = document.getElementById('home-ss-active-content');
+      const homeSSEmptyContent = document.getElementById('home-ss-empty-content');
+      const homePeriodTag = document.getElementById('home-period-tag');
+      const homeStatusBadge = document.getElementById('home-status-badge');
+
+      if (!period) {
+        if (homeSSActiveContent) homeSSActiveContent.style.display = 'none';
+        if (homeSSEmptyContent) homeSSEmptyContent.style.display = 'block';
+        if (homePeriodTag) homePeriodTag.innerText = '⭐ STAR SALES';
+        if (homeStatusBadge) {
+          homeStatusBadge.innerText = "TANPA PROGRAM";
+          homeStatusBadge.style.background = "#ECEFF1";
+          homeStatusBadge.style.color = "#37474F";
+        }
+        
+        if (emptyStateEl) {
+          emptyStateEl.style.display = 'flex';
+          document.getElementById('empty-state-icon').innerText = '📭';
+          document.getElementById('empty-state-title').innerText = 'Belum Ada Program';
+          document.getElementById('empty-state-desc').innerText = `Tidak ada program Star Sales aktif untuk wilayah ${activeArea} Area saat ini.`;
+        }
+        if (heroStatsEl) heroStatsEl.style.display = 'none';
+        if (tabsEl) tabsEl.style.display = 'none';
+        if (contTokoEl) contTokoEl.style.display = 'none';
+        if (contLbEl) contLbEl.style.display = 'none';
+        
+        document.getElementById('status-label').innerText = "STATUS: -";
+        
+        const selector = document.getElementById('sales-period-selector');
+        if (selector) {
+          selector.innerHTML = `<option value="" style="color:black">⚠️ Tidak ada program</option>`;
+        }
+        return;
+      }
+
+      if (homeSSActiveContent) homeSSActiveContent.style.display = 'block';
+      if (homeSSEmptyContent) homeSSEmptyContent.style.display = 'none';
+      if (homePeriodTag) {
+        const titleUpper = period.title.toUpperCase();
+        if (titleUpper.includes('STAR SALES')) {
+          homePeriodTag.innerText = `⭐ ${titleUpper}`;
+        } else {
+          homePeriodTag.innerText = `⭐ STAR SALES · ${titleUpper}`;
+        }
+      }
+      
+      if (homeStatusBadge) {
+        if (period.status === 'active-running') {
+          homeStatusBadge.innerText = "AKTIF";
+          homeStatusBadge.style.background = "#E8F5E9";
+          homeStatusBadge.style.color = "#2E7D32";
+        } else if (period.status === 'grace-period') {
+          homeStatusBadge.innerText = "MENUNGGU PENGUMUMAN";
+          homeStatusBadge.style.background = "#E8F0FE";
+          homeStatusBadge.style.color = "#1A73E8";
+        } else if (period.status === 'selesai') {
+          homeStatusBadge.innerText = "MENUNGGU PENGUMUMAN";
+          homeStatusBadge.style.background = "#E8F0FE";
+          homeStatusBadge.style.color = "#1A73E8";
+        } else if (period.status === 'locked') {
+          homeStatusBadge.innerText = "DIUMUMKAN";
+          homeStatusBadge.style.background = "#ECEFF1";
+          homeStatusBadge.style.color = "#37474F";
+        } else if (period.status === 'cancelled') {
+          homeStatusBadge.innerText = "DIBATALKAN";
+          homeStatusBadge.style.background = "#FFEBEE";
+          homeStatusBadge.style.color = "#C62828";
+        }
+      }
+
+      const isEmptyState = period.status === 'cancelled' || period.status === 'selesai';
+      if (isEmptyState) {
+        if (emptyStateEl) {
+          emptyStateEl.style.display = 'flex';
+          if (period.status === 'cancelled') {
+            document.getElementById('empty-state-icon').innerText = '🚫';
+            document.getElementById('empty-state-title').innerText = 'Program Dibatalkan';
+            document.getElementById('empty-state-desc').innerText = 'Program kompetisi Star Sales periode ini telah dibatalkan.';
+          } else {
+            document.getElementById('empty-state-icon').innerText = '⏳';
+            document.getElementById('empty-state-title').innerText = 'Menunggu Pengumuman';
+            document.getElementById('empty-state-desc').innerText = 'Periode kompetisi telah berakhir. Hasil resmi sedang dalam proses verifikasi dan akan segera diumumkan.';
+          }
+        }
+        if (heroStatsEl) heroStatsEl.style.display = 'none';
+        if (tabsEl) tabsEl.style.display = 'none';
+        if (contTokoEl) contTokoEl.style.display = 'none';
+        if (contLbEl) contLbEl.style.display = 'none';
+        
+        let labelText = "STATUS: AKTIF";
+        if (period.status === 'selesai') {
+          labelText = "STATUS: MENUNGGU PENGUMUMAN";
+        } else if (period.status === 'cancelled') {
+          labelText = "STATUS: DIBATALKAN";
+        }
+        document.getElementById('status-label').innerText = labelText;
+        
+        populatePeriodSelector();
+        return;
+      } else {
+        if (emptyStateEl) emptyStateEl.style.display = 'none';
+        if (heroStatsEl) heroStatsEl.style.display = 'block';
+        if (tabsEl) tabsEl.style.display = 'flex';
+        const activeTab = document.querySelector('.tabs .tab.active')?.id || 't-toko-btn';
+        if (activeTab === 't-toko-btn') {
+          if (contTokoEl) contTokoEl.style.display = 'block';
+          if (contLbEl) contLbEl.style.display = 'none';
+        } else {
+          if (contTokoEl) contTokoEl.style.display = 'none';
+          if (contLbEl) contLbEl.style.display = 'block';
+        }
+      }
+
+      populatePeriodSelector();
+      renderTncContent();
+
+
+
+      let scenarioTA = 22;
+      let scenarioStar = 4;
+      let isDone = (period.status === 'locked');
+
+      if (currentCase === 'star4') {
+        scenarioTA = 22;
+        scenarioStar = 4;
+      } else if (currentCase === 'star5') {
+        scenarioTA = 32;
+        scenarioStar = 5;
+      } else if (currentCase === 'star1') {
+        scenarioTA = 12;
+        scenarioStar = 1;
+      } else if (currentCase === 'empty_store') {
+        scenarioTA = 0;
+        scenarioStar = 1;
+      } else if (currentCase === 'general') {
+        // Skenario General: No forced overrides
+      } else if (currentCase === 'grace_period') {
+        scenarioTA = 24;
+        scenarioStar = 4;
+      }
+
+      if (period.month && period.month.endsWith('-06')) {
+        scenarioTA -= cancelDeductionJune;
+        if (scenarioTA < 0) scenarioTA = 0;
+      } else if (period.month && period.month.endsWith('-07')) {
+        scenarioTA -= cancelDeductionJuly;
+        if (scenarioTA < 0) scenarioTA = 0;
+      }
+
+      let labelText = "STATUS: AKTIF";
+      if (isDone) {
+        labelText = "STATUS: DIUMUMKAN";
+      } else if (period.status === 'selesai') {
+        labelText = "STATUS: MENUNGGU PENGUMUMAN";
+      } else if (period.status === 'grace-period') {
+        labelText = "STATUS: MENUNGGU PENGUMUMAN";
+      }
+      document.getElementById('status-label').innerText = labelText;
+
+      const population = JSON.parse(localStorage.getItem('star_sales_cr_population') || '{"BNN":[],"CPD":[]}');
+      const crList = population[activeArea] || [];
+
+      // For empty_store case: simulate start-of-program with 125 sales starting with 0 TA, where each level has 25 sales and the user is ranked 120th (Star 1) alphabetically
+      let updatedCRList;
+      if (currentCase === 'empty_store') {
+        const prefixesBefore = ["Aa", "Ab", "Ac", "Ad", "Ae", "Afa"];
+        const prefixesAfter = ["Ag", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "R", "S", "T", "U", "V", "W", "Y", "Z"];
+        const middleParts = ["bud", "di", "dul", "mad", "de", "di", "tya", "nan", "ri", "fan"];
+        const suffixes = ["putra", "jaya", "wan", "to", "so", "adi", "nata", "din", "man", "no"];
+        
+        let namesBefore = new Set();
+        let attempts = 0;
+        while (namesBefore.size < 119 && attempts < 2000) {
+          attempts++;
+          const pref = prefixesBefore[Math.floor(Math.random() * prefixesBefore.length)];
+          const mid = middleParts[Math.floor(Math.random() * middleParts.length)];
+          const suff = suffixes[Math.floor(Math.random() * suffixes.length)];
+          
+          const rawName = (pref + mid + " " + suff).trim();
+          const name = rawName.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+          
+          if (name.localeCompare("Afif Choirul Anam", 'id') < 0) {
+            namesBefore.add(name);
+          }
+        }
+        let fillIndex = 1;
+        while (namesBefore.size < 119) {
+          namesBefore.add(`Abdi Fill ${fillIndex++}`);
+        }
+        
+        let namesAfter = new Set();
+        attempts = 0;
+        while (namesAfter.size < 5 && attempts < 1000) {
+          attempts++;
+          const pref = prefixesAfter[Math.floor(Math.random() * prefixesAfter.length)];
+          const mid = middleParts[Math.floor(Math.random() * middleParts.length)];
+          const suff = suffixes[Math.floor(Math.random() * suffixes.length)];
+          
+          const rawName = (pref + mid + " " + suff).trim();
+          const name = rawName.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+          
+          if (name.localeCompare("Afif Choirul Anam", 'id') > 0) {
+            namesAfter.add(name);
+          }
+        }
+        fillIndex = 1;
+        while (namesAfter.size < 5) {
+          namesAfter.add(`Zacky Fill ${fillIndex++}`);
+        }
+        
+        const allNames = [...Array.from(namesBefore), "Afif Choirul Anam", ...Array.from(namesAfter)];
+        allNames.sort((a, b) => a.localeCompare(b, 'id'));
+        
+        updatedCRList = allNames.map((name, index) => {
+          // 25 sales per level: Star 5 (0-24), Star 4 (25-49), Star 3 (50-74), Star 2 (75-99), Star 1 (100-124)
+          const starLevel = 5 - Math.floor(index / 25);
+          const isMe = (name === "Afif Choirul Anam");
+          return {
+            cr_id: isMe ? "T50044" : `CR-START-${1000 + index}`,
+            name: name,
+            ta: 0,
+            star: starLevel,
+            brands: 0,
+            skus: 0
+          };
+        });
+      } else {
+        updatedCRList = crList.map(cr => {
+          if (cr.cr_id === "T50044") {
+            return { ...cr, ta: scenarioTA, star: scenarioStar };
+          }
+          return cr;
+        });
+      }
+
+      const sortedCRList = [...updatedCRList].sort((a, b) => {
+        // For empty_store: sort alphabetically by name since all stats are 0
+        if (currentCase === 'empty_store') {
+          return a.name.localeCompare(b.name, 'id');
+        }
+        if (b.star !== a.star) return b.star - a.star;
+        if (b.ta !== a.ta) return b.ta - a.ta;
+        if (b.brands !== a.brands) return b.brands - a.brands;
+        return b.skus - a.skus;
+      });
+
+      let myRank = sortedCRList.findIndex(cr => cr.cr_id === "T50044") + 1;
+      if (currentCase === 'grace_period') {
+        myRank = 31;
+      }
+      let myCR = sortedCRList[myRank - 1] || { ta: scenarioTA, star: scenarioStar, brands: 5, skus: 34 };
+      if (currentCase === 'grace_period') {
+        myCR = { ...myCR, ta: 24, star: 4 };
+      }
+
+      document.getElementById('m-ta').innerText = myCR.ta;
+      document.getElementById('m-rank').innerText = myRank;
+      document.getElementById('m-brand').innerText = myCR.brands;
+      document.getElementById('m-sku').innerText = myCR.skus;
+
+      document.getElementById('home-rank').innerText = `#${myRank}`;
+      document.getElementById('home-ta').innerText = myCR.ta;
+      document.getElementById('home-level').innerText = `Star ${myCR.star}`;
+
+      let starsHtml = "";
+      for (let i = 1; i <= 5; i++) {
+        if (i <= myCR.star) {
+          starsHtml += '⭐';
+        } else {
+          starsHtml += '<span style="filter:grayscale(1);opacity:.4">⭐</span>';
+        }
+      }
+      document.getElementById('home-stars').innerHTML = starsHtml;
+
+      let statusText = "Program Aktif";
+      if (isDone) {
+        statusText = "Selesai";
+      } else if (period.status === 'selesai') {
+        statusText = "Menunggu Pengumuman";
+      } else if (period.status === 'grace-period') {
+        statusText = "Menunggu Pengumuman";
+      }
+      document.getElementById('dash-summary-text').innerText = `Star ${myCR.star} \u00a0•\u00a0 #${myRank} dari ${sortedCRList.length}`;
+      const statusBadgeEl = document.getElementById('dash-status-badge');
+      if (statusBadgeEl) statusBadgeEl.innerText = statusText;
+
+      const defaultDesc = "Star Sales adalah program apresiasi untuk mendorong sales memasarkan produk digital ke toko bangunan. Pencapaian target akan diklasifikasikan dalam tingkatan bintang tertentu, dengan reward menarik yang disesuaikan berdasarkan level dan performa.";
+      const descEl = document.getElementById('dash-description');
+      if (descEl) descEl.innerText = period.description || defaultDesc;
+
+      const monthsShort = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
+      const [upYear, upMonth] = period.month.split('-');
+      const monthIdx = parseInt(upMonth) - 1;
+      let updateTimeText = "";
+      if (period.status === 'active-running') {
+        updateTimeText = `27 ${monthsShort[monthIdx]} ${upYear}, 14:00 WIB`;
+      } else {
+        const lastDay = new Date(upYear, parseInt(upMonth), 0).getDate();
+        updateTimeText = `${lastDay} ${monthsShort[monthIdx]} ${upYear}, 23:59 WIB`;
+      }
+      document.getElementById('dash-last-update-time').innerText = `Terakhir update: ${updateTimeText}`;
+
+      const rawTarget = period.targets ? (period.targets["star" + myCR.star] || 0) : 0;
+      const targetTA = (typeof rawTarget === 'object' && rawTarget !== null) ? (rawTarget.reward ?? 0) : rawTarget;
+
+      if (period.status === 'selesai') {
+        alertArea.innerHTML = `
+            <div class="alert-bar info">
+              <div style="width: 16px; height: 16px; border: 1.5px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; color: white; flex-shrink: 0; line-height: 1; font-family: sans-serif;">i</div>
+              <span>Periode kompetisi telah berakhir. Hasil resmi sedang diverifikasi dan akan segera diumumkan.</span>
+            </div>
+          `;
+      } else if (period.status === 'grace-period') {
+        alertArea.innerHTML = `
+            <div class="alert-bar warn">
+              <div style="width: 16px; height: 16px; border: 1.5px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; color: white; flex-shrink: 0; line-height: 1; font-family: sans-serif;">!</div>
+              <span>Masa verifikasi (Menunggu Pengumuman) berjalan hingga tanggal 9. Peringkat masih bisa berubah karena pembatalan/retur bulan lalu.</span>
+            </div>
+          `;
+      } else if (!isDone) {
+        let isPenaltyActive = false;
+        let penaltyLimit = 0;
+        let penaltyAmt = 0;
+        const starKey = "star" + myCR.star;
+
+        if (period.penalty && period.penalty[starKey]) {
+          isPenaltyActive = period.penalty[starKey].active;
+          penaltyAmt = period.penalty[starKey].amt;
+          
+          const targetConfig = period.targets?.[starKey];
+          if (typeof targetConfig === 'object' && targetConfig !== null) {
+            penaltyLimit = targetConfig.penalty ?? 0;
+          } else if (typeof targetConfig === 'number') {
+            penaltyLimit = targetConfig;
+          }
+        } else if (period.penalty) {
+          // fallback to old structure
+          if (myCR.star === 1) {
+            isPenaltyActive = period.penalty.active ?? false;
+            penaltyAmt = period.penalty.amt ?? 100000;
+            penaltyLimit = period.penalty.limit ?? 15;
+          }
+        }
+
+        if (isPenaltyActive && myCR.ta < penaltyLimit) {
+          const nominal = penaltyAmt.toLocaleString('id-ID');
+          alertArea.innerHTML = `
+              <div class="alert-bar danger">
+                <div style="width: 16px; height: 16px; border: 1.5px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; color: white; flex-shrink: 0; line-height: 1; font-family: sans-serif;">!</div>
+                <span>Terancam penalti (Toko Aktif &lt; ${penaltyLimit}). Kejar ${penaltyLimit - myCR.ta} Toko Aktif lagi untuk menghindari potongan Rp ${nominal}!</span>
+              </div>
+            `;
+        } else if (myCR.ta >= targetTA && targetTA > 0) {
+          alertArea.innerHTML = `
+              <div class="alert-bar success">
+                <div style="width: 16px; height: 16px; border: 1.5px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 900; color: white; flex-shrink: 0; line-height: 1; font-family: sans-serif;">✓</div>
+                <span>Selamat! Target Star ${myCR.star} (${targetTA} Toko Aktif) Anda telah tercapai.</span>
+              </div>
+            `;
+        } else if (isPenaltyActive && myCR.ta >= penaltyLimit) {
+          alertArea.innerHTML = `
+              <div class="alert-bar success">
+                <div style="width: 16px; height: 16px; border: 1.5px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 900; color: white; flex-shrink: 0; line-height: 1; font-family: sans-serif;">✓</div>
+                <span>Target minimum Star ${myCR.star} tercapai. Anda aman dari penalti.</span>
+              </div>
+            `;
+        } else {
+          alertArea.innerHTML = `
+              <div class="alert-bar warn">
+                <div style="width: 16px; height: 16px; border: 1.5px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; color: white; flex-shrink: 0; line-height: 1; font-family: sans-serif;">!</div>
+                <span>Tambah ${targetTA - myCR.ta} Toko Aktif lagi untuk reward penuh Star ${myCR.star}</span>
+              </div>
+            `;
+        }
+      } else {
+        // Periode Selesai / Locked
+        alertArea.innerHTML = "";
+      }
+
+      // Render dynamic store list
+      renderStoresDynamic();
+
+      const lbCount = sortedCRList.length;
+      const lbBadge = document.getElementById('lb-count-badge');
+      if (lbBadge) {
+        lbBadge.innerText = lbCount;
+      }
+
+      renderDynamicLeaderboard(sortedCRList, myRank, myCR);
+    }
+
+    // Dynamic Stores Data and Render engine
+    let currentStoreSubTab = 'aktif'; // 'aktif' | 'hampir'
+    let storeSearchQuery = '';
+
+    function getDummyStoresList() {
+      const period = getActivePeriod();
+      const minRatio = period ? (period.eligibilityRatio ?? 50) : 50;
+
+      // If scenario is 'empty_store', return empty list to simulate 0 stores.
+      if (currentCase === 'empty_store') {
+        return [];
+      }
+
+      // Return a stable list of stores with their current stats
+      return [
+        { name: "TB. Sumber Rejeki Abadi", address: "Slipi, Jakarta Barat", val: 1250000, ratio: 65, orderIds: ["ORD/202606/0215", "ORD/202606/0218"] },
+        { name: "TB. Sentosa Jaya Makmur", address: "Kemanggisan, Jakarta Barat", val: 1800000, ratio: 70, orderIds: ["ORD/202606/0220"] },
+        { name: "TB. Karya Mandiri Sejahtera", address: "Grogol, Jakarta Barat", val: 1100000, ratio: 55, orderIds: ["ORD/202606/0231", "ORD/202606/0232", "ORD/202606/0240"] },
+        { name: "TB. Mitra Usaha Gemilang", address: "Cengkareng, Jakarta Barat", val: 1500000, ratio: 60, orderIds: ["ORD/202606/0245"] },
+        { name: "TB. Sinar Baru Utama", address: "Palmerah, Jakarta Barat", val: 1350000, ratio: 52, orderIds: ["ORD/202606/0252", "ORD/202606/0253"] },
+        { name: "TB. Berkat Melimpah", address: "Kalideres, Jakarta Barat", val: 1450000, ratio: 58, orderIds: ["ORD/202606/0268"] },
+        { name: "TB. Jaya Abadi", address: "Kembangan, Jakarta Barat", val: 1600000, ratio: 63, orderIds: ["ORD/202606/0280", "ORD/202606/0285"] },
+        { name: "TB. Makmur Jaya", address: "Kebon Jeruk, Jakarta Barat", val: 1200000, ratio: 50, orderIds: ["ORD/202606/0291"] },
+
+        // Hampir Aktif stores (ratio below threshold, but have volume)
+        { name: "TB. Mawar Indah", address: "Palmerah, Jakarta Barat", val: 920000, ratio: Math.round(minRatio * 0.92), orderIds: ["ORD/202606/0302"] },
+        { name: "UD. Cahaya Terang", address: "Kemanggisan, Jakarta Barat", val: 850000, ratio: Math.round(minRatio * 0.85), orderIds: ["ORD/202606/0315", "ORD/202606/0318"] },
+        { name: "TB. Harapan Baru", address: "Grogol, Jakarta Barat", val: 780000, ratio: Math.round(minRatio * 0.75), orderIds: ["ORD/202606/0322"] },
+        { name: "UD. Berkat Bersama", address: "Cengkareng, Jakarta Barat", val: 650000, ratio: Math.round(minRatio * 0.60), orderIds: ["ORD/202606/0340", "ORD/202606/0341"] },
+        { name: "TB. Sumber Mas", address: "Kembangan, Jakarta Barat", val: 500000, ratio: Math.round(minRatio * 0.45), orderIds: ["ORD/202606/0355"] },
+
+        // Tidak Valid stores
+        { name: "TB. Indah Bangunan", address: "Tomang, Jakarta Barat", val: 1200000, ratio: 60, orderIds: ["ORD/202605/0902", "ORD/202605/0904"], isInvalid: true, invalidReason: "Order Diretur" },
+        { name: "TB. Trijaya Bersama", address: "Grogol, Jakarta Barat", val: 1500000, ratio: 65, orderIds: ["ORD/202605/0915"], isInvalid: true, invalidReason: "Order Dibatalkan" },
+        { name: "TB. Makmur Sentosa", address: "Kebon Jeruk, Jakarta Barat", val: 2100000, ratio: 80, orderIds: ["ORD/202605/0920", "ORD/202605/0925"], isInvalid: true, invalidReason: "Order Dibatalkan dan Order Diretur" }
+      ];
+    }
+
+    function switchStoreSubTab(tab) {
+      currentStoreSubTab = tab;
+      document.getElementById('subtab-aktif-btn').style.background = tab === 'aktif' ? 'var(--white)' : 'var(--gray1)';
+      document.getElementById('subtab-aktif-btn').style.color = tab === 'aktif' ? 'var(--blue)' : 'var(--gray3)';
+      document.getElementById('subtab-aktif-btn').style.boxShadow = tab === 'aktif' ? '0 1px 4px rgba(0,0,0,0.05)' : 'none';
+
+      document.getElementById('subtab-hampir-btn').style.background = tab === 'hampir' ? 'var(--white)' : 'var(--gray1)';
+      document.getElementById('subtab-hampir-btn').style.color = tab === 'hampir' ? 'var(--blue)' : 'var(--gray3)';
+      document.getElementById('subtab-hampir-btn').style.boxShadow = tab === 'hampir' ? '0 1px 4px rgba(0,0,0,0.05)' : 'none';
+
+      document.getElementById('subtab-invalid-btn').style.background = tab === 'invalid' ? 'var(--white)' : 'var(--gray1)';
+      document.getElementById('subtab-invalid-btn').style.color = tab === 'invalid' ? 'var(--blue)' : 'var(--gray3)';
+      document.getElementById('subtab-invalid-btn').style.boxShadow = tab === 'invalid' ? '0 1px 4px rgba(0,0,0,0.05)' : 'none';
+
+      renderStoresDynamic();
+    }
+
+    function onStoreSearch(val) {
+      storeSearchQuery = val.trim().toLowerCase();
+      renderStoresDynamic();
+    }
+
+    function renderStoresDynamic() {
+      const period = getActivePeriod();
+      const minRatio = period ? (period.eligibilityRatio ?? 50) : 50;
+
+      const allStores = getDummyStoresList();
+
+      // Filter based on Aktif (val >= 1.000.000) vs Hampir Aktif (val < 1.000.000) vs Tidak Valid
+      const activeThreshold = 1000000;
+      const aktifList = allStores.filter(s => s.val >= activeThreshold && !s.isInvalid);
+      const hampirList = allStores.filter(s => s.val < activeThreshold && !s.isInvalid);
+      const invalidList = allStores.filter(s => s.isInvalid);
+
+      // Update subtab badges count
+      const badgeAktif = document.getElementById('subbadge-aktif');
+      const badgeHampir = document.getElementById('subbadge-hampir');
+      const badgeInvalid = document.getElementById('subbadge-invalid');
+      if (badgeAktif) badgeAktif.innerText = aktifList.length;
+      if (badgeHampir) badgeHampir.innerText = hampirList.length;
+      if (badgeInvalid) badgeInvalid.innerText = invalidList.length;
+
+      // Overall main tab count badge
+      const mainBadge = document.getElementById('toko-count-badge');
+      if (mainBadge) {
+        mainBadge.innerText = allStores.length;
+      }
+
+      // Now filter the active tab list based on search query
+      let activeList = aktifList;
+      if (currentStoreSubTab === 'hampir') activeList = hampirList;
+      if (currentStoreSubTab === 'invalid') activeList = invalidList;
+      
+      const filteredList = activeList.filter(s => {
+        const orderMatch = s.orderIds ? s.orderIds.some(id => id.toLowerCase().includes(storeSearchQuery)) : false;
+        return s.name.toLowerCase().includes(storeSearchQuery) ||
+               s.address.toLowerCase().includes(storeSearchQuery) ||
+               orderMatch;
+      });
+
+      // Update list title
+      const listTitle = document.getElementById('store-list-title');
+      if (listTitle) {
+        if (currentStoreSubTab === 'aktif') {
+          listTitle.innerText = `Toko Aktif (${aktifList.length})`;
+        } else if (currentStoreSubTab === 'hampir') {
+          listTitle.innerText = `Toko Hampir Aktif (${hampirList.length})`;
+        } else {
+          listTitle.innerText = `Toko Tidak Valid (${invalidList.length})`;
+        }
+      }
+
+      const container = document.getElementById('store-cards-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (filteredList.length === 0) {
+        // Render Empty State
+        container.innerHTML = `
+            <div style="padding: 40px 20px; text-align: center; color: var(--gray3);">
+              <div style="font-size: 48px; margin-bottom: 12px;">🏪</div>
+              <h5 style="font-size: 14px; font-weight: 700; color: var(--gray4); margin-bottom: 6px;">Tidak Ada Toko</h5>
+              <p style="font-size: 11px; line-height: 1.4; color: var(--gray3);">Belum ada data toko di kategori ini untuk wilayah atau pencarian saat ini.</p>
+            </div>
+          `;
+        return;
+      }
+
+      filteredList.forEach(store => {
+        let cardHtml = '';
+        const orderIdsDisplay = store.orderIds ? store.orderIds.map(id => `<strong>${id}</strong>`).join(', ') : '';
+        
+        if (currentStoreSubTab === 'aktif') {
+          cardHtml = `
+              <div class="store-card" style="margin: 0 12px 10px; padding: 14px; border-radius: 18px; background: var(--white); box-shadow: 0 1px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                  <div style="flex: 1;">
+                    <h5 style="font-size: 14px; font-weight: 700; color: var(--gray4); margin-bottom: 2px;">${store.name}</h5>
+                    <p style="font-size: 11px; color: var(--gray3); margin-bottom: 4px;">${store.address}</p>
+                    <p style="font-size: 10px; color: #64748b; margin-bottom: 6px; font-family: monospace; letter-spacing: 0.5px;">Order: ${orderIdsDisplay}</p>
+                    <span class="status-flag active-flag" style="display: inline-flex; background: #E8F5E9; color: #2E7D32; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 6px; border: 1px solid #C8E6C9;">Aktif</span>
+                  </div>
+                  <div style="text-align: right;">
+                    <span style="font-size: 14px; font-weight: 800; color: var(--gray4);">Rp${store.val.toLocaleString('id-ID')}</span>
+                  </div>
+                </div>
+              </div>
+            `;
+        } else if (currentStoreSubTab === 'hampir') {
+          // Toko Hampir Aktif (Nominal/Progress Bar)
+          const targetVal = 1000000; // Rp 1.000.000 threshold
+          const progressPercent = Math.min(100, Math.round((store.val / targetVal) * 100));
+          const missingAmt = targetVal - store.val;
+          cardHtml = `
+              <div class="store-card" style="margin: 0 12px 10px; padding: 14px; border-radius: 18px; background: var(--white); box-shadow: 0 1px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                  <div style="flex: 1;">
+                    <h5 style="font-size: 14px; font-weight: 700; color: var(--gray4); margin-bottom: 2px;">${store.name}</h5>
+                    <p style="font-size: 11px; color: var(--gray3); margin-bottom: 4px;">${store.address}</p>
+                    <p style="font-size: 10px; color: #64748b; margin-bottom: 6px; font-family: monospace; letter-spacing: 0.5px;">Order: ${orderIdsDisplay}</p>
+                  </div>
+                  <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end;">
+                    <span style="font-size: 14px; font-weight: 800; color: var(--gray4);">Rp${targetVal.toLocaleString('id-ID')}</span>
+                  </div>
+                </div>
+                <div class="progress-container" style="margin-top: 4px;">
+                  <div class="progress-bg" style="height: 6px; background: var(--gray1); border-radius: 10px; overflow: hidden;">
+                    <div class="progress-fill" style="width: ${progressPercent}%; height: 100%; background: linear-gradient(90deg, #FF9800, #F57C00); border-radius: 10px;"></div>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; font-size: 9px; font-weight: 600; color: var(--gray3); margin-top: 4px;">
+                    <span>Terkumpul: Rp${store.val.toLocaleString('id-ID')}</span>
+                    <span style="color: #E65100; font-weight: 700;">Kurang Rp${missingAmt.toLocaleString('id-ID')}</span>
+                  </div>
+                </div>
+              </div>
+            `;
+        } else if (currentStoreSubTab === 'invalid') {
+          // Toko Tidak Valid
+          cardHtml = `
+              <div class="store-card" style="margin: 0 12px 10px; padding: 14px; border-radius: 18px; background: #FFF5F5; border: 1px solid #FFEBEB; box-shadow: 0 1px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                  <div style="flex: 1;">
+                    <h5 style="font-size: 14px; font-weight: 700; color: #B71C1C; margin-bottom: 2px;">${store.name}</h5>
+                    <p style="font-size: 11px; color: var(--gray3); margin-bottom: 4px;">${store.address}</p>
+                    <p style="font-size: 10px; color: #64748b; margin-bottom: 6px; font-family: monospace; letter-spacing: 0.5px;">Order: ${orderIdsDisplay}</p>
+                    <span class="status-flag" style="display: inline-flex; background: #FFEBEE; color: #C62828; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 6px; border: 1px solid #FFCDD2;">Toko Tidak Valid</span>
+                  </div>
+                  <div style="text-align: right; background: #FFEBEE; padding: 4px 8px; border-radius: 6px; height: max-content;">
+                    <span style="font-size: 12px; font-weight: 800; color: #C62828;">-1 TA</span>
+                  </div>
+                </div>
+                <div style="margin-top: 6px; padding: 8px; background: white; border-radius: 8px; border-left: 3px solid #F44336;">
+                  <p style="font-size: 10px; color: var(--gray4); margin: 0; line-height: 1.4;"><strong>Alasan:</strong> ${store.invalidReason}</p>
+                </div>
+              </div>
+            `;
+        }
+        container.innerHTML += cardHtml;
+      });
+    }
+
+    function renderDynamicLeaderboard(sortedCRList, myRank, myCR) {
+      const list = document.getElementById('lb-dynamic-list');
+      list.innerHTML = "";
+
+      const topLimit = 25;
+      const total = sortedCRList.length;
+
+      // Default rendering
+      for (let i = 0; i < Math.min(topLimit, total); i++) {
+        const cr = sortedCRList[i];
+        const isMe = (cr.cr_id === "T50044");
+        list.innerHTML += createLBItem(i + 1, isMe ? "Afif Choirul (Kamu)" : cr.name, cr.ta, cr.star, isMe);
+      }
+
+      if (myRank > topLimit) {
+        list.innerHTML += `<div style="text-align:center;padding:12px;color:var(--gray3);letter-spacing:6px">···</div>`;
+        list.innerHTML += createLBItem(myRank, "Afif Choirul (Kamu)", myCR.ta, myCR.star, true);
+
+        for (let i = myRank; i < Math.min(myRank + 3, total); i++) {
+          const cr = sortedCRList[i];
+          list.innerHTML += createLBItem(i + 1, cr.name, cr.ta, cr.star, false);
+        }
+      }
+    }
+
+    function createLBItem(rank, name, ta, star, isMe) {
+      return `
+          <div class="lb-item ${isMe ? 'me' : ''}">
+            <div class="lb-rank">${rank}</div>
+            <div class="lb-info">
+              <h5>${name}</h5>
+              <p>${ta} Toko Aktif</p>
+            </div>
+            <div class="star-tag">⭐ Star ${star}</div>
+          </div>
+        `;
+    }
+
+    function openPrize() {
+      const period = getActivePeriod();
+      const modalTable = document.querySelector('.prize-table');
+      if (period.status !== 'locked') {
+        modalTable.innerHTML = `
+            <tr>
+              <td colspan="3" style="text-align: center; padding: 30px; color: var(--gray3);">
+                <i class="fas fa-gift" style="font-size: 24px; margin-bottom: 10px; display: block; color: var(--gray2);"></i>
+                Daftar pemenang dan hadiah belum diumumkan secara resmi.
+              </td>
+            </tr>
+          `;
+        document.getElementById('prize-modal').style.display = 'flex';
+        return;
+      }
+
+      modalTable.innerHTML = `
+          <tr style="background:#f9f9f9;text-align:left">
+            <th>NO</th>
+            <th>NAMA</th>
+            <th>HADIAH</th>
+          </tr>
+        `;
+
+      let winners = period.winners || [];
+      if (winners.length === 0) {
+        winners = calculatePreviewWinners(period);
+      }
+
+      const filteredWinners = winners.filter(w =>
+        (w.reward_type === 'cash' && w.reward !== 'Rp 0' && w.reward !== 'Rp0') ||
+        w.reward_type === 'non-cash' ||
+        (w.reward && !w.reward.includes("Tidak Mencapai Target") && !w.reward.includes("Tidak Ada Hadiah") && !w.reward.startsWith("Penalti") && w.reward !== "Rp 0" && w.reward !== "Rp0")
+      );
+
+      filteredWinners.forEach((w, idx) => {
+        let badgeHtml = "";
+        if (w.reward_type === 'non-cash' || (w.reward && !w.reward.startsWith("Rp") && !w.reward.startsWith("Penalti") && !w.reward.includes("Tidak Mencapai Target") && !w.reward.includes("Tidak Ada Hadiah"))) {
+          badgeHtml = `<span class="badge-premium"><i class="fas fa-gift"></i> ${w.reward}</span>`;
+        } else if (w.reward_type === 'cash' || (w.reward && w.reward.startsWith("Rp"))) {
+          badgeHtml = `<span class="badge-cash"><i class="fas fa-wallet"></i> ${w.reward}</span>`;
+        } else {
+          badgeHtml = `<span style="color: var(--gray3);">${w.reward}</span>`;
+        }
+
+        modalTable.innerHTML += `
+            <tr>
+              <td><b>${idx + 1}</b></td>
+              <td>${w.name}</td>
+              <td>${badgeHtml}</td>
+            </tr>
+          `;
+      });
+
+      document.getElementById('prize-modal').style.display = 'flex';
+    }
+
+    function calculatePreviewWinners(period) {
+      const population = JSON.parse(localStorage.getItem('star_sales_cr_population') || '{"BNN":[],"CPD":[]}');
+      const area = period.area || 'BNN';
+      const crList = population[area] || [];
+
+      const sortedCRs = [...crList].sort((a, b) => {
+        if (b.star !== a.star) return b.star - a.star;
+        if (b.ta !== a.ta) return b.ta - a.ta;
+        if (b.brands !== a.brands) return b.brands - a.brands;
+        return b.skus - a.skus;
+      });
+
+      const winners = [];
+      sortedCRs.forEach((cr, index) => {
+        const rank = index + 1;
+        const rawTarget = period.targets ? (period.targets["star" + cr.star] || 0) : 0;
+        const targetTA = (typeof rawTarget === 'object' && rawTarget !== null) ? (rawTarget.reward ?? 0) : rawTarget;
+
+        let rewardText = "Tidak Mencapai Target";
+        let rewardType = "none";
+
+        let isLevelPenaltyActive = false;
+        let levelPenaltyAmt = 100000;
+        let targetPenalty = 0;
+        const starKey = "star" + cr.star;
+
+        if (period.penalty && period.penalty[starKey]) {
+          isLevelPenaltyActive = period.penalty[starKey].active;
+          levelPenaltyAmt = period.penalty[starKey].amt;
+          
+          const targetConfig = period.targets?.[starKey];
+          if (typeof targetConfig === 'object' && targetConfig !== null) {
+            targetPenalty = targetConfig.penalty ?? 0;
+          } else if (typeof targetConfig === 'number') {
+            targetPenalty = targetConfig;
+          }
+        } else if (period.penalty) {
+          // fallback to old structure
+          if (cr.star === 1) {
+            isLevelPenaltyActive = period.penalty.active ?? false;
+            levelPenaltyAmt = period.penalty.amt ?? 100000;
+            targetPenalty = period.penalty.limit ?? 15;
+          }
+        }
+
+        if (isLevelPenaltyActive && cr.ta < targetPenalty) {
+          rewardType = "penalty";
+          rewardText = "Penalti: Potongan Rp " + levelPenaltyAmt.toLocaleString('id-ID');
+        } else if (cr.ta >= targetTA) {
+          const matchedReward = period.rewards.find(r =>
+            r.level === cr.star &&
+            rank >= r.rankStart &&
+            rank <= r.rankEnd
+          );
+
+          if (matchedReward) {
+            rewardType = matchedReward.type;
+            if (rewardType === 'cash') {
+              rewardText = "Rp " + matchedReward.prize.toLocaleString('id-ID');
+            } else {
+              rewardText = matchedReward.prize.toString();
+            }
+          } else {
+            rewardText = "Tidak Ada Hadiah";
+          }
+        }
+
+        winners.push({
+          rank: rank,
+          name: cr.name,
+          reward: rewardText,
+          reward_type: rewardType
+        });
+      });
+
+      return winners;
+    }
+
+    function closePrize() {
+      document.getElementById('prize-modal').style.display = 'none';
+    }
+
+    function setCase(k, e) {
+      currentCase = k;
+      localStorage.setItem('star_sales_case', k);
+      document.querySelectorAll('.controls .sw-btn').forEach(b => b.classList.remove('active'));
+      if (e) {
+        e.currentTarget.classList.add('active');
+      } else {
+        const buttons = document.querySelectorAll('.controls .sw-btn');
+        buttons.forEach(b => {
+          const onclickAttr = b.getAttribute('onclick');
+          if (onclickAttr && onclickAttr.includes(`'${k}'`)) {
+            b.classList.add('active');
+          }
+        });
+      }
+      updateSalesApp();
+      goToDashboard();
+    }
+
+    function triggerCancelReturnSimulation() {
+      const dateStr = prompt("Masukkan tanggal terjadinya cancel/retur order (Format: YYYY-MM-DD, contoh: 2026-07-05 untuk H-10, atau 2026-07-12 untuk H-11):", "2026-07-05");
+      if (!dateStr) return;
+
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime())) {
+        alert("Format tanggal salah!");
+        return;
+      }
+
+      const day = date.getDate();
+      const month = date.getMonth() + 1;
+
+      if (month === 7 && day <= 10) {
+        cancelDeductionJune += 1;
+        alert(`Cancel/Retur terdeteksi pada ${dateStr} (Sebelum tanggal 10 Juli).\nPengurangan 1 TA dibebankan pada pencapaian periode JUNI!\n(Pencapaian Juni saat ini berkurang sebesar ${cancelDeductionJune} TA)`);
+      } else {
+        cancelDeductionJuly += 1;
+        alert(`Cancel/Retur terdeteksi pada ${dateStr} (Mulai tanggal 11 Juli ke atas).\nCapaian periode JUNI aman!\nPengurangan 1 TA dibebankan pada pencapaian periode JULI!\n(Pencapaian Juli saat ini berkurang sebesar ${cancelDeductionJuly} TA)`);
+      }
+
+      updateSalesApp();
+    }
+
+    function triggerExpiredClaimSimulation() {
+      // Switch screen to s-scan
+      document.querySelectorAll('.screens .screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('s-scan').classList.add('active');
+      
+      // Show confirmation modal
+      document.getElementById('claim-confirm-modal').style.display = 'flex';
+    }
+
+    function closeClaimModal() {
+      document.getElementById('claim-confirm-modal').style.display = 'none';
+      goToHome();
+    }
+
+    function confirmClaimExpired() {
+      document.getElementById('claim-confirm-modal').style.display = 'none';
+      // Switch to success screen
+      document.querySelectorAll('.screens .screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('s-claim-success').classList.add('active');
+    }
+
+    function triggerExpiredReturSimulation() {
+      // Skenario B: Tidak berdampak pada UI dashboard Star Sales.
+      // Kita memunculkan toast penjelasan sementara di sudut layar browser utama (di luar phone frame).
+      const toast = document.createElement('div');
+      toast.style.position = 'fixed';
+      toast.style.bottom = '20px';
+      toast.style.right = '20px';
+      toast.style.background = '#e65100';
+      toast.style.color = '#fff';
+      toast.style.padding = '16px';
+      toast.style.borderRadius = '8px';
+      toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
+      toast.style.zIndex = '9999';
+      toast.style.fontSize = '12px';
+      toast.style.maxWidth = '300px';
+      toast.style.lineHeight = '1.4';
+      toast.style.border = '1px solid #ffb74d';
+      toast.innerHTML = '<strong>Simulasi Sukses!</strong><br>Retur > 3 bulan berhasil diproses sistem backend. Sesuai aturan, retur ini tidak memotong target/pencapaian TA di dashboard Star Sales (Layar HP tetap aman).';
+      
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.style.transition = 'opacity 0.5s ease-out';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 500);
+      }, 5000);
+    }
+
+    function goToDashboardProto() {
+      if (window.location.pathname.includes('/prototypes/')) {
+        window.location.href = '../index.html';
+      } else {
+        window.location.href = '../../index.html';
+      }
+    }
+
+    function goToDashboard() {
+      document.querySelectorAll('.screens .screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('s-dashboard').classList.add('active');
+    }
+
+    function goToHome() {
+      document.querySelectorAll('.screens .screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('s-home').classList.add('active');
+    }
+
+    function openTncView() {
+      renderTncContent();
+      document.getElementById('s-dashboard').classList.remove('active');
+      document.getElementById('s-tnc').classList.add('active');
+    }
+
+    function closeTncView() {
+      document.getElementById('s-tnc').classList.remove('active');
+      document.getElementById('s-dashboard').classList.add('active');
+    }
+
+    function renderTncContent() {
+      const period = getActivePeriod();
+      const container = document.getElementById('tnc-list-content');
+      if (!container) return;
+
+      container.innerHTML = "";
+
+      const tncList = period && period.tnc && period.tnc.length >= 2 ? period.tnc : [
+        "Toko yang berpartisipasi adalah seluruh toko bangunan di wilayah Jawa, Sumatera dan Kalimantan Barat.",
+        "Pencapaian Toko Aktif (TA) dihitung berdasarkan transaksi digital menggunakan saldo atau Virtual Account.",
+        "Hadiah akan dikreditkan otomatis ke VA atau saldo merchant setelah periode kompetisi diverifikasi."
+      ];
+
+      const ol = document.createElement('ol');
+      ol.style.paddingLeft = '20px';
+      ol.style.margin = '0';
+      ol.style.display = 'flex';
+      ol.style.flexDirection = 'column';
+      ol.style.gap = '12px';
+
+      tncList.forEach((text) => {
+        const li = document.createElement('li');
+        li.style.fontSize = '12px';
+        li.style.lineHeight = '1.6';
+        li.style.color = '#334155'; // slate-700
+        li.innerText = text;
+        ol.appendChild(li);
+      });
+
+      container.appendChild(ol);
+
+      // Also update title
+      const periodTitle = document.getElementById('tnc-period-title');
+      if (periodTitle) {
+        periodTitle.innerText = period ? period.title : 'Program Star Sales';
+      }
+    }
+
+    function switchTab(t) {
+      document.getElementById('t-toko-btn').classList.toggle('active', t === 'toko');
+      document.getElementById('tab-lb-btn').classList.toggle('active', t === 'lb');
+      document.getElementById('cont-toko').style.display = t === 'toko' ? 'block' : 'none';
+      document.getElementById('cont-lb').style.display = t === 'lb' ? 'block' : 'none';
+      if (t === 'lb') {
+        updateSalesApp();
+      }
+    }
+
+    // FLOWCHART JS INTERACTION CODE
+    function openFlowchart() {
+      document.querySelector('.flow-panel').style.display = 'block';
+      setTimeout(updateConnections, 100);
+    }
+
+    function closeFlowchart() {
+      document.querySelector('.flow-panel').style.display = 'none';
+    }
+
+    let scale = 1;
+    const area = document.getElementById('flow-area');
+    const container = document.getElementById('canvas-container');
+    const svgLayer = document.getElementById('svg-layer');
+
+    const connections = [
+      { from: 'f-start', to: 'f-fetch-data', fromEdge: 'right', toEdge: 'left' },
+      { from: 'f-fetch-data', to: 'f-elig-check', fromEdge: 'right', toEdge: 'left' },
+      { from: 'f-elig-check', to: 'f-accum-va', fromEdge: 'right', toEdge: 'left', label: 'Eligible (≥50%)', labelClass: 'label-yes' },
+      { from: 'f-elig-check', to: 'f-ignore-ord', fromEdge: 'bottom', toEdge: 'top', label: 'Tidak', labelClass: 'label-no' },
+      { from: 'f-accum-va', to: 'f-lunas-check', fromEdge: 'right', toEdge: 'left' },
+      { from: 'f-lunas-check', to: 'f-is-active', fromEdge: 'right', toEdge: 'left', label: 'Lunas', labelClass: 'label-yes' },
+      { from: 'f-lunas-check', to: 'f-pending-lunas', fromEdge: 'bottom', toEdge: 'top', label: 'Belum', labelClass: 'label-no' },
+      { from: 'f-is-active', to: 'f-mark-active', fromEdge: 'top', toEdge: 'left', label: 'YA (≥1jt)', labelClass: 'label-yes' },
+      { from: 'f-is-active', to: 'f-mark-almost', fromEdge: 'bottom', toEdge: 'left', label: 'TIDAK', labelClass: 'label-no' },
+      { from: 'f-mark-active', to: 'f-calc-level', fromEdge: 'right', toEdge: 'top' },
+      { from: 'f-mark-almost', to: 'f-calc-level', fromEdge: 'right', toEdge: 'bottom' },
+      { from: 'f-calc-level', to: 'f-check-penalti', fromEdge: 'right', toEdge: 'left' },
+      { from: 'f-check-penalti', to: 'f-show-warning', fromEdge: 'top', toEdge: 'left', label: 'YA', labelClass: 'label-no' },
+      { from: 'f-check-penalti', to: 'f-show-normal', fromEdge: 'bottom', toEdge: 'left', label: 'TIDAK', labelClass: 'label-yes' },
+      { from: 'f-show-warning', to: 'f-end', fromEdge: 'right', toEdge: 'top' },
+      { from: 'f-show-normal', to: 'f-end', fromEdge: 'right', toEdge: 'bottom' },
+      { from: 'f-ignore-ord', to: 'f-end', fromEdge: 'right', toEdge: 'bottom' },
+      { from: 'f-pending-lunas', to: 'f-end', fromEdge: 'right', toEdge: 'bottom' }
+    ];
+
+    function getEdgePoint(el, edge) {
+      const isDiamond = el.classList.contains('n-decision');
+      const isCircle = el.classList.contains('n-start') || el.classList.contains('n-end');
+
+      const x = el.offsetLeft; const y = el.offsetTop;
+      const w = el.offsetWidth; const h = el.offsetHeight;
+      const cx = x + w / 2; const cy = y + h / 2;
+
+      if (isDiamond) {
+        const offset = (w / 2) * Math.SQRT2;
+        switch (edge) {
+          case 'top': return { x: cx, y: cy - offset };
+          case 'bottom': return { x: cx, y: cy + offset };
+          case 'left': return { x: cx - offset, y: cy };
+          case 'right': return { x: cx + offset, y: cy };
+        }
+      } else if (isCircle) {
+        const r = w / 2;
+        switch (edge) {
+          case 'top': return { x: cx, y: cy - r };
+          case 'bottom': return { x: cx, y: cy + r };
+          case 'left': return { x: cx - r, y: cy };
+          case 'right': return { x: cx + r, y: cy };
+        }
+      } else {
+        switch (edge) {
+          case 'top': return { x: cx, y: y };
+          case 'bottom': return { x: cx, y: y + h };
+          case 'left': return { x: x, y: cy };
+          case 'right': return { x: x + w, y: cy };
+        }
+      }
+      return { x: cx, y: cy };
+    }
+
+    function updateConnections() {
+      while (svgLayer.firstChild) {
+        if (svgLayer.firstChild.tagName === 'defs') {
+          if (svgLayer.children.length === 1) break;
+          let defs = svgLayer.firstChild;
+          svgLayer.innerHTML = '';
+          svgLayer.appendChild(defs);
+          break;
+        }
+        svgLayer.removeChild(svgLayer.firstChild);
+      }
+      document.querySelectorAll('.connection-label').forEach(l => l.remove());
+
+      connections.forEach(conn => {
+        const fromEl = document.getElementById(conn.from);
+        const toEl = document.getElementById(conn.to);
+        if (!fromEl || !toEl) return;
+
+        const start = getEdgePoint(fromEl, conn.fromEdge);
+        const end = getEdgePoint(toEl, conn.toEdge);
+
+        const points = [start];
+        const offset = 25;
+
+        let p1 = { ...start };
+        if (conn.fromEdge === 'top') p1.y -= offset;
+        else if (conn.fromEdge === 'bottom') p1.y += offset;
+        else if (conn.fromEdge === 'left') p1.x -= offset;
+        else if (conn.fromEdge === 'right') p1.x += offset;
+        points.push(p1);
+
+        let p2 = { ...end };
+        if (conn.toEdge === 'top') p2.y -= offset;
+        else if (conn.toEdge === 'bottom') p2.y += offset;
+        else if (conn.toEdge === 'left') p2.x -= offset;
+        else if (conn.toEdge === 'right') p2.x += offset;
+
+        if (conn.fromEdge === 'left' || conn.fromEdge === 'right') {
+          if (conn.toEdge === 'top' || conn.toEdge === 'bottom') {
+            points.push({ x: p2.x, y: p1.y });
+          } else {
+            const midX = (p1.x + p2.x) / 2;
+            points.push({ x: midX, y: p1.y });
+            points.push({ x: midX, y: p2.y });
+          }
+        } else {
+          if (conn.toEdge === 'left' || conn.toEdge === 'right') {
+            points.push({ x: p1.x, y: p2.y });
+          } else {
+            const midY = (p1.y + p2.y) / 2;
+            points.push({ x: p1.x, y: midY });
+            points.push({ x: p2.x, y: midY });
+          }
+        }
+
+        points.push(p2);
+        points.push(end);
+
+        let d = `M ${points[0].x} ${points[0].y}`;
+        for (let i = 1; i < points.length; i++) {
+          d += ` L ${points[i].x} ${points[i].y}`;
+        }
+
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", d);
+        path.setAttribute("class", "connection-path");
+        path.setAttribute("marker-end", "url(#arrow)");
+        svgLayer.appendChild(path);
+
+        if (conn.label) {
+          const label = document.createElement('div');
+          label.className = `connection-label ${conn.labelClass || ''}`;
+          label.innerText = conn.label;
+
+          let labelX, labelY;
+          if (points.length === 6) {
+            labelX = (points[2].x + points[3].x) / 2;
+            labelY = (points[2].y + points[3].y) / 2;
+          } else {
+            labelX = points[2].x;
+            labelY = points[2].y;
+          }
+
+          label.style.left = `${labelX}px`;
+          label.style.top = `${labelY}px`;
+          area.appendChild(label);
+        }
+      });
+    }
+
+    function zoomView(factor) {
+      scale *= factor;
+      scale = Math.min(Math.max(0.1, scale), 3);
+      area.style.transform = `scale(${scale})`;
+    }
+
+    function resetZoom() {
+      scale = 1;
+      area.style.transform = `scale(1)`;
+      container.scrollLeft = 200;
+      container.scrollTop = 200;
+    }
+
+    let isPanning = false;
+    let startX, startY, scrollLeft, scrollTop;
+
+    container.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.btn-ctrl') || e.target.closest('button')) return;
+      isPanning = true;
+      startX = e.pageX - container.offsetLeft;
+      startY = e.pageY - container.offsetTop;
+      scrollLeft = container.scrollLeft;
+      scrollTop = container.scrollTop;
+      container.style.cursor = 'grabbing';
+    });
+
+    container.addEventListener('mouseleave', () => { isPanning = false; container.style.cursor = 'grab'; });
+    container.addEventListener('mouseup', () => { isPanning = false; container.style.cursor = 'grab'; });
+    container.addEventListener('mousemove', (e) => {
+      if (!isPanning) return;
+      e.preventDefault();
+      const x = e.pageX - container.offsetLeft;
+      const y = e.pageY - container.offsetTop;
+      container.scrollLeft = scrollLeft - (x - startX) * 2;
+      container.scrollTop = scrollTop - (y - startY) * 2;
+    });
+
+    container.addEventListener('wheel', (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        if (e.deltaY > 0) zoomView(0.9);
+        else zoomView(1.1);
+      }
+    });
+
+    // Auto-sync across tabs when localStorage changes
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'star_sales_periods' || e.key === 'star_sales_config' || e.key === 'star_sales_cr_population') {
+        updateSalesApp();
+      } else if (e.key === 'star_sales_case') {
+        currentCase = e.newValue || 'star4';
+        document.querySelectorAll('.controls .sw-btn').forEach(b => b.classList.remove('active'));
+        const buttons = document.querySelectorAll('.controls .sw-btn');
+        buttons.forEach(b => {
+          const onclickAttr = b.getAttribute('onclick');
+          if (onclickAttr && onclickAttr.includes(`'${currentCase}'`)) {
+            b.classList.add('active');
+          }
+        });
+        updateSalesApp();
+      }
+    });
+  </script>
+</body>
+
+</html>

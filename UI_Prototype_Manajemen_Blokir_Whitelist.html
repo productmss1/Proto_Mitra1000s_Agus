@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manajemen Blokir & Whitelist — Administrator</title>
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #2196F3;
+      --primary-hover: #1E88E5;
+      --success: #388E3C;
+      --success-hover: #2E7D32;
+      --warning: #F59E0B;
+      --danger: #EF4444;
+      --navy: #1E293B;
+      --bg-light: #F4F6F9;
+      --slate-100: #F8FAFC;
+      --slate-200: #E2E8F0;
+      --slate-300: #CBD5E1;
+      --slate-500: #64748B;
+      --slate-700: #334155;
+      --slate-800: #1E293B;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --font-title: 'Outfit', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg-light);
+      font-family: var(--font-body);
+      color: var(--slate-800);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* TOPBAR */
+    header {
+      background: #00BCD4;
+      color: white;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .brand-logo-container { display: flex; align-items: center; gap: 16px; font-family: var(--font-title); font-weight: 800; font-size: 18px; }
+    .top-nav-profile { display: flex; align-items: center; gap: 20px; }
+    
+    .avatar-icon {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3); border: 2px solid white;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 14px; color: white;
+    }
+
+    /* VIEWPORT LAYOUT */
+    .viewport-container { display: flex; flex: 1; overflow: hidden; }
+
+    /* LEFT SIDEBAR */
+    .left-sidebar {
+      width: 240px; background: white; border-right: 1px solid var(--slate-200);
+      display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0; padding-top: 10px;
+    }
+    .sidebar-menu-item {
+      display: flex; align-items: center; gap: 12px; padding: 12px 20px;
+      color: #475569; font-size: 12px; font-weight: 500; cursor: pointer;
+      border-left: 3px solid transparent; text-decoration: none;
+    }
+    .sidebar-menu-item i:first-child { width: 16px; text-align: center; color: #94A3B8; }
+    .sidebar-menu-item:hover { background: #F8FAFC; color: #0F172A; }
+    .sidebar-menu-item.active { color: #00BCD4; font-weight: 700; background: #E0F7FA; border-left-color: #00BCD4; }
+    .sidebar-menu-item.active i:first-child { color: #00BCD4; }
+    .sidebar-submenu-item {
+      padding: 10px 20px 10px 48px; font-size: 11px; font-weight: 700; cursor: pointer;
+      background: #E0F7FA; color: #00BCD4; border-left: 3px solid #00BCD4;
+      display: flex; align-items: center; gap: 10px; text-decoration: none;
+    }
+    .sidebar-submenu-item:hover { background: #B2EBF2; }
+
+    /* PROTO CONTROL PANEL */
+    .proto-control-panel {
+      position: fixed; right: -310px; top: 0; bottom: 0; width: 290px;
+      background: #0f172a; color: white; z-index: 500;
+      box-shadow: -4px 0 20px rgba(0,0,0,0.3); padding: 20px 16px;
+      display: flex; flex-direction: column; gap: 14px; overflow-y: auto;
+      transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .proto-control-panel.open { right: 0; }
+    .proto-toggle-btn {
+      position: fixed; right: 0; top: 50%; transform: translateY(-50%);
+      background: #00BCD4; color: white; border: none; padding: 12px 10px;
+      border-radius: 8px 0 0 8px; cursor: pointer; z-index: 501;
+      box-shadow: -2px 0 8px rgba(0,0,0,0.2); font-size: 14px;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      transition: all 0.3s;
+    }
+    .proto-toggle-btn:hover { background: #00ACC1; }
+    .proto-toggle-btn.panel-open { right: 290px; }
+    .proto-toggle-btn .btn-text {
+      writing-mode: vertical-lr; text-orientation: mixed;
+      font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+    }
+    .proto-section-card {
+      background: rgba(255,255,255,.05); padding: 16px; border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.1);
+    }
+    .proto-section-card h3 {
+      color: #fff; font-size: 11px; margin: 0 0 12px 0;
+      letter-spacing: 1px; text-transform: uppercase; opacity: .7; font-weight: 800;
+    }
+    .proto-sw-btn {
+      background: rgba(255,255,255,.08); color: #fff;
+      border: 1px solid rgba(255,255,255,.1); padding: 10px 12px;
+      border-radius: 8px; font-size: 11px; cursor: pointer;
+      text-align: left; width: 100%; font-family: inherit;
+      display: flex; align-items: center; gap: 8px; transition: all .2s;
+      text-decoration: none;
+    }
+    .proto-sw-btn:hover { background: rgba(255,255,255,.15); }
+    .proto-sw-btn.active { background: #00BCD4; border-color: #00BCD4; }
+    .proto-sw-btn + .proto-sw-btn { margin-top: 8px; }
+
+    /* MAIN CONTENT */
+    .main-content {
+      flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 20px;
+    }
+    .breadcrumb-title {
+      font-family: var(--font-title); font-size: 20px; font-weight: 800; color: var(--slate-800); text-transform: uppercase;
+    }
+    .card {
+      background: white; border-radius: var(--radius-md); border: 1px solid var(--slate-200);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); padding: 20px;
+    }
+
+    /* TABS */
+    .tabs-header { display: flex; gap: 16px; border-bottom: 2px solid var(--slate-200); margin-bottom: 20px; }
+    .list-tab {
+      padding: 10px 16px; font-weight: 700; color: var(--slate-500); font-size: 13px;
+      cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s;
+    }
+    .list-tab:hover { color: var(--slate-800); }
+    .list-tab.active { color: #00BCD4; border-bottom-color: #00BCD4; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* DATA TABLE */
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 11.5px; border: 1px solid #cbd5e1; }
+    th { background: #f1f3f5; border: 1px solid #cbd5e1; padding: 10px 14px; font-weight: 700; color: #334155; }
+    td { padding: 10px 14px; border: 1px solid #cbd5e1; color: #1e293b; vertical-align: middle; }
+    tr:hover { background: #f8fafc; }
+    .mono { font-family: monospace; font-size: 13px; font-weight: 600; color: var(--slate-700); }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px;
+      font-size: 12px; font-weight: 700; border-radius: var(--radius-sm); border: 1px solid transparent;
+      cursor: pointer; outline: none; transition: all 0.2s; white-space: nowrap;
+    }
+    .btn-primary { background: var(--success); color: white; }
+    .btn-primary:hover { background: var(--success-hover); }
+    .btn-secondary { background: #00BCD4; color: white; }
+    .btn-secondary:hover { background: #00ACC1; }
+    .btn-danger { background: white; color: var(--danger); border: 1px solid var(--danger); }
+    .btn-danger:hover { background: #FEF2F2; }
+    .btn-ctrl { background: white; border: 1px solid var(--slate-300); color: var(--slate-700); }
+    .btn-ctrl:hover { background: var(--slate-100); }
+
+    /* STATUS PILLS */
+    .status-pill {
+      display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 20px;
+      font-size: 10px; font-weight: 800; text-transform: uppercase; border: 1px solid transparent;
+    }
+    .pill-otp { background: #E3F2FD; color: #1565C0; border-color: #BBDEFB; }
+    .pill-login { background: #E8F5E9; color: #2E7D32; border-color: #C8E6C9; }
+    .pill-culprit { background: #fee2e2; color: #c62828; border-color: #ffcdd2; display: flex; gap: 4px; align-items: center;}
+    .pill-neutral { background: #F1F5F9; color: #64748B; border-color: #CBD5E1; }
+    .text-culprit { color: #c62828; font-weight: 700; }
+
+    /* TOOLBAR */
+    .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+    .search-box {
+      border: 1px solid var(--slate-300); border-radius: var(--radius-sm); padding: 8px 12px;
+      display: flex; align-items: center; gap: 8px; background: white; width: 300px;
+    }
+    .search-box input { border: none; outline: none; font-size: 12px; width: 100%; }
+
+    /* MODAL */
+    .modal-backdrop {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(2px); z-index: 200;
+      display: none; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-card {
+      background: white; border-radius: var(--radius-md); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      width: 100%; max-width: 450px; overflow: hidden;
+    }
+    .modal-head { padding: 16px 20px; border-bottom: 1px solid var(--slate-200); display: flex; justify-content: space-between; align-items: center; }
+    .modal-title { font-family: var(--font-title); font-size: 16px; font-weight: 800; color: var(--navy); text-transform: uppercase; }
+    .modal-close { border: none; background: transparent; color: var(--slate-500); font-size: 18px; cursor: pointer; }
+    .modal-body { padding: 20px; }
+    .modal-foot { padding: 16px 20px; border-top: 1px solid var(--slate-200); background: var(--slate-100); display: flex; justify-content: flex-end; gap: 12px; }
+
+    /* FORM STYLING */
+    .form-group { margin-bottom: 16px; display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 11px; font-weight: 700; color: var(--slate-700); text-transform: uppercase; }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 10px 12px; border: 1px solid var(--slate-300); border-radius: var(--radius-sm); font-size: 12px; outline: none; width: 100%; font-family: var(--font-body);
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #00BCD4; }
+    .form-hint { font-size: 10px; color: var(--slate-500); margin-top: 2px; }
+
+    /* TAG INPUT */
+    .tag-input-box {
+      border: 1px solid var(--slate-300); border-radius: var(--radius-sm);
+      padding: 6px 8px; min-height: 80px; display: flex; flex-wrap: wrap;
+      gap: 6px; cursor: text; transition: border-color 0.2s; background: white;
+    }
+    .tag-input-box:focus-within { border-color: #00BCD4; box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.1); }
+    .tag-input-box input {
+      border: none; outline: none; flex: 1; min-width: 120px; padding: 4px 4px;
+      font-size: 12px; font-family: var(--font-body); background: transparent;
+    }
+    .tag-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #E0F7FA; color: #006064; border: 1px solid #80DEEA;
+      border-radius: 3px; padding: 3px 8px; font-size: 11px; font-weight: 700;
+      font-family: monospace;
+    }
+    .tag-chip .chip-remove {
+      cursor: pointer; color: #00838F; font-size: 10px; line-height: 1;
+      padding: 0 2px; border-radius: 50%; transition: all 0.15s;
+    }
+    .tag-chip .chip-remove:hover { background: #00838F; color: white; }
+
+    /* STEP LABEL */
+    .step-label {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+    }
+    .step-num {
+      width: 22px; height: 22px; border-radius: 50%; background: #00BCD4;
+      color: white; font-size: 10px; font-weight: 800; display: flex;
+      align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .step-text { font-size: 11px; font-weight: 700; color: var(--slate-700); text-transform: uppercase; }
+    .step-block { padding: 14px; background: var(--slate-100); border-radius: var(--radius-sm); margin-bottom: 14px; border: 1px solid var(--slate-200); }
+
+    /* SUMMARY PREVIEW */
+    .summary-box {
+      background: #F0FDFA; border: 1px solid #99F6E4; border-radius: var(--radius-sm);
+      padding: 12px; display: none; gap: 8px; flex-wrap: wrap; align-items: center;
+    }
+    .summary-box.visible { display: flex; }
+    .summary-tag { background: white; border: 1px solid #99F6E4; border-radius: 3px; padding: 3px 8px; font-size: 11px; color: #0F766E; font-weight: 600; }
+    .summary-label { font-size: 10px; color: #0F766E; font-weight: 700; text-transform: uppercase; }
+
+    /* TOAST NOTIFICATION */
+    #toast-container {
+      position: fixed; bottom: 24px; right: 24px;
+      display: flex; flex-direction: column; gap: 10px; z-index: 9999;
+    }
+    .toast {
+      background: #1E293B; color: white;
+      padding: 14px 20px; border-radius: 8px; font-size: 12px;
+      font-weight: 600; display: flex; align-items: center; gap: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      transform: translateX(110%); opacity: 0;
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      min-width: 280px; max-width: 340px;
+    }
+    .toast.show { transform: translateX(0); opacity: 1; }
+    .toast.success { border-left: 4px solid #10B981; }
+    .toast-icon { font-size: 18px; flex-shrink: 0; }
+    .toast-body { flex: 1; }
+    .toast-title { font-size: 13px; font-weight: 800; margin-bottom: 2px; }
+    .toast-msg { font-size: 11px; color: #94a3b8; font-weight: 400; }
+
+  </style>
+</head>
+<body>
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="brand-logo-container">
+      <i class="fas fa-bars" style="cursor:pointer"></i>
+      Mitra1000s Admin
+    </div>
+    <div class="top-nav-profile">
+      <span style="font-size:12px; opacity:0.8">Administrator</span>
+      <div class="avatar-icon">A</div>
+    </div>
+  </header>
+
+  <div class="viewport-container">
+    <!-- Left Sidebar -->
+    <div class="left-sidebar">
+      <a href="../index.html" class="sidebar-menu-item">
+        <i class="fas fa-home"></i> Dashboard Hub
+      </a>
+      <div class="sidebar-menu-item">
+        <i class="fas fa-users"></i> User Management
+      </div>
+      <div class="sidebar-menu-item active">
+        <i class="fas fa-shield-alt"></i> Security Login & OTP
+      </div>
+      <div class="sidebar-menu-item">
+        <i class="fas fa-cog"></i> Settings
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <h1 class="breadcrumb-title">Manajemen Blokir & Whitelist</h1>
+      
+      <div class="card">
+        <!-- Tabs Header -->
+        <div class="tabs-header">
+          <div class="list-tab active" onclick="switchTab('suspended', this)">Active Suspensions (4)</div>
+          <div class="list-tab" onclick="switchTab('whitelist', this)">Whitelist Management</div>
+        </div>
+
+        <!-- TAB 1: Suspended Accounts -->
+        <div id="tab-suspended" class="tab-content active">
+          <div class="toolbar">
+            <div class="search-box">
+              <i class="fas fa-search text-slate-400"></i>
+              <input type="text" placeholder="Cari Nomor HP atau Device ID...">
+            </div>
+            <button class="btn btn-ctrl"><i class="fas fa-filter"></i> Filter</button>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Fitur (Flow)</th>
+                <th>Penyebab Blokir</th>
+                <th>Nomor HP</th>
+                <th>Device ID</th>
+                <th>Terblokir Sampai</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="status-pill pill-otp">OTP</span></td>
+                <td><span class="status-pill pill-culprit"><i class="fas fa-mobile-alt"></i> DEVICE</span></td>
+                <td class="mono">081234567890</td>
+                <td class="mono text-culprit">500b27da126553f5</td>
+                <td><div>Besok, 10:30</div><div style="color:var(--slate-500);font-size:10px">12 Agt 2026</div></td>
+                <td><button class="btn btn-ctrl" onclick="unlock(this)"><i class="fas fa-unlock"></i> Unlock</button></td>
+              </tr>
+              <tr>
+                <td><span class="status-pill pill-otp">OTP</span></td>
+                <td><span class="status-pill pill-culprit"><i class="fas fa-phone"></i> PHONE</span></td>
+                <td class="mono text-culprit">081234567890</td>
+                <td class="mono">500b27da126553f5</td>
+                <td><div>Besok, 10:00</div><div style="color:var(--slate-500);font-size:10px">12 Agt 2026</div></td>
+                <td><button class="btn btn-ctrl" onclick="unlock(this)"><i class="fas fa-unlock"></i> Unlock</button></td>
+              </tr>
+              <tr>
+                <td><span class="status-pill pill-login">LOGIN</span></td>
+                <td><span class="status-pill pill-culprit"><i class="fas fa-mobile-alt"></i> DEVICE</span></td>
+                <td class="mono">081234567890</td>
+                <td class="mono text-culprit">500b27da126553f5</td>
+                <td><div>Besok, 09:00</div><div style="color:var(--slate-500);font-size:10px">12 Agt 2026</div></td>
+                <td><button class="btn btn-ctrl" onclick="unlock(this)"><i class="fas fa-unlock"></i> Unlock</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- TAB 2: Whitelist Management -->
+        <div id="tab-whitelist" class="tab-content">
+          <div class="toolbar">
+            <div class="search-box">
+              <i class="fas fa-search text-slate-400"></i>
+              <input type="text" placeholder="Cari data whitelist...">
+            </div>
+            <button class="btn btn-secondary" onclick="document.getElementById('modalAdd').style.display='flex'">
+              <i class="fas fa-plus"></i> Tambah Whitelist
+            </button>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Tipe Parameter</th>
+                <th>Nilai (Value)</th>
+                <th>Fitur (Scope)</th>
+                <th>Dibuat Oleh</th>
+                <th>Waktu Dibuat</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="status-pill pill-neutral">PHONE</span></td>
+                <td class="mono">085711170903</td>
+                <td><span class="status-pill pill-otp">OTP</span></td>
+                <td>fauzi</td>
+                <td><div>29 Jul 2026</div><div style="color:var(--slate-500);font-size:10px">10:37:48</div></td>
+                <td><button class="btn btn-danger" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i> Hapus</button></td>
+              </tr>
+              <tr>
+                <td><span class="status-pill pill-neutral">DEVICE</span></td>
+                <td class="mono">123456</td>
+                <td><span class="status-pill pill-login">LOGIN</span></td>
+                <td>fauzi</td>
+                <td><div>29 Jul 2026</div><div style="color:var(--slate-500);font-size:10px">10:44:45</div></td>
+                <td><button class="btn btn-danger" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i> Hapus</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Tambah Whitelist -->
+  <div class="modal-backdrop" id="modalAdd">
+    <div class="modal-card" style="max-width: 520px;">
+      <div class="modal-head">
+        <h3 class="modal-title">Tambah Whitelist Baru</h3>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+
+  <!-- KONTROL PROTOTYPE TOGGLE BUTTON -->
+  <button class="proto-toggle-btn" id="protoToggleBtn" onclick="toggleProtoPanel()">
+    <i class="fas fa-sliders-h"></i>
+    <span class="btn-text">KONTROL</span>
+  </button>
+
+  <!-- KONTROL PROTOTYPE PANEL -->
+  <div class="proto-control-panel" id="protoPanel">
+    <!-- Header -->
+    <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:14px; border-bottom:1px solid rgba(255,255,255,.1);">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <i class="fas fa-sliders-h" style="color:#00BCD4; font-size:14px"></i>
+        <span style="font-size:12px; font-weight:800; letter-spacing:1px; text-transform:uppercase">Kontrol Prototype</span>
+      </div>
+      <button onclick="toggleProtoPanel()" style="background:none;border:none;color:#64748b;cursor:pointer;font-size:20px;line-height:1">&times;</button>
+    </div>
+
+    <!-- INFO PROJECT -->
+    <div class="proto-section-card">
+      <h3>Info Project</h3>
+      <p>Menu administrator untuk tim CS/IT dalam memantau akun yang ter-suspend dan mengelola daftar whitelist pada sistem OTP & Login Brute-Force Protection.</p>
+      <a href="../index.html" style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:12px; background:#1e3a5f; color:white; padding:10px; border-radius:8px; font-size:11px; font-weight:700; text-decoration:none; transition:all 0.2s;" onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='#1e3a5f'">
+        <i class="fas fa-home"></i> Kembali ke Menu Utama
+      </a>
+    </div>
+
+    <!-- SKENARIO CASE -->
+    <div class="proto-section-card">
+      <h3>Skenario Case</h3>
+
+      <div class="proto-sw-btn active" id="sc-1" onclick="loadScenario(1)">
+        <div>
+          <div style="font-weight:800; font-size:12px">SKENARIO UMUM</div>
+          <div style="opacity:0.6; font-size:10px; margin-top:2px">Tampilan default — ada 3 akun ter-suspend</div>
+        </div>
+      </div>
+
+      <div class="proto-sw-btn" id="sc-2" onclick="loadScenario(2)">
+        <div>
+          <div style="font-weight:800; font-size:12px">SEMUA SUDAH UNLOCK</div>
+          <div style="opacity:0.6; font-size:10px; margin-top:2px">Simulasi tabel kosong — tidak ada blokir aktif</div>
+        </div>
+      </div>
+
+      <div class="proto-sw-btn" id="sc-3" onclick="loadScenario(3)">
+        <div>
+          <div style="font-weight:800; font-size:12px">WHITELIST SUDAH ADA</div>
+          <div style="opacity:0.6; font-size:10px; margin-top:2px">Tab Whitelist — tampilkan data yang sudah ada</div>
+        </div>
+      </div>
+
+      <div class="proto-sw-btn" id="sc-4" onclick="loadScenario(4)">
+        <div>
+          <div style="font-weight:800; font-size:12px">WHITELIST KOSONG</div>
+          <div style="opacity:0.6; font-size:10px; margin-top:2px">Simulasi kondisi belum ada whitelist sama sekali</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NAVIGASI PROTOTYPE LAIN -->
+    <div class="proto-section-card">
+      <h3>Prototype Lain</h3>
+      <a href="Prototype_OTP_Phase_2.html" class="proto-sw-btn">
+        <i class="fas fa-mobile-alt" style="flex-shrink:0"></i>
+        <div>
+          <div style="font-weight:800; font-size:11px">Simulasi OTP — User Side</div>
+          <div style="opacity:0.6; font-size:10px">Flow Daftar, Lupa Sandi, Insentif</div>
+        </div>
+      </a>
+      <a href="star_sales_admin.html" class="proto-sw-btn">
+        <i class="fas fa-star" style="flex-shrink:0"></i>
+        <div>
+          <div style="font-weight:800; font-size:11px">Star Sales Admin</div>
+          <div style="opacity:0.6; font-size:10px">Manajemen Program Star Sales</div>
+        </div>
+      </a>
+    </div>
+  </div>
+      <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+
+        <!-- Step 1: Tipe Parameter -->
+        <div class="step-block">
+          <div class="step-label">
+            <div class="step-num">1</div>
+            <div class="step-text">Pilih Tipe Parameter</div>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <label id="opt-phone" onclick="selectType('PHONE')" style="flex:1; cursor:pointer;">
+              <input type="radio" name="wlType" value="PHONE" checked style="display:none">
+              <div class="type-option active" id="card-phone" style="border: 2px solid #00BCD4; border-radius: 6px; padding: 10px 14px; display:flex; align-items:center; gap:8px; background:#E0F7FA;">
+                <i class="fas fa-phone" style="color:#00838F"></i>
+                <div>
+                  <div style="font-size:12px; font-weight:700; color:#006064;">Nomor HP (PHONE)</div>
+                  <div style="font-size:10px; color:#00838F;">Format: 08xxx / 62xxx</div>
+                </div>
+              </div>
+            </label>
+            <label id="opt-device" onclick="selectType('DEVICE')" style="flex:1; cursor:pointer;">
+              <input type="radio" name="wlType" value="DEVICE" style="display:none">
+              <div class="type-option" id="card-device" style="border: 2px solid var(--slate-300); border-radius: 6px; padding: 10px 14px; display:flex; align-items:center; gap:8px; background:white;">
+                <i class="fas fa-mobile-alt" style="color:var(--slate-500)"></i>
+                <div>
+                  <div style="font-size:12px; font-weight:700; color:var(--slate-700);">Device ID (DEVICE)</div>
+                  <div style="font-size:10px; color:var(--slate-500);">Hanya berlaku di Mobile App</div>
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Step 2: Nilai (Tag Input) -->
+        <div class="step-block">
+          <div class="step-label">
+            <div class="step-num">2</div>
+            <div class="step-text">Masukkan Nilai <span style="font-size:10px; font-weight:400; color:var(--slate-500); text-transform:none">(ketik lalu tekan Enter atau Koma untuk menambah)</span></div>
+          </div>
+          <div class="tag-input-box" id="tagBox" onclick="document.getElementById('tagInput').focus()">
+            <input type="text" id="tagInput" placeholder="Contoh: 081234567890" onkeydown="handleTagInput(event)">
+          </div>
+          <div class="form-hint" style="margin-top: 6px;"><i class="fas fa-info-circle"></i> Tekan <b>Enter</b> atau ketik <b>Koma</b> untuk menambah nilai berikutnya. Bisa input sebanyak yang diperlukan.</div>
+        </div>
+
+        <!-- Step 3: Scope -->
+        <div class="step-block">
+          <div class="step-label">
+            <div class="step-num">3</div>
+            <div class="step-text">Pilih Fitur yang Dikecualikan (Scope)</div>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <label onclick="selectScope(this, 'OTP')" style="flex:1; cursor:pointer;">
+              <div class="scope-option" data-scope="OTP" style="border: 2px solid var(--slate-300); border-radius: 6px; padding: 10px; text-align:center; background:white; transition: all 0.15s;">
+                <div style="font-size:11px; font-weight:800; color:#1565C0;">OTP</div>
+                <div style="font-size:10px; color:var(--slate-500);">Spam Protection</div>
+              </div>
+            </label>
+            <label onclick="selectScope(this, 'LOGIN')" style="flex:1; cursor:pointer;">
+              <div class="scope-option" data-scope="LOGIN" style="border: 2px solid var(--slate-300); border-radius: 6px; padding: 10px; text-align:center; background:white; transition: all 0.15s;">
+                <div style="font-size:11px; font-weight:800; color:#2E7D32;">LOGIN</div>
+                <div style="font-size:10px; color:var(--slate-500);">Brute-Force</div>
+              </div>
+            </label>
+            <label onclick="selectScope(this, 'BOTH')" style="flex:1; cursor:pointer;">
+              <div class="scope-option active" data-scope="BOTH" style="border: 2px solid #00BCD4; border-radius: 6px; padding: 10px; text-align:center; background:#E0F7FA; transition: all 0.15s;">
+                <div style="font-size:11px; font-weight:800; color:#006064;">KEDUANYA</div>
+                <div style="font-size:10px; color:#00838F;">OTP + Login</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Summary Preview -->
+        <div class="summary-box" id="summaryBox">
+          <span class="summary-label"><i class="fas fa-eye"></i> Akan Disimpan:</span>
+          <span class="summary-tag" id="summaryType">PHONE</span>
+          <span style="color:var(--slate-400); font-size:12px">→</span>
+          <span class="summary-tag" id="summaryCount">0 nilai</span>
+          <span style="color:var(--slate-400); font-size:12px">→ Scope:</span>
+          <span class="summary-tag" id="summaryScope">KEDUANYA</span>
+        </div>
+
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ctrl" onclick="closeModal()">Batal</button>
+        <button class="btn btn-secondary" id="btnSimpan" onclick="saveWhitelist()" disabled style="opacity:0.5; cursor:not-allowed;"><i class="fas fa-save"></i> Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Tab Switching ---
+    function switchTab(tabId, el) {
+      document.querySelectorAll('.list-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.getElementById('tab-' + tabId).classList.add('active');
+    }
+
+    function switchTabByName(tabId) {
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.getElementById('tab-' + tabId).classList.add('active');
+      document.querySelectorAll('.list-tab').forEach((t, i) => {
+        t.classList.toggle('active', (tabId === 'suspended' && i === 0) || (tabId === 'whitelist' && i === 1));
+      });
+    }
+
+    // --- Proto Control Panel ---
+    function toggleProtoPanel() {
+      const panel = document.getElementById('protoPanel');
+      const btn = document.getElementById('protoToggleBtn');
+      panel.classList.toggle('open');
+      btn.classList.toggle('panel-open');
+    }
+
+    // --- Scenario Loader ---
+    const suspendedRows = `
+      <tr>
+        <td><span class="status-pill pill-otp">OTP</span></td>
+        <td><span class="status-pill pill-culprit"><i class="fas fa-mobile-alt"></i> DEVICE</span></td>
+        <td class="mono">081234567890</td>
+        <td class="mono text-culprit">500b27da126553f5</td>
+        <td><div>Besok, 10:30</div><div style="color:var(--slate-500);font-size:10px">12 Agt 2026</div></td>
+        <td><button class="btn btn-ctrl" onclick="unlock(this)"><i class="fas fa-unlock"></i> Unlock</button></td>
+      </tr>
+      <tr>
+        <td><span class="status-pill pill-otp">OTP</span></td>
+        <td><span class="status-pill pill-culprit"><i class="fas fa-phone"></i> PHONE</span></td>
+        <td class="mono text-culprit">081234567890</td>
+        <td class="mono">500b27da126553f5</td>
+        <td><div>Besok, 10:00</div><div style="color:var(--slate-500);font-size:10px">12 Agt 2026</div></td>
+        <td><button class="btn btn-ctrl" onclick="unlock(this)"><i class="fas fa-unlock"></i> Unlock</button></td>
+      </tr>
+      <tr>
+        <td><span class="status-pill pill-login">LOGIN</span></td>
+        <td><span class="status-pill pill-culprit"><i class="fas fa-mobile-alt"></i> DEVICE</span></td>
+        <td class="mono">081234567890</td>
+        <td class="mono text-culprit">500b27da126553f5</td>
+        <td><div>Besok, 09:00</div><div style="color:var(--slate-500);font-size:10px">12 Agt 2026</div></td>
+        <td><button class="btn btn-ctrl" onclick="unlock(this)"><i class="fas fa-unlock"></i> Unlock</button></td>
+      </tr>`;
+
+    function loadScenario(n) {
+      // Update active button
+      document.querySelectorAll('[id^="sc-"]').forEach(b => b.classList.remove('active'));
+      document.getElementById('sc-' + n).classList.add('active');
+
+      const tbody = document.querySelector('#tab-suspended tbody');
+      const wlTbody = document.querySelector('#tab-whitelist tbody');
+
+      if (n === 1) {
+        // Default: 3 suspended rows
+        tbody.innerHTML = suspendedRows;
+        switchTabByName('suspended');
+        showToast('Skenario Umum dimuat', '3 akun aktif ter-suspend ditampilkan', 'info');
+      } else if (n === 2) {
+        // Empty — all unlocked
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--slate-500); font-size:12px;"><i class="fas fa-check-circle" style="color:#10B981; margin-right:6px"></i>Tidak ada akun yang sedang ter-suspend.</td></tr>`;
+        switchTabByName('suspended');
+        showToast('Skenario: Semua Unlock', 'Tabel suspend kosong — tidak ada blokir aktif', 'info');
+      } else if (n === 3) {
+        // Whitelist tab with data
+        wlTbody.innerHTML = `
+          <tr>
+            <td><span class="status-pill pill-neutral">PHONE</span></td>
+            <td class="mono">085711170903</td>
+            <td><span class="status-pill pill-otp">OTP</span></td>
+            <td>fauzi</td>
+            <td><div>29 Jul 2026</div><div style="color:var(--slate-500);font-size:10px">10:37:48</div></td>
+            <td><button class="btn btn-danger" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i> Hapus</button></td>
+          </tr>
+          <tr>
+            <td><span class="status-pill pill-neutral">DEVICE</span></td>
+            <td class="mono">123456</td>
+            <td><span class="status-pill pill-login">LOGIN</span></td>
+            <td>fauzi</td>
+            <td><div>29 Jul 2026</div><div style="color:var(--slate-500);font-size:10px">10:44:45</div></td>
+            <td><button class="btn btn-danger" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i> Hapus</button></td>
+          </tr>`;
+        switchTabByName('whitelist');
+        showToast('Skenario: Whitelist Ada', '2 entri whitelist ditampilkan', 'info');
+      } else if (n === 4) {
+        // Empty whitelist
+        wlTbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--slate-500); font-size:12px;"><i class="fas fa-inbox" style="margin-right:6px"></i>Belum ada data whitelist. Klik "Tambah Whitelist" untuk menambahkan.</td></tr>`;
+        switchTabByName('whitelist');
+        showToast('Skenario: Whitelist Kosong', 'Belum ada entri yang dikecualikan', 'info');
+      }
+    }
+
+    // --- Unlock Row ---
+    function unlock(btn) {
+      btn.innerHTML = '<i class="fas fa-check"></i> Unlocked';
+      btn.classList.remove('btn-ctrl');
+      btn.style.color = 'var(--success)';
+      btn.style.borderColor = 'var(--success)';
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.closest('tr').style.transition = 'opacity 0.3s';
+        btn.closest('tr').style.opacity = '0';
+        setTimeout(() => btn.closest('tr').remove(), 300);
+      }, 800);
+    }
+
+    // --- Modal State ---
+    let tags = [];
+    let selectedType = 'PHONE';
+    let selectedScope = 'BOTH';
+
+    function closeModal() {
+      document.getElementById('modalAdd').style.display = 'none';
+      // Reset
+      tags = [];
+      document.getElementById('tagInput').value = '';
+      document.querySelectorAll('.tag-chip').forEach(c => c.remove());
+      updateSummary();
+    }
+
+    // --- Type Selection (Card Toggle) ---
+    function selectType(type) {
+      selectedType = type;
+      const phoneCard = document.getElementById('card-phone');
+      const deviceCard = document.getElementById('card-device');
+      if (type === 'PHONE') {
+        phoneCard.style.border = '2px solid #00BCD4'; phoneCard.style.background = '#E0F7FA';
+        deviceCard.style.border = '2px solid #CBD5E1'; deviceCard.style.background = 'white';
+        document.getElementById('tagInput').placeholder = 'Contoh: 081234567890';
+      } else {
+        deviceCard.style.border = '2px solid #00BCD4'; deviceCard.style.background = '#E0F7FA';
+        phoneCard.style.border = '2px solid #CBD5E1'; phoneCard.style.background = 'white';
+        document.getElementById('tagInput').placeholder = 'Contoh: 500b27da126553f5';
+      }
+      updateSummary();
+    }
+
+    // --- Scope Selection ---
+    function selectScope(label, scope) {
+      selectedScope = scope;
+      document.querySelectorAll('.scope-option').forEach(el => {
+        el.style.border = '2px solid #CBD5E1';
+        el.style.background = 'white';
+      });
+      const target = label.querySelector('.scope-option');
+      target.style.border = '2px solid #00BCD4';
+      target.style.background = '#E0F7FA';
+      updateSummary();
+    }
+
+    // --- Tag Input Logic ---
+    function handleTagInput(e) {
+      const input = e.target;
+      if (e.key === 'Enter' || e.key === ',') {
+        e.preventDefault();
+        const val = input.value.replace(',', '').trim();
+        if (val && !tags.includes(val)) {
+          addTag(val);
+          input.value = '';
+        } else {
+          input.value = '';
+        }
+      } else if (e.key === 'Backspace' && input.value === '' && tags.length > 0) {
+        removeTag(tags[tags.length - 1]);
+      }
+    }
+
+    function addTag(val) {
+      tags.push(val);
+      const chip = document.createElement('div');
+      chip.className = 'tag-chip';
+      chip.dataset.val = val;
+      chip.innerHTML = `<span>${val}</span><span class="chip-remove" onclick="removeTag('${val}')">&times;</span>`;
+      document.getElementById('tagBox').insertBefore(chip, document.getElementById('tagInput'));
+      updateSummary();
+    }
+
+    function removeTag(val) {
+      tags = tags.filter(t => t !== val);
+      document.querySelectorAll(`.tag-chip[data-val="${val}"]`).forEach(el => el.remove());
+      updateSummary();
+    }
+
+    // --- Summary & Button Enable ---
+    function updateSummary() {
+      const summary = document.getElementById('summaryBox');
+      const btnSimpan = document.getElementById('btnSimpan');
+      if (tags.length > 0) {
+        summary.classList.add('visible');
+        document.getElementById('summaryType').textContent = selectedType;
+        document.getElementById('summaryCount').textContent = tags.length + ' nilai';
+        document.getElementById('summaryScope').textContent = selectedScope;
+        btnSimpan.disabled = false;
+        btnSimpan.style.opacity = '1';
+        btnSimpan.style.cursor = 'pointer';
+      } else {
+        summary.classList.remove('visible');
+        btnSimpan.disabled = true;
+        btnSimpan.style.opacity = '0.5';
+        btnSimpan.style.cursor = 'not-allowed';
+      }
+    }
+
+    function showToast(title, msg, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const icon = type === 'success' ? '✅' : '❌';
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <span class="toast-icon">${icon}</span>
+        <div class="toast-body">
+          <div class="toast-title">${title}</div>
+          <div class="toast-msg">${msg}</div>
+        </div>
+      `;
+      container.appendChild(toast);
+      requestAnimationFrame(() => { requestAnimationFrame(() => toast.classList.add('show')); });
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+      }, 4000);
+    }
+
+    function saveWhitelist() {
+      const count = tags.length;
+      const type = selectedType;
+      const scope = selectedScope;
+      closeModal();
+      showToast(
+        `${count} entri whitelist berhasil disimpan`,
+        `Tipe: ${type} · Scope: ${scope}`
+      );
+    }
+  </script>
+
+</body>
+</html>
