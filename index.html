@@ -16,20 +16,36 @@
         }
 
         .badge-app {
-            display: inline-flex; align-items: center; gap: 5px;
-            background: #EFF6FF; color: #1D4ED8; border: 1px solid #BFDBFE;
-            padding: 3px 9px; border-radius: 20px; font-size: 10px; font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #EFF6FF;
+            color: #1D4ED8;
+            border: 1px solid #BFDBFE;
+            padding: 3px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
         }
+
         .badge-admin {
-            display: inline-flex; align-items: center; gap: 5px;
-            background: #FFF7ED; color: #C2410C; border: 1px solid #FED7AA;
-            padding: 3px 9px; border-radius: 20px; font-size: 10px; font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #FFF7ED;
+            color: #C2410C;
+            border: 1px solid #FED7AA;
+            padding: 3px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
         }
 
         .gradient-bg {
-            background: linear-gradient(135deg, #00BCD4 0%, #1565C0 100%);
+            background: linear-gradient(135deg, #0B1F8F 0%, #1565C0 100%);
         }
 
+        /* Custom Scrollbar for Cards */
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
         }
@@ -75,20 +91,21 @@
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
             <div>
                 <h2 class="text-xl font-bold text-slate-800">Daftar Prototype Fitur</h2>
-                <p class="text-sm text-slate-500">Gunakan kolom pencarian untuk menemukan simulasi prototype yang relevan.</p>
+                <p class="text-sm text-slate-500">Gunakan kolom pencarian untuk menemukan simulasi prototype yang
+                    relevan.</p>
             </div>
             <div class="relative w-full md:w-80">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </span>
                 <input type="text" id="search-input" oninput="filterProjects()" placeholder="Cari judul project..."
-                    class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#00BCD4] focus:border-transparent shadow-sm transition">
+                    class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#0B1F8F] focus:border-transparent shadow-sm transition">
             </div>
         </div>
 
-        <!-- Project Grid -->
+        <!-- Project Grid (Rendered via JS) -->
         <div id="project-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
-            <!-- Dynamic cards -->
+            <!-- Dynamic cards go here -->
         </div>
 
         <!-- Empty State -->
@@ -108,13 +125,15 @@
         <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-2 text-xs">
             <p>&copy; 2026 Mitra1000s.</p>
             <div class="flex flex-col items-center md:items-end gap-1">
-                <p class="flex items-center gap-1"><i class="fa-solid fa-code"></i> Developed for Internal Testing & Validation</p>
-                <span style="color: #64748b;" class="text-[9px]">agus.hanggaa.xyz</span>
+                <p class="flex items-center gap-1"><i class="fa-solid fa-code"></i> Developed for Internal Testing &
+                    Validation</p>
+                <span style="color: #0f172a;" class="text-[9px]">Created by Agus M.</span>
             </div>
         </div>
     </footer>
 
     <script>
+        // Project list with timestamps (Relative paths inside prototypes/)
         const projects = [
             {
                 title: "Visibilitas Ongkir Supplier (Fase 1)",
@@ -157,8 +176,8 @@
                 category: "Keamanan & Anti-Spam",
                 version: "v1.0",
                 shortDescription: "Simulasi perlindungan brute-force pada OTP dan Login dengan mekanisme cooldown dan tiered backoff suspend.",
-                description: "Peningkatan keamanan sistem login dan OTP untuk mencegah serangan brute-force dan eksploitasi API OTP.",
-                brdLink: "#",
+                description: "Peningkatan keamanan sistem login dan OTP untuk mencegah serangan brute-force dan eksploitasi API OTP. Simulasi interaktif penerapan cooldown, auto-invalidate OTP, dan tiered suspend 5m-24jam.",
+                brdLink: "https://www.notion.so/BRD-Security-Improvement-Placeholder",
                 features: [
                     "OTP Spam Protection (Limit & Cooldown)",
                     "Login Tiered Backoff Suspend",
@@ -173,13 +192,13 @@
                 title: "Manajemen Blokir & Whitelist",
                 category: "Keamanan & Anti-Spam",
                 version: "v1.0",
-                shortDescription: "UI Admin untuk mengelola akun yang sedang di-suspend 24 jam (OTP/Login) dan mengatur daftar whitelist.",
-                description: "Menu administrator untuk tim operasional (CS/IT) dalam memantau dan membuka blokir akun yang terkena suspend OTP & Login brute-force.",
-                brdLink: "#",
+                shortDescription: "UI Admin untuk mengelola akun yang sedang di-suspend 24 jam (OTP/Login) dan mengatur daftar whitelist yang kebal dari pemblokiran.",
+                description: "Menu administrator untuk tim operasional (CS/IT) dalam memantau dan membuka blokir akun yang terkena suspend OTP & Login brute-force, serta mengelola daftar nomor HP dan Device ID yang dikecualikan dari sistem proteksi.",
+                brdLink: "https://www.notion.so/BRD-Security-Improvement-Placeholder",
                 features: [
                     "Tabel Active Suspensions dengan 1-click Unlock",
                     "Whitelist Management dengan Tag/Chip Input (Bulk Add)",
-                    "Visual Culprit Badge (PHONE/DEVICE)"
+                    "Visual Culprit Badge — soroti penyebab blokir (PHONE/DEVICE)"
                 ],
                 path: "UI_Prototype_Manajemen_Blokir_Whitelist.html",
                 viewType: ["admin"],
@@ -187,16 +206,16 @@
                 formattedDate: "11 Agustus 2026"
             },
             {
-                title: "Migrasi OTP (Nusa to Mekari Qontak)",
+                title: "Migrasi OTP (Nusa to Mekari Qontak) & OTP Improvement",
                 category: "Migrasi & Keamanan",
                 version: "v2.0",
-                shortDescription: "Simulasi migrasi pengiriman OTP dari Nusa ke Mekari Qontak dengan limitasi harian WhatsApp (5x limit).",
-                description: "Migrasi vendor pengiriman OTP dari Nusa ke Mekari Qontak untuk efisiensi biaya.",
-                brdLink: "#",
+                shortDescription: "Simulasi migrasi pengiriman OTP dari Nusa ke Mekari Qontak dengan limitasi harian WhatsApp (5x limit) dan otomatis fallback ke metode Email.",
+                description: "Migrasi vendor pengiriman OTP dari Nusa ke Mekari Qontak untuk efisiensi biaya. Sistem ini mengamankan pengiriman OTP dengan membatasi spam (limit 5x/hari) dan menyediakan fallback otomatis ke Email.",
+                brdLink: "https://www.notion.so/BRD-Migrasi-OTP-Mekari-Qontak-Placeholder",
                 features: [
                     "Touch Points: Daftar, Lupa Sandi, Sales Insentif",
                     "Limit WhatsApp 5x/hari",
-                    "Fallback OTP via Email"
+                    "Add option OTP via email"
                 ],
                 path: "migrasi_otp.html",
                 viewType: ["app"],
@@ -207,13 +226,13 @@
                 title: "Star Sales",
                 category: "Performa Sales",
                 version: "v1.0",
-                shortDescription: "Halaman performa, perolehan level bintang (Star Leveling), target toko aktif, dan leaderboard sales.",
-                description: "Meningkatkan performa penjualan melalui gamifikasi and leveling Star Sales.",
-                brdLink: "#",
+                shortDescription: "Halaman performa, perolehan level bintang (Star Leveling), target pencapaian toko aktif, serta sistem leaderboard kompetisi sales CR.",
+                description: "Meningkatkan performa penjualan melalui gamifikasi and leveling Star Sales. Sistem melacak pencapaian toko aktif berdasarkan akumulasi transaksi dan menampilkan peringkat sales pada leaderboard.",
+                brdLink: "https://www.notion.so/mitra1000saudara/Star-Sales-3340570af9348055ac34d136c2866816",
                 features: [
                     "Halaman Utama & Detail Target (Sales App)",
-                    "Setup Program & Penalty (Admin Web)",
-                    "Winner & Reward Management"
+                    "Setup Program, Target, Rewards, & Penalty (Admin Web)",
+                    "Winner & Reward Management (CSV Upload/Announce)"
                 ],
                 path: "star_sales.html",
                 paths: [
@@ -228,9 +247,9 @@
                 title: "Multi-Akses (On Behalf)",
                 category: "User Access",
                 version: "v1.0",
-                shortDescription: "Halaman navigasi pemilihan toko pusat dan toko cabang, pemetaan relasi akses toko merchant.",
-                description: "Memungkinkan sales melakukan transaksi atas nama merchant (on-behalf) dan beralih multi-toko.",
-                brdLink: "#",
+                shortDescription: "Halaman navigasi pemilihan toko pusat dan toko cabang, pemetaan relasi akses toko merchant, serta notifikasi akses on-behalf.",
+                description: "Memungkinkan sales melakukan transaksi atas nama merchant (on-behalf) dan beralih multi-toko (pusat/cabang) dengan aman. Admin dapat mengelola relasi toko pusat-cabang dan melihat riwayat audit log aktivitas pemetaan akses.",
+                brdLink: "https://www.notion.so/BRD-Multi-Akses-On-Behalf-Placeholder",
                 features: [
                     "Screen Pemilihan Toko Pusat/Cabang",
                     "Pop-up Konfirmasi Akses & Notification Panel",
@@ -242,6 +261,43 @@
                 formattedDate: "15 Maret 2026"
             }
         ];
+
+        // Helper to format date as Indonesian format (e.g., "2026-05-20" -> "20 Mei 2026")
+        function formatDateIndonesian(dateStr) {
+            if (!dateStr) return '';
+            if (dateStr.includes(' ')) return dateStr;
+            try {
+                const parts = dateStr.split('-');
+                if (parts.length === 3) {
+                    const year = parseInt(parts[0], 10);
+                    const monthIndex = parseInt(parts[1], 10) - 1;
+                    const day = parseInt(parts[2], 10);
+                    if (!isNaN(year) && !isNaN(monthIndex) && !isNaN(day)) {
+                        const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+                        if (monthIndex >= 0 && monthIndex < 12) {
+                            return `${day} ${months[monthIndex]} ${year}`;
+                        }
+                    }
+                }
+                const date = new Date(dateStr);
+                if (isNaN(date.getTime())) return dateStr;
+                const day = date.getUTCDate();
+                const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+                const monthName = months[date.getUTCMonth()];
+                const year = date.getUTCFullYear();
+                return `${day} ${monthName} ${year}`;
+            } catch (e) {
+                return dateStr;
+            }
+        }
+
+        // Initialize formattedDate for each project using fallback date
+        projects.forEach(p => {
+            p.formattedDate = formatDateIndonesian(p.lastUpdate);
+        });
+
+        // Default sorting: Sort by lastUpdate descending (most recent first)
+        projects.sort((a, b) => new Date(b.lastUpdate) - new Date(a.lastUpdate));
 
         function renderProjects(list) {
             const grid = document.getElementById('project-grid');
@@ -271,7 +327,7 @@
                 card.innerHTML = `
                     <div class="p-6 flex-1 flex flex-col overflow-y-auto custom-scrollbar">
                         <div class="flex items-center justify-between mb-4 flex-shrink-0">
-                             <span class="px-3 py-1 bg-cyan-50 text-cyan-700 text-xs font-bold rounded-full border border-cyan-200">
+                             <span class="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full border border-blue-200">
                                  ${project.category}
                              </span>
                              <div style="display:flex; align-items:center; gap:6px">
@@ -284,17 +340,31 @@
                         </div>
                         <h3 class="text-lg font-bold text-slate-800 mb-2 flex-shrink-0">${project.title}</h3>
                         
+                        <!-- Executive Summary (Always Visible) -->
                         <div class="mb-4 flex-shrink-0">
                             <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Executive Summary</div>
                             <p class="text-sm text-slate-600 leading-relaxed">${project.description}</p>
                         </div>
 
-                        <button onclick="toggleCard(this)" class="w-full flex items-center justify-between text-xs text-[#00BCD4] font-bold py-2.5 bg-slate-50 hover:bg-cyan-50 border border-slate-100 rounded-xl px-4 transition mb-4 flex-shrink-0">
+                        <!-- Toggle Button -->
+                        <button onclick="toggleCard(this)" class="w-full flex items-center justify-between text-xs text-[#0B1F8F] font-bold py-2.5 bg-slate-50 hover:bg-blue-50 border border-slate-100 rounded-xl px-4 transition mb-4 flex-shrink-0">
                             <span>Lihat Detail Project</span>
                             <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200"></i>
                         </button>
 
+                        <!-- Collapsible Section -->
                         <div class="collapsible-section hidden transition-all duration-300 flex-1 flex flex-col mb-4">
+                            <!-- Notion BRD Link -->
+                            <div class="mb-5 flex-shrink-0">
+                                <a href="${project.brdLink}" target="_blank" 
+                                   class="inline-flex items-center gap-1.5 text-xs text-[#0B1F8F] hover:text-blue-900 font-semibold transition group">
+                                    <i class="fa-brands fa-notion text-slate-700 group-hover:text-slate-900 text-sm"></i>
+                                    <span>Link BRD (Notion)</span>
+                                    <i class="fa-solid fa-arrow-up-right-from-square text-[9px] opacity-70 group-hover:opacity-100 transition"></i>
+                                </a>
+                            </div>
+
+                            <!-- Highlights -->
                             <div>
                                 <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Highlight Fitur & Ubahan</div>
                                 <div class="space-y-2">
@@ -303,6 +373,7 @@
                             </div>
                         </div>
                         
+                        <!-- Last Update Row (Always Visible) -->
                         <div class="pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 mt-auto flex-shrink-0">
                             <span><i class="fa-solid fa-clock-rotate-left mr-1"></i>Last Update:</span>
                             <span class="font-semibold text-slate-600">${project.formattedDate}</span>
@@ -311,12 +382,12 @@
                     <div class="bg-slate-50 border-t border-slate-100 p-4 flex-shrink-0 flex flex-col gap-2">
                         ${project.paths ? project.paths.map(p => `
                             <a href="${p.url}" 
-                               class="w-full flex items-center justify-center gap-2 bg-[#00BCD4] hover:bg-cyan-600 text-white font-semibold py-2 px-4 rounded-xl text-xs transition">
+                               class="w-full flex items-center justify-center gap-2 bg-[#0B1F8F] hover:bg-blue-900 text-white font-semibold py-2 px-4 rounded-xl text-xs transition">
                                 ${p.name} <i class="fa-solid fa-arrow-right text-[10px]"></i>
                             </a>
                         `).join('') : `
                             <a href="${project.path}" 
-                               class="w-full flex items-center justify-center gap-2 bg-[#00BCD4] hover:bg-cyan-600 text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition">
+                               class="w-full flex items-center justify-center gap-2 bg-[#0B1F8F] hover:bg-blue-900 text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition">
                                 Buka Prototype <i class="fa-solid fa-arrow-right text-xs"></i>
                             </a>
                         `}
@@ -343,13 +414,54 @@
             }
         }
 
+        // Filter functionality
         function filterProjects() {
             const query = document.getElementById('search-input').value.toLowerCase().trim();
             const filtered = projects.filter(p => p.title.toLowerCase().includes(query));
             renderProjects(filtered);
         }
 
+        // Fetch updates dynamically from each prototype file
+        async function loadLastUpdatedDates() {
+            let updatedAny = false;
+            const fetchPromises = projects.map(async (project) => {
+                try {
+                    const response = await fetch(project.path);
+                    if (response.ok) {
+                        const htmlText = await response.text();
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(htmlText, 'text/html');
+                        const meta = doc.querySelector('meta[name="last-updated"]');
+                        if (meta && meta.getAttribute('content')) {
+                            const newDateStr = meta.getAttribute('content');
+                            if (project.lastUpdate !== newDateStr) {
+                                project.lastUpdate = newDateStr;
+                                project.formattedDate = formatDateIndonesian(newDateStr);
+                                updatedAny = true;
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.warn(`Gagal memuat meta last-updated dari ${project.path}:`, e);
+                }
+            });
+
+            await Promise.all(fetchPromises);
+
+            if (updatedAny) {
+                // Re-sort projects based on the dynamically loaded dates
+                projects.sort((a, b) => new Date(b.lastUpdate) - new Date(a.lastUpdate));
+                // Render the updated and sorted list
+                const query = document.getElementById('search-input').value.toLowerCase().trim();
+                const filtered = projects.filter(p => p.title.toLowerCase().includes(query));
+                renderProjects(filtered);
+            }
+        }
+
+        // Initial Render & Dynamic Load
         renderProjects(projects);
+        loadLastUpdatedDates();
     </script>
 </body>
+
 </html>
